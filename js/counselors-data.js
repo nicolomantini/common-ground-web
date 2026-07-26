@@ -2,20 +2,21 @@
 // Edit this array to add, remove, or update counselors — the page rebuilds itself from it.
 const COUNSELORS = [
   {
-    id: "ortiz-maya",
-    name: "Maya Ortiz",
-    credentials: "LMFT",
-    pronouns: "she/her",
+    id: "nico",
+    name: "Nicolò Mantini",
+    credentials: "NMA",
+    pronouns: "he/his/him",
     specialties: ["Anxiety", "Relationships"],
     approach: ["CBT", "Emotionally Focused"],
     formats: ["Video", "In-person"],
-    languages: ["English", "Spanish"],
-    sessionLength: "50 min",
+    languages: ["English", "Italian", "Spanish"],
+    sessionLength: "60 min",
     priceRange: "$$",
     availability: "Accepting new clients",
     seed: 1,
     bio: "Maya works with people who feel like their anxious thoughts are running the show. She's direct, warm, and big on practical tools you can use between sessions — not just talk.",
-    focus: "Helps clients build a calmer relationship with worry, and works with couples navigating conflict or disconnection."
+    focus: "Helps clients build a calmer relationship with worry, and works with couples navigating conflict or disconnection.",
+    photo: "images/nico.jpg"
   },
   {
     id: "fisher-dwayne",
