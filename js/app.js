@@ -2,42 +2,24 @@
 // Instead of stock photos, each counselor gets a small generative mark:
 // a unique arrangement of overlapping shapes derived from their seed number.
 // Deterministic — the same counselor always renders the same mark.
-function markSVG(seed) {
-  const palette = ["#3F5A48", "#7C9A82", "#5B6E8C", "#B08B4F", "#8C5B6E"];
-  const rand = (n) => {
-    const x = Math.sin(seed * 999 + n * 37.13) * 10000;
-    return x - Math.floor(x);
-  };
-  const c1 = palette[seed % palette.length];
-  const c2 = palette[(seed + 2) % palette.length];
-  const cx1 = 20 + rand(1) * 24;
-  const cy1 = 20 + rand(2) * 24;
-  const r1 = 16 + rand(3) * 10;
-  const cx2 = 20 + rand(4) * 24;
-  const cy2 = 20 + rand(5) * 24;
-  const r2 = 10 + rand(6) * 8;
-  // preserveAspectRatio="slice" makes this crop-to-fill any box, the same way
-  // object-fit: cover works for a real photo — so the fallback mark and a
-  // real photo occupy the exact same space.
+// Generic placeholder avatar shown for any counselor without a `photo` set.
+// Same neutral graphic for everyone — a simple silhouette on a soft background.
+function placeholderAvatarSVG() {
   return `
-    <svg viewBox="0 0 64 64" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true">
-      <rect width="64" height="64" fill="var(--sand)"/>
-      <circle cx="${cx1}" cy="${cy1}" r="${r1}" fill="${c1}" opacity="0.9"/>
-      <circle cx="${cx2}" cy="${cy2}" r="${r2}" fill="${c2}" opacity="0.75"/>
+    <svg viewBox="0 0 100 100" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true">
+      <rect width="100" height="100" fill="var(--sand)"/>
+      <circle cx="50" cy="40" r="16" fill="var(--moss-light)"/>
+      <path d="M18 92c3-22 16-34 32-34s29 12 32 34z" fill="var(--moss-light)"/>
     </svg>`;
 }
 
-function initials(name) {
-  return name.split(" ").map((p) => p[0]).join("").slice(0, 2);
-}
-
 // Renders a real photo if the counselor has a `photo` path set in the data file,
-// otherwise falls back to the generated mark.
+// otherwise falls back to the generic placeholder avatar.
 function avatarHTML(c) {
   if (c.photo) {
     return `<img class="avatar-photo" src="${c.photo}" alt="${c.name}" loading="lazy">`;
   }
-  return markSVG(c.seed);
+  return placeholderAvatarSVG();
 }
 
 // ---- State ----
