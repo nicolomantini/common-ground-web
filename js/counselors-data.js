@@ -1,28 +1,37 @@
 // Counselor directory data.
 // Edit this array to add, remove, or update counselors — the page rebuilds itself from it.
+//
+// Optional `photo` field: set it to a path like "images/maya-ortiz.jpg" to show a real
+// photo instead of the generated mark. Leave it out (or set to null) to keep the mark.
+//
+// `location` is a plain "City, ST" string shown on the card and searchable in the search box.
+// `languages` powers both the language filter dropdown and each counselor's language tag —
+// add a new language to any counselor's array and it automatically appears as a filter option.
 const COUNSELORS = [
   {
-    id: "nico",
-    name: "Nicolò Mantini",
-    credentials: "NMA",
-    pronouns: "he/his/him",
+    id: "ortiz-maya",
+    name: "Maya Ortiz",
+    photo: null, // e.g. "images/maya-ortiz.jpg"
+    credentials: "LMFT",
+    pronouns: "she/her",
+    location: "Austin, TX",
     specialties: ["Anxiety", "Relationships"],
     approach: ["CBT", "Emotionally Focused"],
     formats: ["Video", "In-person"],
-    languages: ["English", "Italian", "Spanish"],
-    sessionLength: "60 min",
+    languages: ["English", "Spanish"],
+    sessionLength: "50 min",
     priceRange: "$$",
     availability: "Accepting new clients",
     seed: 1,
     bio: "Maya works with people who feel like their anxious thoughts are running the show. She's direct, warm, and big on practical tools you can use between sessions — not just talk.",
-    focus: "Helps clients build a calmer relationship with worry, and works with couples navigating conflict or disconnection.",
-    photo: "images/nico.jpg"
+    focus: "Helps clients build a calmer relationship with worry, and works with couples navigating conflict or disconnection."
   },
   {
     id: "fisher-dwayne",
     name: "Dwayne Fisher",
     credentials: "LCSW",
     pronouns: "he/him",
+    location: "Colorado Springs, CO",
     specialties: ["Trauma", "Veterans"],
     approach: ["EMDR", "Somatic"],
     formats: ["Video", "Phone"],
@@ -39,6 +48,7 @@ const COUNSELORS = [
     name: "Priya Nair",
     credentials: "PhD, Psychologist",
     pronouns: "she/her",
+    location: "San Francisco, CA",
     specialties: ["Couples", "Family"],
     approach: ["Gottman Method", "Systemic"],
     formats: ["Video", "In-person"],
@@ -55,6 +65,7 @@ const COUNSELORS = [
     name: "Sam Okafor",
     credentials: "LPC",
     pronouns: "they/them",
+    location: "Chicago, IL",
     specialties: ["Teens", "ADHD"],
     approach: ["CBT", "Strengths-based"],
     formats: ["Video"],
@@ -71,6 +82,7 @@ const COUNSELORS = [
     name: "Elena Voss",
     credentials: "LCSW",
     pronouns: "she/her",
+    location: "Portland, OR",
     specialties: ["Grief", "Life transitions"],
     approach: ["Narrative", "Person-centered"],
     formats: ["In-person"],
@@ -87,6 +99,7 @@ const COUNSELORS = [
     name: "Jordan Blake",
     credentials: "LMHC",
     pronouns: "they/them",
+    location: "Seattle, WA",
     specialties: ["LGBTQ+ affirming", "Identity"],
     approach: ["Person-centered", "ACT"],
     formats: ["Video"],
@@ -103,6 +116,7 @@ const COUNSELORS = [
     name: "Tomás Rivera",
     credentials: "LPC",
     pronouns: "he/him",
+    location: "Phoenix, AZ",
     specialties: ["Addiction recovery", "Men's issues"],
     approach: ["Motivational Interviewing", "CBT"],
     formats: ["Video", "Phone"],
@@ -119,6 +133,7 @@ const COUNSELORS = [
     name: "Naomi Chen",
     credentials: "PsyD",
     pronouns: "she/her",
+    location: "New York, NY",
     specialties: ["Career stress", "Burnout"],
     approach: ["CBT", "Acceptance-based"],
     formats: ["Video"],

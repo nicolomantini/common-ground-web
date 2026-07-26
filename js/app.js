@@ -45,16 +45,28 @@ const state = {
   query: "",
   specialties: new Set(),
   format: "any",
+  language: "any",
   sort: "name"
 };
 
 const allSpecialties = [...new Set(COUNSELORS.flatMap((c) => c.specialties))].sort();
+const allLanguages = [...new Set(COUNSELORS.flatMap((c) => c.languages))].sort();
 
 // ---- Rendering ----
 const grid = document.getElementById("counselor-grid");
 const emptyState = document.getElementById("empty-state");
 const resultCount = document.getElementById("result-count");
 const chipRow = document.getElementById("specialty-chips");
+
+function buildLanguageOptions() {
+  const select = document.getElementById("language-select");
+  allLanguages.forEach((lang) => {
+    const opt = document.createElement("option");
+    opt.value = lang;
+    opt.textContent = lang;
+    select.appendChild(opt);
+  });
+}
 
 function buildChips() {
   chipRow.innerHTML = allSpecialties
@@ -69,6 +81,7 @@ function matches(c) {
   const matchesQuery =
     !q ||
     c.name.toLowerCase().includes(q) ||
+    c.location.toLowerCase().includes(q) ||
     c.specialties.some((s) => s.toLowerCase().includes(q)) ||
     c.approach.some((a) => a.toLowerCase().includes(q));
 
@@ -77,8 +90,9 @@ function matches(c) {
     c.specialties.some((s) => state.specialties.has(s));
 
   const matchesFormat = state.format === "any" || c.formats.includes(state.format);
+  const matchesLanguage = state.language === "any" || c.languages.includes(state.language);
 
-  return matchesQuery && matchesSpecialty && matchesFormat;
+  return matchesQuery && matchesSpecialty && matchesFormat && matchesLanguage;
 }
 
 function sortList(list) {
@@ -105,7 +119,8 @@ function cardHTML(c) {
         ${c.specialties.map((s) => `<li class="tag">${s}</li>`).join("")}
       </ul>
       <div class="meta-row">
-        <span class="meta">${c.formats.join(" / ")}</span>
+        <span class="meta">${c.location}</span>
+        <span class="meta dot">${c.formats.join(" / ")}</span>
         <span class="meta dot">${c.priceRange}</span>
         <span class="meta availability ${availabilityClass(c.availability)}">${c.availability}</span>
       </div>
@@ -161,6 +176,11 @@ document.getElementById("format-select").addEventListener("change", (e) => {
   render();
 });
 
+document.getElementById("language-select").addEventListener("change", (e) => {
+  state.language = e.target.value;
+  render();
+});
+
 document.getElementById("sort-select").addEventListener("change", (e) => {
   state.sort = e.target.value;
   render();
@@ -170,9 +190,11 @@ document.getElementById("clear-filters").addEventListener("click", () => {
   state.query = "";
   state.specialties.clear();
   state.format = "any";
+  state.language = "any";
   state.sort = "name";
   document.getElementById("search-input").value = "";
   document.getElementById("format-select").value = "any";
+  document.getElementById("language-select").value = "any";
   document.getElementById("sort-select").value = "name";
   chipRow.querySelectorAll(".chip").forEach((c) => {
     c.setAttribute("aria-pressed", "false");
@@ -231,5 +253,6 @@ document.getElementById("scroll-to-directory").addEventListener("click", () => {
 
 // ---- Init ----
 buildChips();
+buildLanguageOptions();
 populateBookingSelect();
 render();
