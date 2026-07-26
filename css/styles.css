@@ -156,18 +156,28 @@ a { color: var(--moss-deep); }
 
 .card {
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius);
-  padding: 22px; cursor: pointer; transition: box-shadow 0.15s ease, transform 0.15s ease;
+  padding: 0; cursor: pointer; transition: box-shadow 0.15s ease, transform 0.15s ease;
+  overflow: hidden; display: flex; flex-direction: column;
 }
 .card:hover { box-shadow: 0 8px 24px rgba(43, 56, 45, 0.08); transform: translateY(-2px); }
 
-.card-top { display: flex; gap: 14px; align-items: center; margin-bottom: 12px; }
-.mark { position: relative; width: 52px; height: 52px; flex: none; }
-.mark svg { width: 100%; height: 100%; border-radius: 50%; }
-.mark-initials {
-  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
-  font-family: var(--font-mono); font-size: 0.72rem; color: #fff; font-weight: 500;
-  text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+.card > .mark { border-radius: 0; }
+.card > .card-heading,
+.card > .tagline,
+.card > .tag-list,
+.card > .meta-row,
+.card > .card-detail {
+  padding-left: 22px;
+  padding-right: 22px;
 }
+.card > .card-heading { padding-top: 18px; }
+.card > .card-detail { padding-bottom: 22px; }
+.card > .meta-row { padding-bottom: 22px; }
+
+.mark { position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: var(--sand); }
+.mark svg { display: block; width: 100%; height: 100%; }
+.avatar-photo { width: 100%; height: 100%; object-fit: cover; display: block; }
+.card-heading { margin-bottom: 4px; }
 .card-heading .credentials { margin: 2px 0 0; font-size: 0.85rem; color: var(--ink-soft); }
 
 .tagline { font-size: 0.92rem; }

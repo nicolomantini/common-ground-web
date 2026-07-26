@@ -2,7 +2,7 @@
 // Instead of stock photos, each counselor gets a small generative mark:
 // a unique arrangement of overlapping shapes derived from their seed number.
 // Deterministic — the same counselor always renders the same mark.
-function markSVG(seed, size = 64) {
+function markSVG(seed) {
   const palette = ["#3F5A48", "#7C9A82", "#5B6E8C", "#B08B4F", "#8C5B6E"];
   const rand = (n) => {
     const x = Math.sin(seed * 999 + n * 37.13) * 10000;
@@ -16,8 +16,12 @@ function markSVG(seed, size = 64) {
   const cx2 = 20 + rand(4) * 24;
   const cy2 = 20 + rand(5) * 24;
   const r2 = 10 + rand(6) * 8;
+  // preserveAspectRatio="slice" makes this crop-to-fill any box, the same way
+  // object-fit: cover works for a real photo — so the fallback mark and a
+  // real photo occupy the exact same space.
   return `
-    <svg viewBox="0 0 64 64" width="${size}" height="${size}" role="img" aria-hidden="true">
+    <svg viewBox="0 0 64 64" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" role="img" aria-hidden="true">
+      <rect width="64" height="64" fill="var(--sand)"/>
       <circle cx="${cx1}" cy="${cy1}" r="${r1}" fill="${c1}" opacity="0.9"/>
       <circle cx="${cx2}" cy="${cy2}" r="${r2}" fill="${c2}" opacity="0.75"/>
     </svg>`;
@@ -25,6 +29,15 @@ function markSVG(seed, size = 64) {
 
 function initials(name) {
   return name.split(" ").map((p) => p[0]).join("").slice(0, 2);
+}
+
+// Renders a real photo if the counselor has a `photo` path set in the data file,
+// otherwise falls back to the generated mark.
+function avatarHTML(c) {
+  if (c.photo) {
+    return `<img class="avatar-photo" src="${c.photo}" alt="${c.name}" loading="lazy">`;
+  }
+  return markSVG(c.seed);
 }
 
 // ---- State ----
@@ -82,12 +95,10 @@ function sortList(list) {
 function cardHTML(c) {
   return `
     <article class="card" data-id="${c.id}" tabindex="0" aria-expanded="false">
-      <div class="card-top">
-        <div class="mark">${markSVG(c.seed)}<span class="mark-initials">${initials(c.name)}</span></div>
-        <div class="card-heading">
-          <h3>${c.name}</h3>
-          <p class="credentials">${c.credentials} &middot; ${c.pronouns}</p>
-        </div>
+      <div class="mark">${avatarHTML(c)}</div>
+      <div class="card-heading">
+        <h3>${c.name}</h3>
+        <p class="credentials">${c.pronouns}</p>
       </div>
       <p class="tagline">${c.bio}</p>
       <ul class="tag-list" aria-label="Specialties">
