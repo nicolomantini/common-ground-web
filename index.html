@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grove &mdash; Find a counselor who feels right</title>
+<meta name="description" content="Browse counselors by specialty, format, and language, and request a first session.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<a class="skip-link" href="#directory">Skip to counselor directory</a>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="#top" class="logo">Grove <span>Counseling</span></a>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="#directory">Browse counselors</a>
+      <a href="#how">How it works</a>
+      <a href="#booking">Request a session</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">A small, independent practice</p>
+        <h1>Find a counselor who feels right &mdash; not just available.</h1>
+        <p class="hero-sub">Eight counselors, eight different ways of working. Filter by what you're carrying, how you want to meet, and what language feels most like home, then read their own words before you reach out.</p>
+        <div class="hero-actions">
+          <button type="button" class="btn-primary" id="scroll-to-directory">Browse counselors</button>
+          <a class="btn-ghost" href="#how">How it works</a>
+        </div>
+      </div>
+      <div class="hero-marks" aria-hidden="true">
+        <div class="hero-mark m1"></div>
+        <div class="hero-mark m2"></div>
+        <div class="hero-mark m3"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how" id="how">
+    <div class="wrap">
+      <ol class="steps">
+        <li>
+          <span class="step-index">01</span>
+          <h3>Browse</h3>
+          <p>Read short, plain-language profiles &mdash; no jargon, no stock-photo smiles.</p>
+        </li>
+        <li>
+          <span class="step-index">02</span>
+          <h3>Filter</h3>
+          <p>Narrow by specialty, session format, or language until a few names feel right.</p>
+        </li>
+        <li>
+          <span class="step-index">03</span>
+          <h3>Request</h3>
+          <p>Send a short note. The counselor themself replies within two business days.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="directory" id="directory">
+    <div class="wrap">
+      <div class="directory-head">
+        <h2>Browse counselors</h2>
+        <p id="result-count" class="result-count" aria-live="polite">8 counselors</p>
+      </div>
+
+      <div class="filter-bar">
+        <div class="filter-row">
+          <label class="visually-hidden" for="search-input">Search by name or specialty</label>
+          <input type="search" id="search-input" placeholder="Search by name or specialty&hellip;" autocomplete="off">
+
+          <label class="visually-hidden" for="format-select">Session format</label>
+          <select id="format-select">
+            <option value="any">Any format</option>
+            <option value="Video">Video</option>
+            <option value="In-person">In-person</option>
+            <option value="Phone">Phone</option>
+          </select>
+
+          <label class="visually-hidden" for="sort-select">Sort by</label>
+          <select id="sort-select">
+            <option value="name">Sort: Name</option>
+            <option value="availability">Sort: Availability</option>
+          </select>
+
+          <button type="button" class="btn-text" id="clear-filters">Clear filters</button>
+        </div>
+        <div class="filter-row chips" id="specialty-chips" aria-label="Filter by specialty"></div>
+      </div>
+
+      <div class="grid" id="counselor-grid"></div>
+      <p class="empty-state" id="empty-state" hidden>No one matches those filters yet &mdash; try clearing one and see who shows up.</p>
+    </div>
+  </section>
+
+  <section class="booking" id="booking">
+    <div class="wrap booking-grid">
+      <div class="booking-copy">
+        <h2>Request a session</h2>
+        <p>This goes straight to the practice, not a call center. Tell us a little about what's going on and who you'd like to see &mdash; you can always change your mind later.</p>
+      </div>
+
+      <form class="booking-form" name="session-request" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="session-request">
+        <p class="hidden-field"><label>Don&rsquo;t fill this out if you're human: <input name="bot-field"></label></p>
+
+        <label for="booking-name">Your name</label>
+        <input type="text" id="booking-name" name="name" required>
+
+        <label for="booking-email">Email</label>
+        <input type="email" id="booking-email" name="email" required>
+
+        <label for="booking-counselor">Preferred counselor</label>
+        <select id="booking-counselor" name="counselor"></select>
+
+        <label for="booking-message">What's on your mind</label>
+        <textarea id="booking-message" name="message" rows="4" placeholder="A sentence or two is plenty."></textarea>
+
+        <button type="submit" class="btn-primary">Send request</button>
+        <p class="form-note">Usually answered within two business days. This isn't for emergencies &mdash; if you're in crisis, please contact local emergency services or a crisis line.</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-row">
+    <p>&copy; 2026 Grove Counseling. Not a substitute for emergency care.</p>
+    <a href="#top">Back to top</a>
+  </div>
+</footer>
+
+<script src="js/counselors-data.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
