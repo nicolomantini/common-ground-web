@@ -1,4 +1,4 @@
-# WWP Counseling Hub — counselor directory site
+# WWP Counseling — counselor directory site
 
 A simple, static, responsive site where visitors can browse counselors, filter by
 specialty / format / language, and request a session. No backend or build step required —

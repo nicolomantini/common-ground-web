@@ -2,7 +2,7 @@
 // Edit this array to add, remove, or update counselors — the page rebuilds itself from it.
 //
 // Optional `photo` field: set it to a path like "images/maya-ortiz.jpg" to show a real
-// photo instead of the generated mark. Leave it out (or set to null) to keep the mark.
+// photo. Leave it out (or set to null) to show a generic placeholder avatar instead.
 //
 // `location` is a plain "City, ST" string shown on the card and searchable in the search box.
 // `languages` powers both the language filter dropdown and each counselor's language tag —
