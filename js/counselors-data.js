@@ -7,9 +7,12 @@
 // `location` is a plain "City, ST" string shown on the card and searchable in the search box.
 // `languages` powers both the language filter dropdown and each counselor's language tag —
 // add a new language to any counselor's array and it automatically appears as a filter option.
+// `website` (optional) is a full URL shown as a link in the expanded card. Leave it out
+// (or set to null) to hide the link.
 const COUNSELORS = [
   {
     id: "ortiz-maya",
+    website: "https://mayaortizcounseling.example.com",
     name: "Maya Ortiz",
     photo: null, // e.g. "images/maya-ortiz.jpg"
     credentials: "LMFT",
@@ -24,11 +27,11 @@ const COUNSELORS = [
     availability: "Accepting new clients",
     seed: 1,
     bio: "Maya works with people who feel like their anxious thoughts are running the show. She's direct, warm, and big on practical tools you can use between sessions — not just talk.",
-    focus: "Helps clients build a calmer relationship with worry, and works with couples navigating conflict or disconnection.",
-    photo: "images/nico.jpg"
+    focus: "Helps clients build a calmer relationship with worry, and works with couples navigating conflict or disconnection."
   },
   {
     id: "fisher-dwayne",
+    website: "https://dwaynefishertherapy.example.com",
     name: "Dwayne Fisher",
     credentials: "LCSW",
     pronouns: "he/him",
@@ -46,6 +49,7 @@ const COUNSELORS = [
   },
   {
     id: "nair-priya",
+    website: "https://priyanairphd.example.com",
     name: "Priya Nair",
     credentials: "PhD, Psychologist",
     pronouns: "she/her",
@@ -63,6 +67,7 @@ const COUNSELORS = [
   },
   {
     id: "okafor-sam",
+    website: "https://samokaforcounseling.example.com",
     name: "Sam Okafor",
     credentials: "LPC",
     pronouns: "they/them",
@@ -80,6 +85,7 @@ const COUNSELORS = [
   },
   {
     id: "voss-elena",
+    website: "https://elenavosstherapy.example.com",
     name: "Elena Voss",
     credentials: "LCSW",
     pronouns: "she/her",
@@ -97,6 +103,7 @@ const COUNSELORS = [
   },
   {
     id: "blake-jordan",
+    website: "https://jordanblaketherapy.example.com",
     name: "Jordan Blake",
     credentials: "LMHC",
     pronouns: "they/them",
@@ -114,6 +121,7 @@ const COUNSELORS = [
   },
   {
     id: "rivera-tomas",
+    website: "https://tomasriveracounseling.example.com",
     name: "Tomás Rivera",
     credentials: "LPC",
     pronouns: "he/him",
@@ -131,6 +139,7 @@ const COUNSELORS = [
   },
   {
     id: "chen-naomi",
+    website: "https://naomichenpsyd.example.com",
     name: "Naomi Chen",
     credentials: "PsyD",
     pronouns: "she/her",

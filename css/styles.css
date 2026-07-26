@@ -211,6 +211,13 @@ a { color: var(--moss-deep); }
 }
 .btn-book:hover { background: var(--moss); color: #fff; }
 
+.detail-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+.btn-link {
+  font-size: 0.88rem; font-weight: 600; color: var(--dusk); text-decoration: none;
+  border-bottom: 1px solid transparent; transition: border-color 0.15s ease;
+}
+.btn-link:hover { border-color: var(--dusk); }
+
 .empty-state { text-align: center; padding: 40px 0; font-style: italic; }
 
 /* ---------- Booking ---------- */

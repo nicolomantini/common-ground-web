@@ -131,7 +131,10 @@ function cardHTML(c) {
           <dt>Languages</dt><dd>${c.languages.join(", ")}</dd>
           <dt>Session length</dt><dd>${c.sessionLength}</dd>
         </dl>
-        <button type="button" class="btn-book" data-book="${c.id}">Request a session with ${c.name.split(" ")[0]}</button>
+        <div class="detail-actions">
+          <button type="button" class="btn-book" data-book="${c.id}">Request a session with ${c.name.split(" ")[0]}</button>
+          ${c.website ? `<a class="btn-link" href="${c.website}" target="_blank" rel="noopener noreferrer">Visit website ↗</a>` : ""}
+        </div>
       </div>
     </article>`;
 }
@@ -205,6 +208,7 @@ document.getElementById("clear-filters").addEventListener("click", () => {
 
 // Expand / collapse a card, and route the booking button
 grid.addEventListener("click", (e) => {
+  if (e.target.closest("a[href]")) return;
   const bookBtn = e.target.closest("[data-book]");
   if (bookBtn) {
     openBooking(bookBtn.dataset.book);

@@ -1,4 +1,4 @@
-# Grove Counseling — counselor directory site
+# WWP Counseling Hub — counselor directory site
 
 A simple, static, responsive site where visitors can browse counselors, filter by
 specialty / format / language, and request a session. No backend or build step required —
@@ -64,5 +64,3 @@ Netlify and follow their DNS instructions.
   site is copyright-clean and works without any image assets.
 - Fonts (Fraunces / Inter / IBM Plex Mono) load from Google Fonts via `<link>` tags in
   `index.html` — no local font files needed.
-# counselor-site
-# counselor-site
