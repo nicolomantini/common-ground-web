@@ -24,7 +24,8 @@ const COUNSELORS = [
     availability: "Accepting new clients",
     seed: 1,
     bio: "Maya works with people who feel like their anxious thoughts are running the show. She's direct, warm, and big on practical tools you can use between sessions — not just talk.",
-    focus: "Helps clients build a calmer relationship with worry, and works with couples navigating conflict or disconnection."
+    focus: "Helps clients build a calmer relationship with worry, and works with couples navigating conflict or disconnection.",
+    image: "images/nico.jpg"
   },
   {
     id: "fisher-dwayne",
