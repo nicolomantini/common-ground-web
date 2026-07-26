@@ -64,3 +64,4 @@ Netlify and follow their DNS instructions.
   site is copyright-clean and works without any image assets.
 - Fonts (Fraunces / Inter / IBM Plex Mono) load from Google Fonts via `<link>` tags in
   `index.html` — no local font files needed.
+# counselor-site
