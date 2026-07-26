@@ -166,13 +166,14 @@ a { color: var(--moss-deep); }
 .card > .tagline,
 .card > .tag-list,
 .card > .meta-row,
+.card > .card-toggle,
 .card > .card-detail {
   padding-left: 22px;
   padding-right: 22px;
 }
 .card > .card-heading { padding-top: 18px; }
 .card > .card-detail { padding-bottom: 22px; }
-.card > .meta-row { padding-bottom: 22px; }
+.card > .card-toggle { padding-bottom: 22px; }
 
 .mark { position: relative; width: 100%; aspect-ratio: 4 / 3; overflow: hidden; background: var(--sand); }
 .mark svg { display: block; width: 100%; height: 100%; }
@@ -194,6 +195,13 @@ a { color: var(--moss-deep); }
 .is-open { color: var(--moss-deep); }
 .is-limited { color: var(--dusk); }
 .is-waitlist { color: #8a6b3f; }
+
+.card-toggle {
+  display: flex; align-items: center; gap: 4px; margin: 10px 0 0;
+  font-size: 0.82rem; font-weight: 600; color: var(--dusk);
+}
+.card-toggle .chev { display: inline-block; transition: transform 0.15s ease; }
+.card[aria-expanded="true"] .card-toggle .chev { transform: rotate(180deg); }
 
 .card-detail {
   margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line);

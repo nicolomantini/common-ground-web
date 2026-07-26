@@ -106,6 +106,7 @@ function cardHTML(c) {
         <span class="meta dot">${c.priceRange}</span>
         <span class="meta availability ${availabilityClass(c.availability)}">${c.availability}</span>
       </div>
+      <p class="card-toggle" aria-hidden="true">Show more <span class="chev">&#8964;</span></p>
       <div class="card-detail" hidden>
         <p>${c.focus}</p>
         <dl>
@@ -211,9 +212,15 @@ grid.addEventListener("keydown", (e) => {
 
 function toggleCard(card) {
   const detail = card.querySelector(".card-detail");
+  const toggleLabel = card.querySelector(".card-toggle");
   const isOpen = !detail.hidden;
   detail.hidden = isOpen;
   card.setAttribute("aria-expanded", String(!isOpen));
+  if (toggleLabel) {
+    toggleLabel.innerHTML = isOpen
+      ? `Show more <span class="chev">&#8964;</span>`
+      : `Show less <span class="chev">&#8964;</span>`;
+  }
 }
 
 // ---- Booking panel ----
