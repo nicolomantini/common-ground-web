@@ -65,3 +65,4 @@ Netlify and follow their DNS instructions.
 - Fonts (Fraunces / Inter / IBM Plex Mono) load from Google Fonts via `<link>` tags in
   `index.html` — no local font files needed.
 # counselor-site
+# counselor-site
