@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blog &mdash; WWP Counseling</title>
+<meta name="description" content="Notes on therapy, choosing a counselor, and mental health basics.">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="theme-color" content="#3F5A48">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .blog-wrap { max-width: 760px; margin: 0 auto; padding: 56px 24px 96px; }
+  .blog-list { display: flex; flex-direction: column; gap: 4px; margin-top: 32px; }
+  .post-card {
+    display: block; text-decoration: none; color: inherit; padding: 24px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .post-card:first-child { border-top: 1px solid var(--line); }
+  .post-date { font-family: var(--font-mono); font-size: 0.78rem; color: var(--moss-light); }
+  .post-card h2 { margin: 6px 0 8px; font-size: 1.3rem; }
+  .post-card p { margin: 0; }
+  .post-card:hover h2 { color: var(--moss-deep); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="index.html" class="logo">WWP <span>Counseling</span></a>
+    <nav class="header-nav" id="header-nav" aria-label="Primary">
+      <a href="index.html#directory">Browse counselors</a>
+      <a href="blog.html">Blog</a>
+      <a href="auth.html" class="nav-cta">Counselor login</a>
+    </nav>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="header-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main class="blog-wrap">
+  <h1>Blog</h1>
+  <p>Notes on therapy, choosing a counselor, and mental health basics.</p>
+
+  <div class="blog-list" id="blog-list"></div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-row">
+    <p>&copy; 2026 WWP Counseling. Not a substitute for emergency care.</p>
+    <a href="index.html">Back to directory</a>
+  </div>
+</footer>
+
+<script src="posts/posts-index.js"></script>
+<script>
+  const list = document.getElementById("blog-list");
+  const sorted = [...POSTS].sort((a, b) => new Date(b.date) - new Date(a.date));
+  list.innerHTML = sorted.map((p) => `
+    <a class="post-card" href="post.html?slug=${encodeURIComponent(p.slug)}">
+      <span class="post-date">${new Date(p.date + "T00:00:00").toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" })}</span>
+      <h2>${p.title}</h2>
+      <p>${p.excerpt}</p>
+    </a>
+  `).join("");
+
+  // Mobile nav toggle
+  const navToggle = document.getElementById("nav-toggle");
+  const headerNav = document.getElementById("header-nav");
+  navToggle.addEventListener("click", () => {
+    const isOpen = headerNav.classList.toggle("is-open");
+    navToggle.setAttribute("aria-expanded", String(isOpen));
+  });
+</script>
+</body>
+</html>
