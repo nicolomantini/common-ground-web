@@ -72,6 +72,15 @@
     <button type="submit" class="btn-primary">Send request</button>
   </form>
 
+  <form id="set-password-form" class="auth-form" hidden>
+    <p class="field-hint" style="margin-bottom: 4px;">Choose a password to finish setting up your account.</p>
+    <label for="set-password">New password</label>
+    <input type="password" id="set-password" required minlength="6" autocomplete="new-password">
+    <label for="set-password-confirm">Confirm password</label>
+    <input type="password" id="set-password-confirm" required minlength="6" autocomplete="new-password">
+    <button type="submit" class="btn-primary">Set password &amp; continue</button>
+  </form>
+
   <p id="auth-message" class="auth-message" aria-live="polite"></p>
 </main>
 

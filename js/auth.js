@@ -1,6 +1,8 @@
 const tabs = document.querySelectorAll(".auth-tab");
 const loginForm = document.getElementById("login-form");
 const requestForm = document.getElementById("request-form");
+const setPasswordForm = document.getElementById("set-password-form");
+const authTabsEl = document.querySelector(".auth-tabs");
 const message = document.getElementById("auth-message");
 
 tabs.forEach((tab) => {
@@ -19,9 +21,40 @@ function showMessage(text, isError) {
   message.className = "auth-message " + (isError ? "is-error" : "is-ok");
 }
 
-// If already logged in, skip straight to the dashboard
-supabaseClient.auth.getSession().then(({ data }) => {
-  if (data.session) window.location.href = "dashboard.html";
+// An invite (or password-reset) link lands here with type=invite / type=recovery
+// in the URL hash. supabase-js automatically reads that and establishes a
+// session — but the person still needs to actually choose a password before
+// they can log in normally next time. Catch that case before doing anything else.
+const hashParams = new URLSearchParams(window.location.hash.replace("#", "?"));
+const isInviteOrRecovery = hashParams.get("type") === "invite" || hashParams.get("type") === "recovery";
+
+if (isInviteOrRecovery) {
+  authTabsEl.hidden = true;
+  loginForm.hidden = true;
+  requestForm.hidden = true;
+  setPasswordForm.hidden = false;
+} else {
+  // Normal visit: if already logged in, skip straight to the dashboard
+  supabaseClient.auth.getSession().then(({ data }) => {
+    if (data.session) window.location.href = "dashboard.html";
+  });
+}
+
+setPasswordForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const password = document.getElementById("set-password").value;
+  const confirm = document.getElementById("set-password-confirm").value;
+  if (password !== confirm) {
+    showMessage("Passwords don't match.", true);
+    return;
+  }
+  showMessage("Saving…", false);
+  const { error } = await supabaseClient.auth.updateUser({ password });
+  if (error) {
+    showMessage(error.message, true);
+    return;
+  }
+  window.location.href = "dashboard.html";
 });
 
 loginForm.addEventListener("submit", async (e) => {
