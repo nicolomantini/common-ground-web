@@ -100,12 +100,24 @@ function matches(c) {
 
 function sortList(list) {
   const copy = [...list];
-  if (state.sort === "name") {
-    copy.sort((a, b) => a.name.localeCompare(b.name));
-  } else if (state.sort === "availability") {
-    const rank = { "Accepting new clients": 0, "1 opening this month": 1, "Waitlist": 2 };
-    copy.sort((a, b) => (rank[a.availability] ?? 3) - (rank[b.availability] ?? 3));
-  }
+  const sortWithinGroup = (a, b) => {
+    if (state.sort === "name") {
+      return a.name.localeCompare(b.name);
+    }
+    if (state.sort === "availability") {
+      const rank = { "Accepting new clients": 0, "1 opening this month": 1, "Waitlist": 2 };
+      return (rank[a.availability] ?? 3) - (rank[b.availability] ?? 3);
+    }
+    return 0;
+  };
+  copy.sort((a, b) => {
+    // Real, signed-up counselors (user_id set) come before demo/admin-added
+    // profiles (user_id null), regardless of the chosen sort order.
+    const aReal = a.user_id ? 0 : 1;
+    const bReal = b.user_id ? 0 : 1;
+    if (aReal !== bReal) return aReal - bReal;
+    return sortWithinGroup(a, b);
+  });
   return copy;
 }
 
