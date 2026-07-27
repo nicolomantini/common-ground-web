@@ -60,7 +60,6 @@ function populateForm(p) {
   document.getElementById("f-pronouns").value = p.pronouns || "";
   document.getElementById("f-location").value = p.location || "";
   document.getElementById("f-bio").value = p.bio || "";
-  document.getElementById("f-focus").value = p.focus || "";
   document.getElementById("f-specialties").value = arrayToCsv(p.specialties);
   document.getElementById("f-approach").value = arrayToCsv(p.approach);
   document.getElementById("f-languages").value = arrayToCsv(p.languages);
@@ -68,6 +67,10 @@ function populateForm(p) {
   document.getElementById("f-price-range").value = p.price_range || "$";
   document.getElementById("f-availability").value = p.availability || "Accepting new clients";
   document.getElementById("f-website").value = p.website || "";
+  document.getElementById("f-whatsapp").value = p.whatsapp || "";
+  document.getElementById("f-instagram").value = p.instagram || "";
+  document.getElementById("f-facebook").value = p.facebook || "";
+  document.getElementById("f-linkedin").value = p.linkedin || "";
   document.querySelectorAll(".f-format").forEach((cb) => {
     cb.checked = (p.formats || []).includes(cb.value);
   });
@@ -112,7 +115,6 @@ form.addEventListener("submit", async (e) => {
       pronouns: document.getElementById("f-pronouns").value.trim(),
       location: document.getElementById("f-location").value.trim(),
       bio: document.getElementById("f-bio").value.trim(),
-      focus: document.getElementById("f-focus").value.trim(),
       specialties: csvToArray(document.getElementById("f-specialties").value),
       approach: csvToArray(document.getElementById("f-approach").value),
       languages: csvToArray(document.getElementById("f-languages").value),
@@ -121,6 +123,10 @@ form.addEventListener("submit", async (e) => {
       price_range: document.getElementById("f-price-range").value,
       availability: document.getElementById("f-availability").value,
       website: document.getElementById("f-website").value.trim() || null,
+      whatsapp: document.getElementById("f-whatsapp").value.replace(/\D/g, "") || null,
+      instagram: document.getElementById("f-instagram").value.trim() || null,
+      facebook: document.getElementById("f-facebook").value.trim() || null,
+      linkedin: document.getElementById("f-linkedin").value.trim() || null,
       photo: photoUrl
     };
 
