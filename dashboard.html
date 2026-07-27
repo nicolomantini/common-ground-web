@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your profile &mdash; WWP Counseling</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .dash-wrap { max-width: 640px; margin: 0 auto; padding: 48px 24px 96px; }
+  .dash-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 8px; }
+  .status-badge {
+    font-family: var(--font-mono); font-size: 0.78rem; padding: 5px 12px; border-radius: 999px;
+    background: var(--sand); color: var(--moss-deep); white-space: nowrap;
+  }
+  .status-badge.is-pending { background: #f0e6cf; color: #8a6b3f; }
+  .dash-form { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .field-group label { font-size: 0.85rem; font-weight: 600; }
+  .field-hint { font-size: 0.78rem; color: var(--ink-soft); margin: 0; }
+  .dash-form input, .dash-form select, .dash-form textarea {
+    font-family: var(--font-body); font-size: 0.95rem; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 8px; background: #fff;
+  }
+  .dash-form textarea { resize: vertical; }
+  .format-checks { display: flex; gap: 16px; flex-wrap: wrap; }
+  .format-checks label { font-weight: 500; display: flex; align-items: center; gap: 6px; }
+  .photo-row { display: flex; align-items: center; gap: 16px; }
+  .photo-preview {
+    width: 96px; height: 72px; border-radius: 8px; overflow: hidden; background: var(--sand);
+    flex: none; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;
+    color: var(--ink-soft); font-family: var(--font-mono);
+  }
+  .photo-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .dash-actions { display: flex; align-items: center; gap: 16px; margin-top: 8px; }
+  .btn-logout {
+    background: none; border: none; color: var(--ink-soft); text-decoration: underline;
+    cursor: pointer; font-family: var(--font-body); font-size: 0.85rem;
+  }
+  .dash-message { font-size: 0.85rem; min-height: 1.2em; }
+  .dash-message.is-error { color: #a13d3d; }
+  .dash-message.is-ok { color: var(--moss-deep); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="index.html" class="logo">WWP <span>Counseling</span></a>
+    <button type="button" class="btn-logout" id="logout-btn">Log out</button>
+  </div>
+</header>
+
+<main class="dash-wrap">
+  <div class="dash-head">
+    <div>
+      <h1>Your profile</h1>
+      <p>This is what visitors see when they browse counselors.</p>
+    </div>
+    <span id="status-badge" class="status-badge" hidden></span>
+  </div>
+
+  <form id="profile-form" class="dash-form">
+    <div class="field-group">
+      <label for="f-name">Full name</label>
+      <input type="text" id="f-name" required>
+    </div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label for="f-pronouns">Pronouns</label>
+        <input type="text" id="f-pronouns" placeholder="e.g. she/her">
+      </div>
+      <div class="field-group">
+        <label for="f-location">Location</label>
+        <input type="text" id="f-location" placeholder="e.g. Austin, TX">
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label for="f-photo">Photo</label>
+      <div class="photo-row">
+        <div class="photo-preview" id="photo-preview">No photo</div>
+        <input type="file" id="f-photo" accept="image/*">
+      </div>
+      <p class="field-hint">Square photos work best. Uploads replace your current photo.</p>
+    </div>
+
+    <div class="field-group">
+      <label for="f-bio">Short bio</label>
+      <textarea id="f-bio" rows="3" placeholder="A couple of warm, plain-language sentences shown on your card."></textarea>
+    </div>
+
+    <div class="field-group">
+      <label for="f-focus">What you focus on</label>
+      <textarea id="f-focus" rows="3" placeholder="Shown when someone expands your card."></textarea>
+    </div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label for="f-specialties">Specialties</label>
+        <input type="text" id="f-specialties" placeholder="Anxiety, Relationships">
+        <p class="field-hint">Comma-separated.</p>
+      </div>
+      <div class="field-group">
+        <label for="f-approach">Approach</label>
+        <input type="text" id="f-approach" placeholder="CBT, Person-centered">
+        <p class="field-hint">Comma-separated.</p>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label>Session formats</label>
+      <div class="format-checks">
+        <label><input type="checkbox" value="Video" class="f-format"> Video</label>
+        <label><input type="checkbox" value="In-person" class="f-format"> In-person</label>
+        <label><input type="checkbox" value="Phone" class="f-format"> Phone</label>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label for="f-languages">Languages</label>
+      <input type="text" id="f-languages" placeholder="English, Spanish">
+      <p class="field-hint">Comma-separated.</p>
+    </div>
+
+    <div class="field-row">
+      <div class="field-group">
+        <label for="f-session-length">Session length</label>
+        <input type="text" id="f-session-length" placeholder="50 min">
+      </div>
+      <div class="field-group">
+        <label for="f-price-range">Price range</label>
+        <select id="f-price-range">
+          <option value="$">$</option>
+          <option value="$$">$$</option>
+          <option value="$$$">$$$</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label for="f-availability">Availability</label>
+      <select id="f-availability">
+        <option value="Accepting new clients">Accepting new clients</option>
+        <option value="1 opening this month">1 opening this month</option>
+        <option value="Waitlist">Waitlist</option>
+      </select>
+    </div>
+
+    <div class="field-group">
+      <label for="f-website">Website (optional)</label>
+      <input type="url" id="f-website" placeholder="https://">
+    </div>
+
+    <div class="dash-actions">
+      <button type="submit" class="btn-primary" id="save-btn">Save profile</button>
+      <p id="dash-message" class="dash-message" aria-live="polite"></p>
+    </div>
+  </form>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/dashboard.js"></script>
+</body>
+</html>

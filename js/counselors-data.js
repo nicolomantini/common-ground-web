@@ -34,7 +34,6 @@ const COUNSELORS = [
     website: "https://dwaynefishertherapy.example.com",
     name: "Dwayne Fisher",
     credentials: "LCSW",
-    photo: "images/nico.jpg",
     pronouns: "he/him",
     location: "Colorado Springs, CO",
     specialties: ["Trauma", "Veterans"],

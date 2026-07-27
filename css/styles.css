@@ -82,6 +82,10 @@ a { color: var(--moss-deep); }
 .header-nav { display: flex; gap: 24px; }
 .header-nav a { color: var(--ink); text-decoration: none; font-size: 0.95rem; }
 .header-nav a:hover { color: var(--moss-deep); }
+.header-nav .nav-cta {
+  border: 1px solid var(--moss); border-radius: 999px; padding: 6px 14px; color: var(--moss-deep) !important;
+}
+.header-nav .nav-cta:hover { background: var(--moss); color: #fff !important; }
 
 /* ---------- Hero ---------- */
 .hero { padding: 72px 0 48px; }

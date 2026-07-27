@@ -31,14 +31,35 @@ const state = {
   sort: "name"
 };
 
-const allSpecialties = [...new Set(COUNSELORS.flatMap((c) => c.specialties))].sort();
-const allLanguages = [...new Set(COUNSELORS.flatMap((c) => c.languages))].sort();
+let COUNSELORS = [];
+let allSpecialties = [];
+let allLanguages = [];
 
 // ---- Rendering ----
 const grid = document.getElementById("counselor-grid");
 const emptyState = document.getElementById("empty-state");
 const resultCount = document.getElementById("result-count");
 const chipRow = document.getElementById("specialty-chips");
+
+// Fetches every APPROVED profile from Supabase. Row Level Security on the
+// `counselors` table means the anon key used here can only ever see rows
+// where approved = true — unapproved profiles are invisible to the public
+// site no matter what, even if this code changes.
+async function loadCounselors() {
+  const { data, error } = await supabaseClient
+    .from("counselors")
+    .select("*")
+    .eq("approved", true);
+
+  if (error) {
+    console.error("Failed to load counselors:", error);
+    grid.innerHTML = `<p class="empty-state">Couldn't load counselors right now. Please try again shortly.</p>`;
+    return;
+  }
+  COUNSELORS = data || [];
+  allSpecialties = [...new Set(COUNSELORS.flatMap((c) => c.specialties || []))].sort();
+  allLanguages = [...new Set(COUNSELORS.flatMap((c) => c.languages || []))].sort();
+}
 
 function buildLanguageOptions() {
   const select = document.getElementById("language-select");
@@ -63,16 +84,16 @@ function matches(c) {
   const matchesQuery =
     !q ||
     c.name.toLowerCase().includes(q) ||
-    c.location.toLowerCase().includes(q) ||
-    c.specialties.some((s) => s.toLowerCase().includes(q)) ||
-    c.approach.some((a) => a.toLowerCase().includes(q));
+    (c.location || "").toLowerCase().includes(q) ||
+    (c.specialties || []).some((s) => s.toLowerCase().includes(q)) ||
+    (c.approach || []).some((a) => a.toLowerCase().includes(q));
 
   const matchesSpecialty =
     state.specialties.size === 0 ||
-    c.specialties.some((s) => state.specialties.has(s));
+    (c.specialties || []).some((s) => state.specialties.has(s));
 
-  const matchesFormat = state.format === "any" || c.formats.includes(state.format);
-  const matchesLanguage = state.language === "any" || c.languages.includes(state.language);
+  const matchesFormat = state.format === "any" || (c.formats || []).includes(state.format);
+  const matchesLanguage = state.language === "any" || (c.languages || []).includes(state.language);
 
   return matchesQuery && matchesSpecialty && matchesFormat && matchesLanguage;
 }
@@ -94,25 +115,25 @@ function cardHTML(c) {
       <div class="mark">${avatarHTML(c)}</div>
       <div class="card-heading">
         <h3>${c.name}</h3>
-        <p class="credentials">${c.pronouns}</p>
+        <p class="credentials">${c.pronouns || ""}</p>
       </div>
-      <p class="tagline">${c.bio}</p>
+      <p class="tagline">${c.bio || ""}</p>
       <ul class="tag-list" aria-label="Specialties">
-        ${c.specialties.map((s) => `<li class="tag">${s}</li>`).join("")}
+        ${(c.specialties || []).map((s) => `<li class="tag">${s}</li>`).join("")}
       </ul>
       <div class="meta-row">
-        <span class="meta">${c.location}</span>
-        <span class="meta dot">${c.formats.join(" / ")}</span>
-        <span class="meta dot">${c.priceRange}</span>
-        <span class="meta availability ${availabilityClass(c.availability)}">${c.availability}</span>
+        <span class="meta">${c.location || ""}</span>
+        <span class="meta dot">${(c.formats || []).join(" / ")}</span>
+        <span class="meta dot">${c.price_range || ""}</span>
+        <span class="meta availability ${availabilityClass(c.availability)}">${c.availability || ""}</span>
       </div>
       <p class="card-toggle" aria-hidden="true">Show more <span class="chev">&#8964;</span></p>
       <div class="card-detail" hidden>
-        <p>${c.focus}</p>
+        <p>${c.focus || ""}</p>
         <dl>
-          <dt>Approach</dt><dd>${c.approach.join(", ")}</dd>
-          <dt>Languages</dt><dd>${c.languages.join(", ")}</dd>
-          <dt>Session length</dt><dd>${c.sessionLength}</dd>
+          <dt>Approach</dt><dd>${(c.approach || []).join(", ")}</dd>
+          <dt>Languages</dt><dd>${(c.languages || []).join(", ")}</dd>
+          <dt>Session length</dt><dd>${c.session_length || ""}</dd>
         </dl>
         <div class="detail-actions">
           <button type="button" class="btn-book" data-book="${c.id}">Request a session with ${c.name.split(" ")[0]}</button>
@@ -245,7 +266,12 @@ document.getElementById("scroll-to-directory").addEventListener("click", () => {
 });
 
 // ---- Init ----
-buildChips();
-buildLanguageOptions();
-populateBookingSelect();
-render();
+async function init() {
+  resultCount.textContent = "Loading…";
+  await loadCounselors();
+  buildChips();
+  buildLanguageOptions();
+  populateBookingSelect();
+  render();
+}
+init();
