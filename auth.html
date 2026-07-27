@@ -21,10 +21,11 @@
   .auth-form[hidden] { display: none; }
   .auth-form[hidden] { display: none; }
   .auth-form label { font-size: 0.85rem; font-weight: 600; }
-  .auth-form input {
+  .auth-form input, .auth-form textarea {
     font-family: var(--font-body); font-size: 0.95rem; padding: 10px 12px;
     border: 1px solid var(--line); border-radius: 8px;
   }
+  .auth-form textarea { resize: vertical; }
   .auth-message { font-size: 0.85rem; margin-top: 10px; min-height: 1.2em; }
   .auth-message.is-error { color: #a13d3d; }
   .auth-message.is-ok { color: var(--moss-deep); }
@@ -42,11 +43,11 @@
 <main class="auth-wrap">
   <a class="back-link" href="index.html">&larr; Back to directory</a>
   <h1>Counselor access</h1>
-  <p>Log in to edit your profile, or sign up to create one.</p>
+  <p>Log in if you already have an account, or request access to join.</p>
 
   <div class="auth-tabs">
     <button type="button" class="auth-tab is-active" data-tab="login">Log in</button>
-    <button type="button" class="auth-tab" data-tab="signup">Sign up</button>
+    <button type="button" class="auth-tab" data-tab="request">Request access</button>
   </div>
 
   <form id="login-form" class="auth-form">
@@ -57,12 +58,18 @@
     <button type="submit" class="btn-primary">Log in</button>
   </form>
 
-  <form id="signup-form" class="auth-form" hidden>
-    <label for="signup-email">Email</label>
-    <input type="email" id="signup-email" required autocomplete="email">
-    <label for="signup-password">Password</label>
-    <input type="password" id="signup-password" required autocomplete="new-password" minlength="6">
-    <button type="submit" class="btn-primary">Create account</button>
+  <form id="request-form" class="auth-form" hidden>
+    <p class="field-hint" style="margin-bottom: 4px;">
+      Fill this in and we'll review your request. Once approved, you'll get an email
+      with a link to set a password and log in.
+    </p>
+    <label for="request-name">Your name</label>
+    <input type="text" id="request-name" required autocomplete="name">
+    <label for="request-email">Email</label>
+    <input type="email" id="request-email" required autocomplete="email">
+    <label for="request-message">Anything you'd like us to know (optional)</label>
+    <textarea id="request-message" rows="3"></textarea>
+    <button type="submit" class="btn-primary">Send request</button>
   </form>
 
   <p id="auth-message" class="auth-message" aria-live="polite"></p>

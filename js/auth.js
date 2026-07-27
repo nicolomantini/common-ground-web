@@ -1,6 +1,6 @@
 const tabs = document.querySelectorAll(".auth-tab");
 const loginForm = document.getElementById("login-form");
-const signupForm = document.getElementById("signup-form");
+const requestForm = document.getElementById("request-form");
 const message = document.getElementById("auth-message");
 
 tabs.forEach((tab) => {
@@ -9,7 +9,7 @@ tabs.forEach((tab) => {
     tab.classList.add("is-active");
     const isLogin = tab.dataset.tab === "login";
     loginForm.hidden = !isLogin;
-    signupForm.hidden = isLogin;
+    requestForm.hidden = isLogin;
     message.textContent = "";
   });
 });
@@ -37,18 +37,21 @@ loginForm.addEventListener("submit", async (e) => {
   window.location.href = "dashboard.html";
 });
 
-signupForm.addEventListener("submit", async (e) => {
+requestForm.addEventListener("submit", async (e) => {
   e.preventDefault();
-  const email = document.getElementById("signup-email").value.trim();
-  const password = document.getElementById("signup-password").value;
-  showMessage("Creating your account…", false);
-  const { error } = await supabaseClient.auth.signUp({ email, password });
+  const name = document.getElementById("request-name").value.trim();
+  const email = document.getElementById("request-email").value.trim();
+  const msg = document.getElementById("request-message").value.trim();
+  showMessage("Sending…", false);
+
+  const { error } = await supabaseClient
+    .from("signup_requests")
+    .insert({ name, email, message: msg || null });
+
   if (error) {
     showMessage(error.message, true);
     return;
   }
-  showMessage(
-    "Account created. If email confirmation is enabled on this project, check your inbox before logging in — otherwise you can log in right away.",
-    false
-  );
+  requestForm.reset();
+  showMessage("Thanks! We'll review your request and email you once you're approved.", false);
 });
