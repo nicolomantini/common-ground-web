@@ -148,6 +148,35 @@ function sortList(list) {
   return copy;
 }
 
+const SOCIAL_ICONS = {
+  website: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg>`,
+  instagram: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>`,
+  facebook: `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15 3h-2.5C10 3 8.5 4.6 8.5 7.2V10H6v3.5h2.5V21h3.6v-7.5H15L15.5 10h-3.4V7.5c0-.9.4-1.5 1.6-1.5H15V3z"/></svg>`,
+  linkedin: `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="9" width="3.5" height="12"/><circle cx="4.75" cy="4.75" r="2"/><path d="M10 9h3.4v1.7c.6-1 1.9-2 3.9-2 3 0 4.7 2 4.7 5.6V21h-3.5v-6.1c0-1.6-.6-2.7-2.1-2.7-1.1 0-1.8.8-2.1 1.5-.1.3-.1.6-.1 1V21H10V9z"/></svg>`
+};
+
+const SOCIAL_LABELS = { website: "Website", instagram: "Instagram", facebook: "Facebook", linkedin: "LinkedIn" };
+
+function connectLinksHTML(c) {
+  const platforms = ["website", "instagram", "facebook", "linkedin"];
+  const links = platforms.filter((p) => c[p]);
+  if (links.length === 0) return "";
+  return `
+    <div class="connect-block">
+      <span class="connect-label">Find them online</span>
+      <div class="connect-icons">
+        ${links
+          .map(
+            (p) => `
+          <a class="connect-icon" href="${c[p]}" target="_blank" rel="noopener noreferrer" aria-label="${c.name} on ${SOCIAL_LABELS[p]}" title="${SOCIAL_LABELS[p]}">
+            ${SOCIAL_ICONS[p]}
+          </a>`
+          )
+          .join("")}
+      </div>
+    </div>`;
+}
+
 function reviewSummaryHTML(c) {
   const r = REVIEWS_BY_COUNSELOR[c.id];
   if (!r || r.count === 0) return "";
@@ -192,18 +221,17 @@ function cardHTML(c) {
         <span class="meta availability ${availabilityClass(c.availability)}">${c.availability || ""}</span>
         ${reviewSummaryHTML(c)}
       </div>
+      <div class="detail-actions">
+        <button type="button" class="btn-book" data-book="${c.id}">Request a session with ${c.name.split(" ")[0]}</button>
+      </div>
       <p class="card-toggle" aria-hidden="true">Show more <span class="chev">&#8964;</span></p>
       <div class="card-detail" hidden>
-        <p>${c.focus || ""}</p>
         <dl>
           <dt>Approach</dt><dd>${(c.approach || []).join(", ")}</dd>
           <dt>Languages</dt><dd>${(c.languages || []).join(", ")}</dd>
           <dt>Session length</dt><dd>${c.session_length || ""}</dd>
         </dl>
-        <div class="detail-actions">
-          <button type="button" class="btn-book" data-book="${c.id}">Request a session with ${c.name.split(" ")[0]}</button>
-          ${c.website ? `<a class="btn-link" href="${c.website}" target="_blank" rel="noopener noreferrer">Visit website ↗</a>` : ""}
-        </div>
+        ${connectLinksHTML(c)}
         ${reviewsDetailHTML(c)}
       </div>
     </article>`;

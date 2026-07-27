@@ -177,12 +177,14 @@ a { color: var(--moss-deep); }
 .card > .tagline,
 .card > .tag-list,
 .card > .meta-row,
+.card > .detail-actions,
 .card > .card-toggle,
 .card > .card-detail {
   padding-left: 22px;
   padding-right: 22px;
 }
 .card > .card-heading { padding-top: 18px; }
+.card > .detail-actions { margin-top: 14px; }
 .card > .card-detail { padding-bottom: 22px; }
 .card > .card-toggle { padding-bottom: 22px; }
 
@@ -245,6 +247,19 @@ a { color: var(--moss-deep); }
   border-bottom: 1px solid transparent; transition: border-color 0.15s ease;
 }
 .btn-link:hover { border-color: var(--dusk); }
+
+.connect-block { margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
+.connect-label {
+  display: block; font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--moss-light); margin-bottom: 10px;
+}
+.connect-icons { display: flex; gap: 10px; }
+.connect-icon {
+  display: flex; align-items: center; justify-content: center; width: 38px; height: 38px;
+  border-radius: 50%; background: var(--sand); color: var(--moss-deep);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+.connect-icon:hover { background: var(--moss); color: #fff; transform: translateY(-2px); }
 .back-link { display: inline-block; margin-bottom: 16px; font-size: 0.9rem; }
 
 .consent-banner {
