@@ -214,6 +214,15 @@ a { color: var(--moss-deep); }
 .card-toggle .chev { display: inline-block; transition: transform 0.15s ease; }
 .card[aria-expanded="true"] .card-toggle .chev { transform: rotate(180deg); }
 
+.rating-badge { color: var(--moss-deep); font-weight: 600; }
+
+.reviews-block { margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--line); }
+.reviews-block h4 { font-size: 0.9rem; margin: 0 0 10px; }
+.review-item { margin-bottom: 12px; }
+.review-stars { color: var(--moss); font-size: 0.85rem; letter-spacing: 1px; }
+.review-comment { font-size: 0.88rem; margin: 4px 0 2px; }
+.review-author { font-size: 0.78rem; color: var(--ink-soft); }
+
 .card-detail {
   margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line);
   animation: fadeIn 0.2s ease;
@@ -236,6 +245,18 @@ a { color: var(--moss-deep); }
   border-bottom: 1px solid transparent; transition: border-color 0.15s ease;
 }
 .btn-link:hover { border-color: var(--dusk); }
+.back-link { display: inline-block; margin-bottom: 16px; font-size: 0.9rem; }
+
+.consent-banner {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
+  background: var(--moss-deep); color: #fff; padding: 16px 24px;
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
+}
+.consent-banner p { color: #cfe0d3; margin: 0; font-size: 0.88rem; max-width: 60ch; }
+.consent-banner a { color: #fff; text-decoration: underline; }
+.consent-actions { display: flex; gap: 12px; flex: none; }
+.consent-banner .btn-text { color: #cfe0d3; }
+.consent-banner .btn-primary { padding: 8px 18px; font-size: 0.85rem; }
 
 .empty-state { text-align: center; padding: 40px 0; font-style: italic; }
 

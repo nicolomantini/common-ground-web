@@ -34,12 +34,39 @@ const state = {
 let COUNSELORS = [];
 let allSpecialties = [];
 let allLanguages = [];
+let REVIEWS_BY_COUNSELOR = {}; // counselor_id -> { avg, count, items: [...] }
 
 // ---- Rendering ----
 const grid = document.getElementById("counselor-grid");
 const emptyState = document.getElementById("empty-state");
 const resultCount = document.getElementById("result-count");
 const chipRow = document.getElementById("specialty-chips");
+
+async function loadReviews() {
+  const { data, error } = await supabaseClient
+    .from("reviews")
+    .select("*")
+    .eq("approved", true)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to load reviews:", error);
+    return;
+  }
+  REVIEWS_BY_COUNSELOR = {};
+  (data || []).forEach((r) => {
+    if (!REVIEWS_BY_COUNSELOR[r.counselor_id]) {
+      REVIEWS_BY_COUNSELOR[r.counselor_id] = { total: 0, count: 0, items: [] };
+    }
+    const entry = REVIEWS_BY_COUNSELOR[r.counselor_id];
+    entry.total += r.rating;
+    entry.count += 1;
+    entry.items.push(r);
+  });
+  Object.values(REVIEWS_BY_COUNSELOR).forEach((entry) => {
+    entry.avg = Math.round((entry.total / entry.count) * 10) / 10;
+  });
+}
 
 // Fetches every APPROVED profile from Supabase. Row Level Security on the
 // `counselors` table means the anon key used here can only ever see rows
@@ -121,6 +148,31 @@ function sortList(list) {
   return copy;
 }
 
+function reviewSummaryHTML(c) {
+  const r = REVIEWS_BY_COUNSELOR[c.id];
+  if (!r || r.count === 0) return "";
+  return `<span class="meta dot rating-badge">&#9733; ${r.avg} (${r.count})</span>`;
+}
+
+function reviewsDetailHTML(c) {
+  const r = REVIEWS_BY_COUNSELOR[c.id];
+  const items = r ? r.items.slice(0, 3) : [];
+  const reviewsHTML = items.length
+    ? items.map((rv) => `
+        <div class="review-item">
+          <span class="review-stars">${"★".repeat(rv.rating)}${"☆".repeat(5 - rv.rating)}</span>
+          <p class="review-comment">${rv.comment ? rv.comment : ""}</p>
+          <span class="review-author">&mdash; ${rv.name}</span>
+        </div>`).join("")
+    : `<p class="field-hint">No reviews yet.</p>`;
+  return `
+    <div class="reviews-block">
+      <h4>Reviews</h4>
+      ${reviewsHTML}
+      <a class="btn-link" href="review.html?counselor=${encodeURIComponent(c.id)}&name=${encodeURIComponent(c.name)}">Leave a review</a>
+    </div>`;
+}
+
 function cardHTML(c) {
   return `
     <article class="card" data-id="${c.id}" tabindex="0" aria-expanded="false">
@@ -138,6 +190,7 @@ function cardHTML(c) {
         <span class="meta dot">${(c.formats || []).join(" / ")}</span>
         <span class="meta dot">${c.price_range || ""}</span>
         <span class="meta availability ${availabilityClass(c.availability)}">${c.availability || ""}</span>
+        ${reviewSummaryHTML(c)}
       </div>
       <p class="card-toggle" aria-hidden="true">Show more <span class="chev">&#8964;</span></p>
       <div class="card-detail" hidden>
@@ -151,6 +204,7 @@ function cardHTML(c) {
           <button type="button" class="btn-book" data-book="${c.id}">Request a session with ${c.name.split(" ")[0]}</button>
           ${c.website ? `<a class="btn-link" href="${c.website}" target="_blank" rel="noopener noreferrer">Visit website ↗</a>` : ""}
         </div>
+        ${reviewsDetailHTML(c)}
       </div>
     </article>`;
 }
@@ -294,7 +348,7 @@ headerNav.querySelectorAll("a").forEach((link) => {
 // ---- Init ----
 async function init() {
   resultCount.textContent = "Loading…";
-  await loadCounselors();
+  await Promise.all([loadCounselors(), loadReviews()]);
   buildChips();
   buildLanguageOptions();
   populateBookingSelect();

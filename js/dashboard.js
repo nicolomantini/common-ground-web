@@ -156,4 +156,39 @@ document.getElementById("logout-btn").addEventListener("click", async () => {
   window.location.href = "auth.html";
 });
 
+document.getElementById("password-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const passwordMessage = document.getElementById("password-message");
+  const newPassword = document.getElementById("new-password").value;
+  passwordMessage.textContent = "Updating…";
+  passwordMessage.className = "dash-message";
+  const { error } = await supabaseClient.auth.updateUser({ password: newPassword });
+  if (error) {
+    passwordMessage.textContent = error.message;
+    passwordMessage.className = "dash-message is-error";
+    return;
+  }
+  document.getElementById("new-password").value = "";
+  passwordMessage.textContent = "Password updated.";
+  passwordMessage.className = "dash-message is-ok";
+});
+
+document.getElementById("delete-profile-btn").addEventListener("click", async () => {
+  if (!existingProfile) {
+    showMessage("You don't have a profile to delete yet.", true);
+    return;
+  }
+  const confirmed = window.confirm(
+    "Delete your profile? This can't be undone — your listing will be removed from the site immediately."
+  );
+  if (!confirmed) return;
+
+  const { error } = await supabaseClient.from("counselors").delete().eq("id", existingProfile.id);
+  if (error) {
+    showMessage("Couldn't delete your profile: " + error.message, true);
+    return;
+  }
+  window.location.href = "index.html";
+});
+
 init();

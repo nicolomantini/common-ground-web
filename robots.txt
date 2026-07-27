@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard.html
+
+# Replace with your real domain
+Sitemap: https://YOUR-DOMAIN-HERE/sitemap.xml

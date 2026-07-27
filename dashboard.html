@@ -43,6 +43,16 @@
   .dash-message { font-size: 0.85rem; min-height: 1.2em; }
   .dash-message.is-error { color: #a13d3d; }
   .dash-message.is-ok { color: var(--moss-deep); }
+
+  .dash-subsection { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--line); }
+  .dash-subsection h2 { font-size: 1.15rem; margin-bottom: 12px; }
+  .dash-danger { }
+  .btn-delete {
+    background: none; border: 1px solid #a13d3d; color: #a13d3d; border-radius: 999px;
+    padding: 9px 18px; font-family: var(--font-body); font-weight: 600; font-size: 0.88rem;
+    cursor: pointer; margin-top: 8px;
+  }
+  .btn-delete:hover { background: #a13d3d; color: #fff; }
 </style>
 </head>
 <body>
@@ -161,6 +171,26 @@
       <p id="dash-message" class="dash-message" aria-live="polite"></p>
     </div>
   </form>
+
+  <section class="dash-subsection">
+    <h2>Change password</h2>
+    <form id="password-form" class="dash-form">
+      <div class="field-group">
+        <label for="new-password">New password</label>
+        <input type="password" id="new-password" required minlength="6" autocomplete="new-password">
+      </div>
+      <div class="dash-actions">
+        <button type="submit" class="btn-primary">Update password</button>
+        <p id="password-message" class="dash-message" aria-live="polite"></p>
+      </div>
+    </form>
+  </section>
+
+  <section class="dash-subsection dash-danger">
+    <h2>Delete my profile</h2>
+    <p class="field-hint">This permanently removes your profile from the site. Your login stays active, but you'd need to create a new profile to appear on the site again.</p>
+    <button type="button" class="btn-delete" id="delete-profile-btn">Delete my profile</button>
+  </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
