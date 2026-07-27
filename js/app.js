@@ -265,6 +265,20 @@ document.getElementById("scroll-to-directory").addEventListener("click", () => {
   document.getElementById("directory").scrollIntoView({ behavior: "smooth", block: "start" });
 });
 
+// ---- Mobile nav toggle ----
+const navToggle = document.getElementById("nav-toggle");
+const headerNav = document.getElementById("header-nav");
+navToggle.addEventListener("click", () => {
+  const isOpen = headerNav.classList.toggle("is-open");
+  navToggle.setAttribute("aria-expanded", String(isOpen));
+});
+headerNav.querySelectorAll("a").forEach((link) => {
+  link.addEventListener("click", () => {
+    headerNav.classList.remove("is-open");
+    navToggle.setAttribute("aria-expanded", "false");
+  });
+});
+
 // ---- Init ----
 async function init() {
   resultCount.textContent = "Loading…";

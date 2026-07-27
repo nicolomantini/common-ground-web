@@ -42,12 +42,17 @@ create trigger trg_counselors_updated_at
   for each row execute function public.set_updated_at();
 
 -- A counselor can edit their own row, but can never approve themselves —
--- this trigger silently keeps `approved` at whatever it already was in the
--- database, no matter what value is sent in from the edit form.
+-- this trigger keeps `approved` at whatever it already was in the database
+-- whenever a normal logged-in counselor session makes the update. Changes
+-- made via Table Editor, SQL Editor, or the service_role key run as a
+-- different Postgres role and are unaffected, so you can still approve
+-- profiles yourself.
 create or replace function public.prevent_self_approval()
 returns trigger as $$
 begin
-  new.approved = old.approved;
+  if current_setting('role', true) = 'authenticated' then
+    new.approved = old.approved;
+  end if;
   return new;
 end;
 $$ language plpgsql;
@@ -60,10 +65,12 @@ create trigger trg_prevent_self_approval
 -- ---------- Row Level Security ----------
 alter table public.counselors enable row level security;
 
--- Visitors (anonymous, using the public anon key) can only see approved profiles
+-- Visitors can see approved profiles — this applies whether they're
+-- logged in (e.g. a counselor browsing the public directory) or not,
+-- which is why it's scoped `to public` rather than `to anon` only.
 create policy "Public can view approved profiles"
   on public.counselors for select
-  to anon
+  to public
   using (approved = true);
 
 -- A logged-in counselor can always see their own profile, approved or not
