@@ -43,6 +43,16 @@
   .dash-message { font-size: 0.85rem; min-height: 1.2em; }
   .dash-message.is-error { color: #a13d3d; }
   .dash-message.is-ok { color: var(--moss-deep); }
+
+  .dash-subsection { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--line); }
+  .dash-subsection h2 { font-size: 1.15rem; margin-bottom: 12px; }
+  .dash-danger { }
+  .btn-delete {
+    background: none; border: 1px solid #a13d3d; color: #a13d3d; border-radius: 999px;
+    padding: 9px 18px; font-family: var(--font-body); font-weight: 600; font-size: 0.88rem;
+    cursor: pointer; margin-top: 8px;
+  }
+  .btn-delete:hover { background: #a13d3d; color: #fff; }
 </style>
 </head>
 <body>
@@ -50,6 +60,7 @@
 <header class="site-header">
   <div class="wrap header-row">
     <a href="index.html" class="logo">WWP <span>Counseling</span></a>
+    <a href="feedback.html" class="btn-logout" style="text-decoration: none; margin-right: 4px;">Feedback</a>
     <button type="button" class="btn-logout" id="logout-btn">Log out</button>
   </div>
 </header>
@@ -92,11 +103,6 @@
     <div class="field-group">
       <label for="f-bio">Short bio</label>
       <textarea id="f-bio" rows="3" placeholder="A couple of warm, plain-language sentences shown on your card."></textarea>
-    </div>
-
-    <div class="field-group">
-      <label for="f-focus">What you focus on</label>
-      <textarea id="f-focus" rows="3" placeholder="Shown when someone expands your card."></textarea>
     </div>
 
     <div class="field-row">
@@ -156,11 +162,60 @@
       <input type="url" id="f-website" placeholder="https://">
     </div>
 
+    <div class="field-group">
+      <label for="f-whatsapp">WhatsApp number (optional)</label>
+      <input type="tel" id="f-whatsapp" placeholder="e.g. 31612345678">
+      <p class="field-hint">Country code + number, digits only, no spaces or +. Adds a "Message on WhatsApp" button to your card.</p>
+    </div>
+
+    <div class="field-group">
+      <label>Social links (optional)</label>
+      <div class="field-row">
+        <input type="url" id="f-instagram" placeholder="Instagram URL">
+        <input type="url" id="f-facebook" placeholder="Facebook URL">
+      </div>
+      <input type="url" id="f-linkedin" placeholder="LinkedIn URL">
+    </div>
+
     <div class="dash-actions">
       <button type="submit" class="btn-primary" id="save-btn">Save profile</button>
       <p id="dash-message" class="dash-message" aria-live="polite"></p>
     </div>
   </form>
+
+  <section class="dash-subsection">
+    <h2>Change password</h2>
+    <form id="password-form" class="dash-form">
+      <div class="field-group">
+        <label for="new-password">New password</label>
+        <input type="password" id="new-password" required minlength="6" autocomplete="new-password">
+      </div>
+      <div class="dash-actions">
+        <button type="submit" class="btn-primary">Update password</button>
+        <p id="password-message" class="dash-message" aria-live="polite"></p>
+      </div>
+    </form>
+  </section>
+
+  <section class="dash-subsection">
+    <h2>Report an issue privately</h2>
+    <p class="field-hint">Something not working, confusing, or missing? This goes straight to us, not published anywhere. (Looking for the shared board where counselors can see each other's feedback? That's the <a href="feedback.html">Feedback</a> link up top.)</p>
+    <form id="private-feedback-form" class="dash-form">
+      <div class="field-group">
+        <textarea id="private-feedback-message" rows="4" required placeholder="What's on your mind?"></textarea>
+      </div>
+      <div class="dash-actions">
+        <button type="submit" class="btn-primary">Send privately</button>
+        <p id="private-feedback-status" class="dash-message" aria-live="polite"></p>
+      </div>
+    </form>
+  </section>
+
+  <section class="dash-subsection dash-danger">
+    <h2>Delete my profile</h2>
+    <p class="field-hint">This permanently removes your profile from the site. Your login stays active, but you'd need to create a new profile to appear on the site again.</p>
+    <button type="button" class="btn-delete" id="delete-profile-btn">Delete my profile</button>
+  </section>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

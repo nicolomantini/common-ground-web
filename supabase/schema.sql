@@ -22,6 +22,10 @@ create table if not exists public.counselors (
   bio text,
   focus text,
   website text,
+  whatsapp text,
+  instagram text,
+  facebook text,
+  linkedin text,
   approved boolean not null default false,     -- you flip this on to publish a profile
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

@@ -70,6 +70,23 @@ loginForm.addEventListener("submit", async (e) => {
   window.location.href = "dashboard.html";
 });
 
+document.getElementById("forgot-password-link").addEventListener("click", async () => {
+  const email = document.getElementById("login-email").value.trim();
+  if (!email) {
+    showMessage("Enter your email above first, then click 'Forgot your password?' again.", true);
+    return;
+  }
+  showMessage("Sending a reset link…", false);
+  const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: window.location.origin + "/auth.html"
+  });
+  if (error) {
+    showMessage(error.message, true);
+    return;
+  }
+  showMessage("If that email has an account, a reset link is on its way.", false);
+});
+
 requestForm.addEventListener("submit", async (e) => {
   e.preventDefault();
   const name = document.getElementById("request-name").value.trim();

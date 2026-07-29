@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leave a review &mdash; WWP Counseling</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .review-wrap { max-width: 480px; margin: 0 auto; padding: 56px 24px 96px; }
+  .review-form { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+  .review-form label { font-size: 0.85rem; font-weight: 600; }
+  .review-form input, .review-form textarea {
+    font-family: var(--font-body); font-size: 0.95rem; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 8px;
+  }
+  .review-form textarea { resize: vertical; }
+  .star-picker { display: flex; gap: 6px; font-size: 1.8rem; }
+  .star-picker button {
+    background: none; border: none; cursor: pointer; padding: 0; color: var(--line); line-height: 1;
+  }
+  .star-picker button.is-selected { color: var(--moss); }
+  .review-message { font-size: 0.85rem; min-height: 1.2em; }
+  .review-message.is-error { color: #a13d3d; }
+  .review-message.is-ok { color: var(--moss-deep); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="index.html" class="logo">WWP <span>Counseling</span></a>
+  </div>
+</header>
+
+<main class="review-wrap">
+  <a class="back-link" href="index.html">&larr; Back to directory</a>
+  <h1>Leave a review</h1>
+  <p id="for-counselor">Share your experience.</p>
+
+  <form id="review-form" class="review-form">
+    <label>Rating</label>
+    <div class="star-picker" id="star-picker">
+      <button type="button" data-value="1">★</button>
+      <button type="button" data-value="2">★</button>
+      <button type="button" data-value="3">★</button>
+      <button type="button" data-value="4">★</button>
+      <button type="button" data-value="5">★</button>
+    </div>
+
+    <label for="reviewer-name">Your name</label>
+    <input type="text" id="reviewer-name" required>
+
+    <label for="review-comment">Your review</label>
+    <textarea id="review-comment" rows="4" placeholder="What was your experience like?"></textarea>
+
+    <button type="submit" class="btn-primary">Submit review</button>
+    <p id="review-message" class="review-message" aria-live="polite"></p>
+  </form>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-row">
+    <p>&copy; 2026 WWP Counseling. Not a substitute for emergency care.</p>
+    <a href="index.html">Back to directory</a>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const counselorId = params.get("counselor");
+  const counselorName = params.get("name");
+  if (counselorName) {
+    document.getElementById("for-counselor").textContent = `Share your experience with ${decodeURIComponent(counselorName)}.`;
+  }
+
+  let selectedRating = 0;
+  const stars = document.querySelectorAll("#star-picker button");
+  stars.forEach((star) => {
+    star.addEventListener("click", () => {
+      selectedRating = Number(star.dataset.value);
+      stars.forEach((s) => s.classList.toggle("is-selected", Number(s.dataset.value) <= selectedRating));
+    });
+  });
+
+  document.getElementById("review-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const message = document.getElementById("review-message");
+    if (!counselorId) {
+      message.textContent = "Missing counselor reference — please go back and click 'Leave a review' from their profile.";
+      message.className = "review-message is-error";
+      return;
+    }
+    if (selectedRating === 0) {
+      message.textContent = "Please select a star rating.";
+      message.className = "review-message is-error";
+      return;
+    }
+    message.textContent = "Submitting…";
+    message.className = "review-message";
+
+    const { error } = await supabaseClient.from("reviews").insert({
+      counselor_id: counselorId,
+      name: document.getElementById("reviewer-name").value.trim(),
+      rating: selectedRating,
+      comment: document.getElementById("review-comment").value.trim() || null
+    });
+
+    if (error) {
+      message.textContent = error.message;
+      message.className = "review-message is-error";
+      return;
+    }
+    document.getElementById("review-form").innerHTML = "<p>Thanks for sharing! Your review will appear once it's been reviewed.</p>";
+  });
+</script>
+<script src="js/analytics.js"></script>
+</body>
+</html>

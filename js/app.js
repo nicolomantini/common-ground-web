@@ -34,12 +34,39 @@ const state = {
 let COUNSELORS = [];
 let allSpecialties = [];
 let allLanguages = [];
+let REVIEWS_BY_COUNSELOR = {}; // counselor_id -> { avg, count, items: [...] }
 
 // ---- Rendering ----
 const grid = document.getElementById("counselor-grid");
 const emptyState = document.getElementById("empty-state");
 const resultCount = document.getElementById("result-count");
 const chipRow = document.getElementById("specialty-chips");
+
+async function loadReviews() {
+  const { data, error } = await supabaseClient
+    .from("reviews")
+    .select("*")
+    .eq("approved", true)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.error("Failed to load reviews:", error);
+    return;
+  }
+  REVIEWS_BY_COUNSELOR = {};
+  (data || []).forEach((r) => {
+    if (!REVIEWS_BY_COUNSELOR[r.counselor_id]) {
+      REVIEWS_BY_COUNSELOR[r.counselor_id] = { total: 0, count: 0, items: [] };
+    }
+    const entry = REVIEWS_BY_COUNSELOR[r.counselor_id];
+    entry.total += r.rating;
+    entry.count += 1;
+    entry.items.push(r);
+  });
+  Object.values(REVIEWS_BY_COUNSELOR).forEach((entry) => {
+    entry.avg = Math.round((entry.total / entry.count) * 10) / 10;
+  });
+}
 
 // Fetches every APPROVED profile from Supabase. Row Level Security on the
 // `counselors` table means the anon key used here can only ever see rows
@@ -121,6 +148,60 @@ function sortList(list) {
   return copy;
 }
 
+const SOCIAL_ICONS = {
+  website: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.7 3.8 6 3.8 9s-1.3 6.3-3.8 9c-2.5-2.7-3.8-6-3.8-9s1.3-6.3 3.8-9z"/></svg>`,
+  instagram: `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="1"/></svg>`,
+  facebook: `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M15 3h-2.5C10 3 8.5 4.6 8.5 7.2V10H6v3.5h2.5V21h3.6v-7.5H15L15.5 10h-3.4V7.5c0-.9.4-1.5 1.6-1.5H15V3z"/></svg>`,
+  linkedin: `<svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><rect x="3" y="9" width="3.5" height="12"/><circle cx="4.75" cy="4.75" r="2"/><path d="M10 9h3.4v1.7c.6-1 1.9-2 3.9-2 3 0 4.7 2 4.7 5.6V21h-3.5v-6.1c0-1.6-.6-2.7-2.1-2.7-1.1 0-1.8.8-2.1 1.5-.1.3-.1.6-.1 1V21H10V9z"/></svg>`
+};
+
+const SOCIAL_LABELS = { website: "Website", instagram: "Instagram", facebook: "Facebook", linkedin: "LinkedIn" };
+
+function connectLinksHTML(c) {
+  const platforms = ["website", "instagram", "facebook", "linkedin"];
+  const links = platforms.filter((p) => c[p]);
+  if (links.length === 0) return "";
+  return `
+    <div class="connect-block">
+      <span class="connect-label">Find them online</span>
+      <div class="connect-icons">
+        ${links
+          .map(
+            (p) => `
+          <a class="connect-icon" href="${c[p]}" target="_blank" rel="noopener noreferrer" aria-label="${c.name} on ${SOCIAL_LABELS[p]}" title="${SOCIAL_LABELS[p]}">
+            ${SOCIAL_ICONS[p]}
+          </a>`
+          )
+          .join("")}
+      </div>
+    </div>`;
+}
+
+function reviewSummaryHTML(c) {
+  const r = REVIEWS_BY_COUNSELOR[c.id];
+  if (!r || r.count === 0) return "";
+  return `<span class="meta dot rating-badge">&#9733; ${r.avg} (${r.count})</span>`;
+}
+
+function reviewsDetailHTML(c) {
+  const r = REVIEWS_BY_COUNSELOR[c.id];
+  const items = r ? r.items.slice(0, 3) : [];
+  const reviewsHTML = items.length
+    ? items.map((rv) => `
+        <div class="review-item">
+          <span class="review-stars">${"★".repeat(rv.rating)}${"☆".repeat(5 - rv.rating)}</span>
+          <p class="review-comment">${rv.comment ? rv.comment : ""}</p>
+          <span class="review-author">&mdash; ${rv.name}</span>
+        </div>`).join("")
+    : `<p class="field-hint">No reviews yet.</p>`;
+  return `
+    <div class="reviews-block">
+      <h4>Reviews</h4>
+      ${reviewsHTML}
+      <a class="btn-link" href="review.html?counselor=${encodeURIComponent(c.id)}&name=${encodeURIComponent(c.name)}">Leave a review</a>
+    </div>`;
+}
+
 function cardHTML(c) {
   return `
     <article class="card" data-id="${c.id}" tabindex="0" aria-expanded="false">
@@ -138,19 +219,28 @@ function cardHTML(c) {
         <span class="meta dot">${(c.formats || []).join(" / ")}</span>
         <span class="meta dot">${c.price_range || ""}</span>
         <span class="meta availability ${availabilityClass(c.availability)}">${c.availability || ""}</span>
+        ${reviewSummaryHTML(c)}
+      </div>
+      <div class="detail-actions">
+        <button type="button" class="btn-book" data-book="${c.id}">Request a session with ${c.name.split(" ")[0]}</button>
+        ${
+          c.whatsapp
+            ? `<a class="btn-whatsapp" href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">
+                 <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.7 14.2c-.2.6-1.2 1.2-1.7 1.3-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.5-3.9-4.6-4.1-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.2.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .5.4.2.5.7 1.7.7 1.9.1.1.1.3 0 .4-.1.2-.1.3-.3.5l-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.4.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1l1.7.8c.2.1.4.2.4.3.1.2.1.9-.1 1.5z"/></svg>
+                 WhatsApp
+               </a>`
+            : ""
+        }
       </div>
       <p class="card-toggle" aria-hidden="true">Show more <span class="chev">&#8964;</span></p>
       <div class="card-detail" hidden>
-        <p>${c.focus || ""}</p>
         <dl>
           <dt>Approach</dt><dd>${(c.approach || []).join(", ")}</dd>
           <dt>Languages</dt><dd>${(c.languages || []).join(", ")}</dd>
           <dt>Session length</dt><dd>${c.session_length || ""}</dd>
         </dl>
-        <div class="detail-actions">
-          <button type="button" class="btn-book" data-book="${c.id}">Request a session with ${c.name.split(" ")[0]}</button>
-          ${c.website ? `<a class="btn-link" href="${c.website}" target="_blank" rel="noopener noreferrer">Visit website ↗</a>` : ""}
-        </div>
+        ${connectLinksHTML(c)}
+        ${reviewsDetailHTML(c)}
       </div>
     </article>`;
 }
@@ -294,7 +384,7 @@ headerNav.querySelectorAll("a").forEach((link) => {
 // ---- Init ----
 async function init() {
   resultCount.textContent = "Loading…";
-  await loadCounselors();
+  await Promise.all([loadCounselors(), loadReviews()]);
   buildChips();
   buildLanguageOptions();
   populateBookingSelect();

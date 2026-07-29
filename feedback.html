@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback &mdash; WWP Counseling</title>
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+<style>
+  .feedback-wrap { max-width: 640px; margin: 0 auto; padding: 48px 24px 96px; }
+  .feedback-form { display: flex; flex-direction: column; gap: 10px; margin: 24px 0 40px; }
+  .feedback-form label { font-size: 0.85rem; font-weight: 600; }
+  .feedback-form input, .feedback-form textarea {
+    font-family: var(--font-body); font-size: 0.95rem; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 8px; background: #fff;
+  }
+  .feedback-form textarea { resize: vertical; }
+  .feedback-message { font-size: 0.85rem; min-height: 1.2em; }
+  .feedback-message.is-error { color: #a13d3d; }
+  .feedback-message.is-ok { color: var(--moss-deep); }
+
+  .feedback-list { display: flex; flex-direction: column; gap: 4px; }
+  .feedback-item { padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .feedback-item:first-child { border-top: 1px solid var(--line); }
+  .feedback-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .feedback-author { font-weight: 600; font-size: 0.92rem; }
+  .feedback-date { font-family: var(--font-mono); font-size: 0.75rem; color: var(--moss-light); white-space: nowrap; }
+  .feedback-text { margin: 6px 0 0; }
+  .feedback-delete {
+    background: none; border: none; color: var(--ink-soft); text-decoration: underline;
+    cursor: pointer; font-family: var(--font-body); font-size: 0.78rem; padding: 0; margin-top: 6px;
+  }
+  .empty-note { color: var(--ink-soft); padding: 24px 0; }
+  .btn-logout {
+    background: none; border: none; color: var(--ink-soft); text-decoration: underline;
+    cursor: pointer; font-family: var(--font-body); font-size: 0.85rem;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="index.html" class="logo">WWP <span>Counseling</span></a>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="dashboard.html">My profile</a>
+      <button type="button" class="btn-logout" id="logout-btn">Log out</button>
+    </nav>
+  </div>
+</header>
+
+<main class="feedback-wrap">
+  <h1>Feedback</h1>
+  <p>A shared space for counselors to leave comments or suggestions about the app. Everyone logged in can see what's posted here.</p>
+
+  <form id="feedback-form" class="feedback-form">
+    <label for="feedback-name">Your name</label>
+    <input type="text" id="feedback-name" required>
+    <label for="feedback-message">Your feedback</label>
+    <textarea id="feedback-message" rows="3" required></textarea>
+    <button type="submit" class="btn-primary">Post feedback</button>
+    <p id="feedback-form-message" class="feedback-message" aria-live="polite"></p>
+  </form>
+
+  <div id="feedback-list" class="feedback-list"></div>
+  <p id="empty-note" class="empty-note" hidden>No feedback yet — be the first to share something.</p>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/feedback.js"></script>
+</body>
+</html>
