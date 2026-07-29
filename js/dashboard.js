@@ -197,4 +197,29 @@ document.getElementById("delete-profile-btn").addEventListener("click", async ()
   window.location.href = "index.html";
 });
 
+document.getElementById("private-feedback-form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const feedbackStatus = document.getElementById("private-feedback-status");
+  const messageText = document.getElementById("private-feedback-message").value.trim();
+  if (!messageText) return;
+
+  feedbackStatus.textContent = "Sending…";
+  feedbackStatus.className = "dash-message";
+
+  const { error } = await supabaseClient.from("private_feedback").insert({
+    user_id: currentUser.id,
+    name: existingProfile ? existingProfile.name : null,
+    message: messageText
+  });
+
+  if (error) {
+    feedbackStatus.textContent = error.message;
+    feedbackStatus.className = "dash-message is-error";
+    return;
+  }
+  document.getElementById("private-feedback-message").value = "";
+  feedbackStatus.textContent = "Thanks — sent.";
+  feedbackStatus.className = "dash-message is-ok";
+});
+
 init();

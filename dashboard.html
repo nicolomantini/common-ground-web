@@ -60,6 +60,7 @@
 <header class="site-header">
   <div class="wrap header-row">
     <a href="index.html" class="logo">WWP <span>Counseling</span></a>
+    <a href="feedback.html" class="btn-logout" style="text-decoration: none; margin-right: 4px;">Feedback</a>
     <button type="button" class="btn-logout" id="logout-btn">Log out</button>
   </div>
 </header>
@@ -192,6 +193,20 @@
       <div class="dash-actions">
         <button type="submit" class="btn-primary">Update password</button>
         <p id="password-message" class="dash-message" aria-live="polite"></p>
+      </div>
+    </form>
+  </section>
+
+  <section class="dash-subsection">
+    <h2>Report an issue privately</h2>
+    <p class="field-hint">Something not working, confusing, or missing? This goes straight to us, not published anywhere. (Looking for the shared board where counselors can see each other's feedback? That's the <a href="feedback.html">Feedback</a> link up top.)</p>
+    <form id="private-feedback-form" class="dash-form">
+      <div class="field-group">
+        <textarea id="private-feedback-message" rows="4" required placeholder="What's on your mind?"></textarea>
+      </div>
+      <div class="dash-actions">
+        <button type="submit" class="btn-primary">Send privately</button>
+        <p id="private-feedback-status" class="dash-message" aria-live="polite"></p>
       </div>
     </form>
   </section>
