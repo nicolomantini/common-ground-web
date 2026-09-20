@@ -1,20 +1,6 @@
-const tabs = document.querySelectorAll(".auth-tab");
 const loginForm = document.getElementById("login-form");
-const requestForm = document.getElementById("request-form");
 const setPasswordForm = document.getElementById("set-password-form");
-const authTabsEl = document.querySelector(".auth-tabs");
 const message = document.getElementById("auth-message");
-
-tabs.forEach((tab) => {
-  tab.addEventListener("click", () => {
-    tabs.forEach((t) => t.classList.remove("is-active"));
-    tab.classList.add("is-active");
-    const isLogin = tab.dataset.tab === "login";
-    loginForm.hidden = !isLogin;
-    requestForm.hidden = isLogin;
-    message.textContent = "";
-  });
-});
 
 function showMessage(text, isError) {
   message.textContent = text;
@@ -29,9 +15,9 @@ const hashParams = new URLSearchParams(window.location.hash.replace("#", "?"));
 const isInviteOrRecovery = hashParams.get("type") === "invite" || hashParams.get("type") === "recovery";
 
 if (isInviteOrRecovery) {
-  authTabsEl.hidden = true;
   loginForm.hidden = true;
-  requestForm.hidden = true;
+  document.getElementById("invite-note").hidden = true;
+  document.getElementById("auth-intro").textContent = "Choose your own password to access your Common Ground profile.";
   setPasswordForm.hidden = false;
 } else {
   // Normal visit: if already logged in, skip straight to the dashboard
@@ -85,23 +71,4 @@ document.getElementById("forgot-password-link").addEventListener("click", async 
     return;
   }
   showMessage("If that email has an account, a reset link is on its way.", false);
-});
-
-requestForm.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const name = document.getElementById("request-name").value.trim();
-  const email = document.getElementById("request-email").value.trim();
-  const msg = document.getElementById("request-message").value.trim();
-  showMessage("Sending…", false);
-
-  const { error } = await supabaseClient
-    .from("signup_requests")
-    .insert({ name, email, message: msg || null });
-
-  if (error) {
-    showMessage(error.message, true);
-    return;
-  }
-  requestForm.reset();
-  showMessage("Thanks! We'll review your request and email you once you're approved.", false);
 });

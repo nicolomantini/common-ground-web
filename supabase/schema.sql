@@ -1,5 +1,5 @@
 -- ============================================================
--- WWP Counseling — Supabase schema
+-- Common Ground — Supabase schema
 -- Run this once in your Supabase project's SQL Editor
 -- (Project → SQL Editor → New query → paste this whole file → Run)
 -- ============================================================
@@ -87,7 +87,7 @@ create policy "Users can view their own profile"
 create policy "Users can insert their own profile"
   on public.counselors for insert
   to authenticated
-  with check (auth.uid() = user_id);
+  with check (auth.uid() = user_id and approved = false);
 
 -- A logged-in counselor can update only their own profile
 create policy "Users can update their own profile"

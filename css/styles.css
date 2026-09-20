@@ -336,3 +336,67 @@ a { color: var(--moss-deep); }
   .hero { padding: 48px 0 32px; }
   .card-detail dl { grid-template-columns: 1fr; }
 }
+
+/* ---------- Collective homepage ---------- */
+.home section, .home main { scroll-margin-top: 100px; }
+.home .logo { white-space: nowrap; }
+.home .header-row { gap: 24px; }
+.home .header-nav { gap: 22px; align-items: center; }
+.home .hero { padding: 88px 0 72px; }
+.home .hero h1 { font-size: clamp(2.8rem, 5.5vw, 4.4rem); letter-spacing: -0.035em; }
+.home .hero-sub { margin: 26px 0; max-width: 51ch; }
+.home .btn-primary { display: inline-block; text-decoration: none; }
+.home .collective-intro { padding: 48px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.home .intro-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; }
+.home .intro-copy p:last-child { margin-bottom: 0; }
+.home .home-section { padding: 76px 0; }
+.home .section-heading { max-width: 650px; margin-bottom: 30px; }
+.home .section-heading h2 { margin-bottom: 18px; }
+.home .gathering-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.home .gathering-card { padding: 32px; border: 1px solid var(--line); border-radius: var(--radius); background: #f8f8f2; }
+.home .gathering-card h3, .home .recording-note h3 { font-size: 1.6rem; margin: 20px 0 14px; }
+.home .offer-status { display: inline-block; font-family: var(--font-mono); font-size: 0.73rem; color: var(--moss-deep); border: 1px solid var(--moss-light); border-radius: 999px; padding: 5px 10px; }
+.home .offer-detail { font-size: 0.84rem; border-top: 1px solid var(--line); padding-top: 18px; margin: 24px 0 0; }
+.home .section-note { font-size: 0.87rem; margin: 20px 0 0; max-width: 75ch; }
+.home .directory { padding: 72px 0; background: var(--surface); }
+.home .directory-intro { max-width: 72ch; }
+.home .directory-filters { margin: 24px 0; }
+.home .directory-filters summary { cursor: pointer; color: var(--moss-deep); font-size: 0.9rem; padding: 12px 0; }
+.home .directory-filters[open] .filter-bar { padding-top: 16px; }
+.home .grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
+.home .grid > .empty-state { grid-column: 1 / -1; background: var(--bg); border-radius: var(--radius); padding: 30px; text-align: left; }
+.home .recordings { background: #e8ecdf; }
+.home .recordings-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 80px; align-items: center; }
+.home .recordings h2 { margin-bottom: 22px; }
+.home .recording-note { border-left: 1px solid var(--moss-light); padding-left: 32px; }
+.home .recording-note p { margin-bottom: 0; }
+.home .booking-copy h2 { margin-bottom: 24px; }
+.home .booking-copy a { color: #fff; text-underline-offset: 3px; }
+.home .booking-copy .eyebrow { color: #cfe0d3; }
+.home .booking-form h3 { margin-bottom: 12px; }
+.home .booking-grid > * { min-width: 0; }
+.home .booking-form input, .home .booking-form select, .home .booking-form textarea { min-width: 0; width: 100%; }
+.home button:disabled { opacity: 0.55; cursor: not-allowed; transform: none; }
+.home .footer-row { flex-wrap: wrap; gap: 12px; align-items: baseline; }
+.home .footer-row p { flex-basis: 100%; }
+@media (max-width: 860px) {
+  .home .hero { padding: 56px 0; }
+  .home .hero-grid { grid-template-columns: 1.3fr 0.7fr; gap: 24px; }
+  .home .hero-marks { display: flex; height: 220px; }
+  .home .intro-grid, .home .recordings-grid { gap: 32px; }
+  .home .header-nav { gap: 12px; }
+  .home .header-nav a { font-size: 0.82rem; }
+}
+@media (max-width: 720px) {
+  .home .nav-toggle { display: flex; flex-shrink: 0; }
+  .home .header-row { position: relative; }
+  .home .header-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; align-items: stretch; gap: 0; background: var(--bg); border-bottom: 1px solid var(--line); padding: 8px 24px 16px; }
+  .home .header-nav.is-open { display: flex; }
+  .home .header-nav a { padding: 12px 0; font-size: 0.95rem; }
+  .home .intro-grid, .home .recordings-grid, .home .gathering-grid { grid-template-columns: 1fr; gap: 28px; }
+  .home .hero-grid { grid-template-columns: 1fr; }
+  .home .hero-marks { display: none; }
+  .home .home-section, .home .directory { padding: 48px 0; }
+  .home .gathering-card { padding: 24px; }
+  .home .recording-note { padding-left: 24px; }
+}

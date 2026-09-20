@@ -35,6 +35,7 @@ let COUNSELORS = [];
 let allSpecialties = [];
 let allLanguages = [];
 let REVIEWS_BY_COUNSELOR = {}; // counselor_id -> { avg, count, items: [...] }
+let counselorLoadFailed = false;
 
 // ---- Rendering ----
 const grid = document.getElementById("counselor-grid");
@@ -79,9 +80,7 @@ async function loadCounselors() {
     .eq("approved", true);
 
   if (error) {
-    console.error("Failed to load counselors:", error);
-    grid.innerHTML = `<p class="empty-state">Couldn't load counselors right now. Please try again shortly.</p>`;
-    return;
+    throw error;
   }
   COUNSELORS = data || [];
   allSpecialties = [...new Set(COUNSELORS.flatMap((c) => c.specialties || []))].sort();
@@ -252,10 +251,17 @@ function availabilityClass(a) {
 }
 
 function render() {
+  if (counselorLoadFailed) {
+    grid.innerHTML = `<p class="empty-state" role="alert">The counselor directory is temporarily unavailable. Please reload the page to try again.</p>`;
+    emptyState.hidden = true;
+    resultCount.textContent = "Profiles unavailable";
+    document.getElementById("booking-status").textContent = "Session requests are temporarily unavailable while profiles cannot be loaded. Please try again later.";
+    return;
+  }
   const filtered = sortList(COUNSELORS.filter(matches));
   grid.innerHTML = filtered.map(cardHTML).join("");
   emptyState.hidden = filtered.length !== 0;
-  resultCount.textContent = `${filtered.length} counselor${filtered.length === 1 ? "" : "s"}`;
+  resultCount.textContent = `${filtered.length} practitioner${filtered.length === 1 ? "" : "s"}`;
 }
 
 // ---- Events ----
@@ -354,6 +360,12 @@ function populateBookingSelect() {
   bookingSelect.innerHTML = COUNSELORS.map(
     (c) => `<option value="${c.name}">${c.name} — ${c.specialties.join(", ")}</option>`
   ).join("");
+  const available = COUNSELORS.length > 0;
+  bookingSelect.disabled = !available;
+  document.getElementById("booking-submit").disabled = !available;
+  document.getElementById("booking-status").textContent = available
+    ? "Choose a practitioner for your request."
+    : "Session requests will open when practitioner profiles are available.";
 }
 
 function openBooking(id) {
@@ -384,10 +396,21 @@ headerNav.querySelectorAll("a").forEach((link) => {
 // ---- Init ----
 async function init() {
   resultCount.textContent = "Loading…";
-  await Promise.all([loadCounselors(), loadReviews()]);
-  buildChips();
-  buildLanguageOptions();
-  populateBookingSelect();
+  // Reviews are optional: their availability must not block the directory.
+  const reviewsLoaded = loadReviews().catch((error) => {
+    console.error("Failed to load reviews:", error);
+  });
+  try {
+    await loadCounselors();
+    buildChips();
+    buildLanguageOptions();
+    populateBookingSelect();
+  } catch (error) {
+    console.error("Failed to load counselors:", error);
+    counselorLoadFailed = true;
+  }
+  render();
+  await reviewsLoaded;
   render();
 }
 init();

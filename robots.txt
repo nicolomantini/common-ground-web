@@ -2,5 +2,4 @@ User-agent: *
 Allow: /
 Disallow: /dashboard.html
 
-# Replace with your real domain
-Sitemap: https://YOUR-DOMAIN-HERE/sitemap.xml
+Sitemap: https://common-ground.space/sitemap.xml

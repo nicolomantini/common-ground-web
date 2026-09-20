@@ -1,8 +1,10 @@
-# WWP Counseling — counselor directory site
+# Common Ground — counselor directory site
 
 A simple, static, responsive site where visitors can browse counselors, filter by
 specialty / format / language, and request a session. No backend or build step required —
 plain HTML, CSS, and JS.
+
+Planned production URL: https://common-ground.space
 
 ## Project structure
 ```
@@ -28,7 +30,7 @@ or use any static server / the VS Code "Live Server" extension.
 
 ## Push to GitHub
 ```bash
-cd counselor-site
+cd common-ground-web
 git init
 git add .
 git commit -m "Initial commit: counselor directory site"
@@ -56,6 +58,13 @@ show a plain confirmation page — that's expected; it will only work end-to-end
 on Netlify.
 
 ### Custom domain
+
+Use `common-ground.space` as the production domain. Configure its DNS and Netlify
+custom domain before launch. In Supabase Authentication URL settings, set the Site
+URL to `https://common-ground.space` and allow `https://common-ground.space/auth.html`
+for invite and password-reset redirects. These hosting settings are managed outside
+this repository.
+
 Once deployed, you can add a custom domain under **Site settings → Domain management** on
 Netlify and follow their DNS instructions.
 

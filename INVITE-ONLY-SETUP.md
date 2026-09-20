@@ -1,52 +1,52 @@
-# Invite-only access — setup
+# Common Ground — onboarding the eight members
 
-Signup is now request-based: visitors submit a request, you review it, and only people
-you invite can actually create a login. This closes the previous open-signup gap.
+Membership is a fixed group of eight people. There is no public application or
+self-signup form. Each member uses their own account and chooses their own password.
+There is no need to build an application review system or an automated eight-seat limit.
 
-## 1. Run the new table setup
-Supabase → **SQL Editor** → paste and run `supabase/signup-requests.sql`.
-This creates `signup_requests`, where "I'd like to join" submissions land — no login
-account is created at this stage, it's just a form entry only you can see.
+## Before sending invitations
 
-## 2. Turn off public self-signup (important)
-This is the step that actually closes the loophole — without it, a technically-inclined
-visitor could still call the sign-up API directly and create an account, bypassing your
-review entirely.
+- Deploy the current website at a public address. A localhost address is only for
+  testing on your own computer; members cannot use it to reach your site.
+- In Supabase Authentication settings, disable new public signups. Removing the
+  form does not disable the signup API.
+- Configure invitation links to land at the deployed `/auth.html` page, and add
+  that exact address to Supabase's allowed redirect URLs. The intended address
+  is `https://common-ground.space/auth.html`, once this domain serves the app.
+- Check the invitation email template and default Site URL. Invitations without
+  an explicit redirect use the configured Site URL; they must not land on the
+  homepage or the GoDaddy holding page. For dashboard-generated invitations,
+  ensure their default destination is the deployed `/auth.html` page.
+- Apply `supabase/require-profile-review.sql` in the SQL Editor to enforce review
+  on newly created profiles. The main schema includes this rule for fresh setups.
+- Check which members already have accounts before inviting them again. Existing
+  members can log in or use the password-reset link.
 
-1. Supabase → **Authentication → Providers → Email**
-2. Toggle **off** "Allow new users to sign up" (wording may vary slightly by dashboard
-   version — look for a setting about disabling/restricting new signups)
-3. Save
+## Invite a member
 
-With this off, the only way an account gets created is through the invite flow below.
+1. Open Supabase → Authentication → Users.
+2. Choose the option to invite a user by email.
+3. Enter the member's confirmed email address and send their personal invitation.
+4. The member follows the link, chooses a password, and reaches their profile page.
+5. They add their name, introduction, photo, languages, approach, and contact links.
+6. Saving creates a profile marked **Pending review**.
+7. Review the profile in Table Editor → counselors and set `approved` to `true`
+   when it is ready to publish.
 
-## 3. Reviewing and approving requests
-1. Supabase → **Table Editor → signup_requests**
-2. Look through pending rows — name, email, and their optional message
-3. Decide: approve or ignore/delete the row
+Approved members can edit their own profile. Later edits currently go live
+immediately; they do not go back into review.
 
-## 4. Inviting an approved person
-1. Supabase → **Authentication → Users**
-2. Click **Add user → Invite user** (or **Invite** — wording varies by dashboard version)
-3. Enter their email → send
-4. They receive an email with a link to set their password
-5. Once they set it, they can log in at `auth.html` → **Log in** tab, and land on the
-   dashboard to create their profile — same as before, nothing changed on that end
+## Test one invitation before inviting the rest
 
-Optional housekeeping: update that row's `status` column in `signup_requests` from
-`pending` to `invited` so you can track who's been handled, or just delete the row —
-either is fine, it's just for your own reference.
+Use an email address you control. Confirm that the invitation opens the password
+form, profile saving works, an unapproved profile stays off the public directory,
+and the profile appears after approval. Test logout, login, and password reset.
+Do not change someone else's password or use one shared password for the group.
 
-## What changed in the code
-- `auth.html` / `js/auth.js` — the old "Sign up" tab (which created an account directly)
-  is now "Request access" (which only submits a request for you to review)
-- Nothing changed in `dashboard.html` / `js/dashboard.js` — once someone logs in via an
-  invite, profile creation works exactly as before
+No invitations or database changes are made by editing this repository. Invitations,
+redirect settings, and applying the SQL patch are separate Supabase actions.
 
-## Push it
-```bash
-cd ~/repo/counselor-site
-git add .
-git commit -m "Switch to invite-only access: request form + admin approval"
-git push
-```
+The old `signup_requests` table and its setup script can remain unused; no existing
+requests are deleted by this change.
+
+Reference: https://supabase.com/docs/guides/auth/redirect-urls

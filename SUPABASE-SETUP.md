@@ -85,7 +85,7 @@ Want a few profiles on the site right away, without waiting for real counselors 
 Same as before — no new Netlify settings needed, this is all plain static files calling
 Supabase directly from the browser:
 ```bash
-cd ~/repo/counselor-site
+cd ~/repo/common-ground-web
 git add .
 git commit -m "Add counselor self-signup and profile editing via Supabase"
 git push

@@ -3,22 +3,16 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Counselor login &mdash; WWP Counseling</title>
+<title>Practitioner login &mdash; Common Ground</title>
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 <style>
   .auth-wrap { max-width: 420px; margin: 0 auto; padding: 72px 24px; }
-  .auth-tabs { display: flex; gap: 8px; margin-bottom: 24px; }
-  .auth-tab {
-    flex: 1; padding: 10px; text-align: center; border: 1px solid var(--line);
-    background: var(--surface); border-radius: 10px; cursor: pointer; font-weight: 600;
-    font-family: var(--font-body); color: var(--ink-soft);
-  }
-  .auth-tab.is-active { background: var(--moss); color: #fff; border-color: var(--moss); }
+  .invite-note { margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); font-size: 0.9rem; }
+  .auth-form button:disabled { opacity: 0.6; cursor: wait; }
   .auth-form { display: flex; flex-direction: column; gap: 10px; }
-  .auth-form[hidden] { display: none; }
   .auth-form[hidden] { display: none; }
   .auth-form label { font-size: 0.85rem; font-weight: 600; }
   .auth-form input, .auth-form textarea {
@@ -36,19 +30,14 @@
 
 <header class="site-header">
   <div class="wrap header-row">
-    <a href="index.html" class="logo"><img src="images/logo-mark.png" alt="" class="logo-mark">WWP <span>Counseling</span></a>
+    <a href="index.html" class="logo"><img src="images/logo-mark.png" alt="" class="logo-mark">Common <span>Ground</span></a>
   </div>
 </header>
 
 <main class="auth-wrap">
-  <a class="back-link" href="index.html">&larr; Back to directory</a>
-  <h1>Counselor access</h1>
-  <p>Log in if you already have an account, or request access to join.</p>
-
-  <div class="auth-tabs">
-    <button type="button" class="auth-tab is-active" data-tab="login">Log in</button>
-    <button type="button" class="auth-tab" data-tab="request">Request access</button>
-  </div>
+  <a class="back-link" href="index.html">&larr; Back to Common Ground</a>
+  <h1>Practitioner access</h1>
+  <p id="auth-intro">A space for the Common Ground members to manage their profiles. Log in with your own email and password.</p>
 
   <form id="login-form" class="auth-form">
     <label for="login-email">Email</label>
@@ -59,19 +48,7 @@
     <button type="button" class="btn-text" id="forgot-password-link" style="align-self: flex-start; padding: 0;">Forgot your password?</button>
   </form>
 
-  <form id="request-form" class="auth-form" hidden>
-    <p class="field-hint" style="margin-bottom: 4px;">
-      Fill this in and we'll review your request. Once approved, you'll get an email
-      with a link to set a password and log in.
-    </p>
-    <label for="request-name">Your name</label>
-    <input type="text" id="request-name" required autocomplete="name">
-    <label for="request-email">Email</label>
-    <input type="email" id="request-email" required autocomplete="email">
-    <label for="request-message">Anything you'd like us to know (optional)</label>
-    <textarea id="request-message" rows="3"></textarea>
-    <button type="submit" class="btn-primary">Send request</button>
-  </form>
+  <p class="invite-note" id="invite-note">Joining the group? Use the personal invitation sent to your email to choose a password. If it has not arrived, ask Nico to check your invitation.</p>
 
   <form id="set-password-form" class="auth-form" hidden>
     <p class="field-hint" style="margin-bottom: 4px;">Choose a password to finish setting up your account.</p>
