@@ -45,12 +45,12 @@ async function init() {
   existingProfile = data;
   if (existingProfile) {
     populateForm(existingProfile);
-    document.getElementById("save-btn").textContent = "Save changes";
+    document.getElementById("save-btn").textContent = existingProfile.approved ? "Save changes" : "Publish profile";
     statusBadge.hidden = false;
-    statusBadge.textContent = existingProfile.approved ? "Live on the site" : "Pending review";
+    statusBadge.textContent = existingProfile.approved ? "Live on the site" : "Not published yet";
     statusBadge.classList.toggle("is-pending", !existingProfile.approved);
   } else {
-    document.getElementById("save-btn").textContent = "Create profile";
+    document.getElementById("save-btn").textContent = "Publish profile";
     statusBadge.hidden = true;
   }
 }
@@ -141,15 +141,15 @@ form.addEventListener("submit", async (e) => {
 
     existingProfile = result.data;
     pendingPhotoFile = null;
-    document.getElementById("save-btn").textContent = "Save changes";
+    document.getElementById("save-btn").textContent = existingProfile.approved ? "Save changes" : "Publish profile";
     statusBadge.hidden = false;
-    statusBadge.textContent = existingProfile.approved ? "Live on the site" : "Pending review";
+    statusBadge.textContent = existingProfile.approved ? "Live on the site" : "Not published yet";
     statusBadge.classList.toggle("is-pending", !existingProfile.approved);
 
     showMessage(
       existingProfile.approved
         ? "Saved! Your changes are live."
-        : "Saved! Your profile is waiting for approval before it appears on the site.",
+        : "Saved, but your profile is not public yet. Please contact Nico to check publishing.",
       false
     );
   } catch (err) {

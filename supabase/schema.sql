@@ -26,7 +26,7 @@ create table if not exists public.counselors (
   instagram text,
   facebook text,
   linkedin text,
-  approved boolean not null default false,     -- you flip this on to publish a profile
+  approved boolean not null default false,     -- member saves publish; admin-created starters remain hidden
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
@@ -45,26 +45,24 @@ create trigger trg_counselors_updated_at
   before update on public.counselors
   for each row execute function public.set_updated_at();
 
--- A counselor can edit their own row, but can never approve themselves —
--- this trigger keeps `approved` at whatever it already was in the database
--- whenever a normal logged-in counselor session makes the update. Changes
--- made via Table Editor, SQL Editor, or the service_role key run as a
--- different Postgres role and are unaffected, so you can still approve
--- profiles yourself.
-create or replace function public.prevent_self_approval()
+-- A member publishes their own profile when they save it. Admin-created
+-- starter profiles remain unpublished until the member makes their first save.
+create or replace function public.publish_member_profile()
 returns trigger as $$
 begin
-  if current_setting('role', true) = 'authenticated' then
-    new.approved = old.approved;
+  if current_setting('role', true) = 'authenticated'
+     and auth.uid() = new.user_id then
+    new.approved = true;
   end if;
   return new;
 end;
 $$ language plpgsql;
 
 drop trigger if exists trg_prevent_self_approval on public.counselors;
-create trigger trg_prevent_self_approval
-  before update on public.counselors
-  for each row execute function public.prevent_self_approval();
+drop trigger if exists trg_publish_member_profile on public.counselors;
+create trigger trg_publish_member_profile
+  before insert or update on public.counselors
+  for each row execute function public.publish_member_profile();
 
 -- ---------- Row Level Security ----------
 alter table public.counselors enable row level security;
@@ -87,7 +85,7 @@ create policy "Users can view their own profile"
 create policy "Users can insert their own profile"
   on public.counselors for insert
   to authenticated
-  with check (auth.uid() = user_id and approved = false);
+  with check (auth.uid() = user_id);
 
 -- A logged-in counselor can update only their own profile
 create policy "Users can update their own profile"

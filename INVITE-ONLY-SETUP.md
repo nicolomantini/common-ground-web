@@ -17,8 +17,9 @@ There is no need to build an application review system or an automated eight-sea
   an explicit redirect use the configured Site URL; they must not land on the
   homepage or the GoDaddy holding page. For dashboard-generated invitations,
   ensure their default destination is the deployed `/auth.html` page.
-- Apply `supabase/require-profile-review.sql` in the SQL Editor to enforce review
-  on newly created profiles. The main schema includes this rule for fresh setups.
+- Apply `supabase/publish-on-save.sql` in the SQL Editor so member saves publish
+  their profiles automatically. Run it after any older setup scripts; do not
+  rerun `require-profile-review.sql` afterward. Fresh setups include this behavior.
 - Check which members already have accounts before inviting them again. Existing
   members can log in or use the password-reset link.
 
@@ -29,18 +30,17 @@ There is no need to build an application review system or an automated eight-sea
 3. Enter the member's confirmed email address and send their personal invitation.
 4. The member follows the link, chooses a password, and reaches their profile page.
 5. They add their name, introduction, photo, languages, approach, and contact links.
-6. Saving creates a profile marked **Pending review**.
-7. Review the profile in Table Editor → counselors and set `approved` to `true`
-   when it is ready to publish.
+6. Saving publishes their profile automatically. No separate approval is needed.
+7. Confirm the member can find their profile on the public directory.
 
-Approved members can edit their own profile. Later edits currently go live
-immediately; they do not go back into review.
+Members can edit only their own profile. Their first save and later edits go live
+immediately. Admin-created starter profiles remain hidden until the member saves.
 
 ## Test one invitation before inviting the rest
 
 Use an email address you control. Confirm that the invitation opens the password
-form, profile saving works, an unapproved profile stays off the public directory,
-and the profile appears after approval. Test logout, login, and password reset.
+form, profile saving works, an untouched starter stays off the public directory,
+and the profile appears after the member saves. Test logout, login, and password reset.
 Do not change someone else's password or use one shared password for the group.
 
 No invitations or database changes are made by editing this repository. Invitations,
