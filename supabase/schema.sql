@@ -19,7 +19,7 @@ create table if not exists public.counselors (
   session_length text,
   price_range text,              -- "$", "$$", or "$$$"
   availability text,             -- "Accepting new clients" / "Waitlist" / etc.
-  bio text,
+  bio text constraint counselors_bio_length check (char_length(bio) <= 350),
   focus text,
   website text,
   whatsapp text,

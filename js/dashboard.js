@@ -6,6 +6,21 @@ const form = document.getElementById("profile-form");
 const message = document.getElementById("dash-message");
 const statusBadge = document.getElementById("status-badge");
 const photoPreview = document.getElementById("photo-preview");
+const bioInput = document.getElementById("f-bio");
+const bioCount = document.getElementById("bio-count");
+const BIO_MAX_LENGTH = 350;
+
+function updateBioCount() {
+  const count = Array.from(bioInput.value).length;
+  bioCount.textContent = `${count} / ${BIO_MAX_LENGTH} characters`;
+  const error = count > BIO_MAX_LENGTH
+    ? `Please shorten your description to ${BIO_MAX_LENGTH} characters before saving.`
+    : "";
+  bioInput.setCustomValidity(error);
+  if (error) bioCount.textContent += ` — remove ${count - BIO_MAX_LENGTH} characters to save.`;
+}
+
+bioInput.addEventListener("input", updateBioCount);
 
 function showMessage(text, isError) {
   message.textContent = text;
@@ -60,6 +75,7 @@ function populateForm(p) {
   document.getElementById("f-pronouns").value = p.pronouns || "";
   document.getElementById("f-location").value = p.location || "";
   document.getElementById("f-bio").value = p.bio || "";
+  updateBioCount();
   document.getElementById("f-specialties").value = arrayToCsv(p.specialties);
   document.getElementById("f-approach").value = arrayToCsv(p.approach);
   document.getElementById("f-languages").value = arrayToCsv(p.languages);
@@ -104,6 +120,8 @@ async function uploadPhotoIfNeeded() {
 
 form.addEventListener("submit", async (e) => {
   e.preventDefault();
+  updateBioCount();
+  if (!bioInput.reportValidity()) return;
   showMessage("Saving…", false);
 
   try {

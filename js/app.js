@@ -28,7 +28,7 @@ const state = {
   specialties: new Set(),
   format: "any",
   language: "any",
-  sort: "name"
+  sort: "random"
 };
 
 let COUNSELORS = [];
@@ -82,7 +82,7 @@ async function loadCounselors() {
   if (error) {
     throw error;
   }
-  COUNSELORS = data || [];
+  COUNSELORS = shuffleProfiles(data || []);
   allSpecialties = [...new Set(COUNSELORS.flatMap((c) => c.specialties || []))].sort();
   allLanguages = [...new Set(COUNSELORS.flatMap((c) => c.languages || []))].sort();
 }
@@ -124,8 +124,19 @@ function matches(c) {
   return matchesQuery && matchesSpecialty && matchesFormat && matchesLanguage;
 }
 
+// Shuffle once per page load; filtering preserves this order.
+function shuffleProfiles(list) {
+  const shuffled = [...list];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+}
+
 function sortList(list) {
   const copy = [...list];
+  if (state.sort === "random") return copy;
   const sortWithinGroup = (a, b) => {
     if (state.sort === "name") {
       return a.name.localeCompare(b.name);
@@ -306,11 +317,11 @@ document.getElementById("clear-filters").addEventListener("click", () => {
   state.specialties.clear();
   state.format = "any";
   state.language = "any";
-  state.sort = "name";
+  state.sort = "random";
   document.getElementById("search-input").value = "";
   document.getElementById("format-select").value = "any";
   document.getElementById("language-select").value = "any";
-  document.getElementById("sort-select").value = "name";
+  document.getElementById("sort-select").value = "random";
   chipRow.querySelectorAll(".chip").forEach((c) => {
     c.setAttribute("aria-pressed", "false");
     c.classList.remove("chip-active");
