@@ -400,3 +400,9 @@ a { color: var(--moss-deep); }
   .home .gathering-card { padding: 24px; }
   .home .recording-note { padding-left: 24px; }
 }
+
+/* Personal booking links */
+a.btn-book { display: inline-block; text-decoration: none; }
+.btn-book:disabled { cursor: not-allowed; opacity: 0.55; }
+.btn-book:disabled:hover { background: transparent; color: var(--moss-deep); }
+.booking-unavailable { margin: 8px 0 0; font-size: 0.78rem; }

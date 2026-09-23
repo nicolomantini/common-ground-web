@@ -160,6 +160,12 @@
     </div>
 
     <div class="field-group">
+      <label for="f-booking-url">Personal booking link (optional)</label>
+      <input type="url" id="f-booking-url" placeholder="https://cal.com/your-name/session" aria-describedby="booking-link-hint" disabled>
+      <p class="field-hint" id="booking-link-hint">Checking booking link availability…</p>
+    </div>
+
+    <div class="field-group">
       <label for="f-website">Website (optional)</label>
       <input type="url" id="f-website" placeholder="https://">
     </div>
@@ -222,6 +228,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
-<script src="js/dashboard.js?v=bio-limit-350-2"></script>
+<script src="js/booking-link.js?v=1"></script>
+<script src="js/dashboard.js?v=personal-booking-1"></script>
 </body>
 </html>

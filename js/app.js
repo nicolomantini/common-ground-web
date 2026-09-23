@@ -232,7 +232,7 @@ function cardHTML(c) {
         ${reviewSummaryHTML(c)}
       </div>
       <div class="detail-actions">
-        <button type="button" class="btn-book" data-book="${c.id}">Request a session with ${c.name.split(" ")[0]}</button>
+        ${bookingButtonHTML(c.booking_url)}
         ${
           c.whatsapp
             ? `<a class="btn-whatsapp" href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">
@@ -266,7 +266,6 @@ function render() {
     grid.innerHTML = `<p class="empty-state" role="alert">The counselor directory is temporarily unavailable. Please reload the page to try again.</p>`;
     emptyState.hidden = true;
     resultCount.textContent = "Profiles unavailable";
-    document.getElementById("booking-status").textContent = "Session requests are temporarily unavailable while profiles cannot be loaded. Please try again later.";
     return;
   }
   const filtered = sortList(COUNSELORS.filter(matches));
@@ -329,14 +328,9 @@ document.getElementById("clear-filters").addEventListener("click", () => {
   render();
 });
 
-// Expand / collapse a card, and route the booking button
+// Expand / collapse cards without intercepting their links or buttons.
 grid.addEventListener("click", (e) => {
-  if (e.target.closest("a[href]")) return;
-  const bookBtn = e.target.closest("[data-book]");
-  if (bookBtn) {
-    openBooking(bookBtn.dataset.book);
-    return;
-  }
+  if (e.target.closest("a[href], button")) return;
   const card = e.target.closest(".card");
   if (!card) return;
   toggleCard(card);
@@ -345,7 +339,7 @@ grid.addEventListener("click", (e) => {
 grid.addEventListener("keydown", (e) => {
   if (e.key !== "Enter" && e.key !== " ") return;
   const card = e.target.closest(".card");
-  if (!card) return;
+  if (!card || e.target !== card) return;
   e.preventDefault();
   toggleCard(card);
 });
@@ -361,29 +355,6 @@ function toggleCard(card) {
       ? `Show more <span class="chev">&#8964;</span>`
       : `Show less <span class="chev">&#8964;</span>`;
   }
-}
-
-// ---- Booking panel ----
-const bookingSection = document.getElementById("booking");
-const bookingSelect = document.getElementById("booking-counselor");
-
-function populateBookingSelect() {
-  bookingSelect.innerHTML = COUNSELORS.map(
-    (c) => `<option value="${c.name}">${c.name} — ${c.specialties.join(", ")}</option>`
-  ).join("");
-  const available = COUNSELORS.length > 0;
-  bookingSelect.disabled = !available;
-  document.getElementById("booking-submit").disabled = !available;
-  document.getElementById("booking-status").textContent = available
-    ? "Choose a practitioner for your request."
-    : "Session requests will open when practitioner profiles are available.";
-}
-
-function openBooking(id) {
-  const c = COUNSELORS.find((x) => x.id === id);
-  if (c) bookingSelect.value = c.name;
-  bookingSection.scrollIntoView({ behavior: "smooth", block: "start" });
-  document.getElementById("booking-name").focus({ preventScroll: true });
 }
 
 document.getElementById("scroll-to-directory").addEventListener("click", () => {
@@ -415,7 +386,6 @@ async function init() {
     await loadCounselors();
     buildChips();
     buildLanguageOptions();
-    populateBookingSelect();
   } catch (error) {
     console.error("Failed to load counselors:", error);
     counselorLoadFailed = true;

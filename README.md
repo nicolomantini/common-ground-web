@@ -1,14 +1,14 @@
 # Common Ground — counselor directory site
 
 A simple, static, responsive site where visitors can browse counselors, filter by
-specialty / format / language, and request a session. No backend or build step required —
+specialty / format / language, and book directly with a practitioner. No backend or build step required —
 plain HTML, CSS, and JS.
 
 Planned production URL: https://common-ground.space
 
 ## Project structure
 ```
-index.html          Page markup (hero, filters, directory, booking form)
+index.html          Page markup (hero, filters, directory, booking links)
 css/styles.css       All styling
 js/counselors-data.js  Counselor data — edit this to add/remove/update counselors
 js/app.js            Rendering, filtering, and booking-form logic
@@ -49,13 +49,13 @@ commands above from inside this project folder.)
 4. Click **Deploy site**. Netlify gives you a live `*.netlify.app` URL within a minute or two.
 5. Every push to `main` on GitHub will now auto-redeploy the site.
 
-### The booking form
-The "Request a session" form uses **Netlify Forms** — no backend needed. Once deployed on
-Netlify, submissions automatically show up under your site's **Forms** tab in the Netlify
-dashboard, and you can turn on email notifications there (Site settings → Forms → Form
-notifications). Locally, or on non-Netlify hosts, the form will submit as a normal POST and
-show a plain confirmation page — that's expected; it will only work end-to-end once deployed
-on Netlify.
+### Personal booking links
+Run `supabase/add-booking-link.sql` in Supabase SQL Editor, then reload the dashboard.
+Members can add their own HTTPS booking-page URL (Cal.com or another provider) in
+**Personal booking link**. The public **Book a session** button opens it in a new tab.
+With no valid link, the button is disabled and explains that online booking is unavailable.
+Clearing and saving the field disables booking again. The site no longer collects
+session requests through a Netlify form. Previous submissions are not deleted.
 
 ### Custom domain
 

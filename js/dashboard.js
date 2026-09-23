@@ -1,6 +1,7 @@
 let currentUser = null;
 let existingProfile = null; // null until we know whether one exists
 let pendingPhotoFile = null;
+let bookingLinksAvailable = false;
 
 const form = document.getElementById("profile-form");
 const message = document.getElementById("dash-message");
@@ -24,6 +25,13 @@ function updateBioCount() {
 bioInput.addEventListener("input", updateBioCount);
 bioInput.addEventListener("change", updateBioCount);
 updateBioCount();
+
+const bookingInput = document.getElementById("f-booking-url");
+function validateBookingLink() {
+  const valid = !bookingInput.value.trim() || normalizeBookingUrl(bookingInput.value);
+  bookingInput.setCustomValidity(valid ? "" : "Enter a complete HTTPS booking link, such as https://cal.com/your-name/session.");
+}
+bookingInput.addEventListener("input", validateBookingLink);
 
 function showMessage(text, isError) {
   message.textContent = text;
@@ -61,6 +69,14 @@ async function init() {
   }
 
   existingProfile = data;
+  // Keep other profile edits working until the database column is installed.
+  const { error: bookingError } = await supabaseClient
+    .from("counselors").select("booking_url").limit(0);
+  bookingLinksAvailable = !bookingError;
+  bookingInput.disabled = !bookingLinksAvailable;
+  document.getElementById("booking-link-hint").textContent = bookingLinksAvailable
+    ? "Paste your HTTPS booking-page link from Cal.com or another provider. Leave blank to disable online booking."
+    : "Booking link editing is temporarily unavailable. You can still save your other profile details.";
   if (existingProfile) {
     populateForm(existingProfile);
     document.getElementById("save-btn").textContent = existingProfile.approved ? "Save changes" : "Publish profile";
@@ -86,6 +102,7 @@ function populateForm(p) {
   document.getElementById("f-price-range").value = p.price_range || "$";
   document.getElementById("f-availability").value = p.availability || "Accepting new clients";
   document.getElementById("f-website").value = p.website || "";
+  bookingInput.value = p.booking_url || "";
   document.getElementById("f-whatsapp").value = p.whatsapp || "";
   document.getElementById("f-instagram").value = p.instagram || "";
   document.getElementById("f-facebook").value = p.facebook || "";
@@ -125,6 +142,10 @@ form.addEventListener("submit", async (e) => {
   e.preventDefault();
   updateBioCount();
   if (!bioInput.reportValidity()) return;
+  if (bookingLinksAvailable) {
+    validateBookingLink();
+    if (!bookingInput.reportValidity()) return;
+  }
   showMessage("Saving…", false);
 
   try {
@@ -150,6 +171,7 @@ form.addEventListener("submit", async (e) => {
       linkedin: document.getElementById("f-linkedin").value.trim() || null,
       photo: photoUrl
     };
+    if (bookingLinksAvailable) payload.booking_url = normalizeBookingUrl(bookingInput.value);
 
     let result;
     if (existingProfile) {
