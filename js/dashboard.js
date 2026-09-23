@@ -11,7 +11,8 @@ const bioCount = document.getElementById("bio-count");
 const BIO_MAX_LENGTH = 350;
 
 function updateBioCount() {
-  const count = Array.from(bioInput.value).length;
+  // Match the browser's native maxlength measurement (UTF-16 code units).
+  const count = bioInput.value.length;
   bioCount.textContent = `${count} / ${BIO_MAX_LENGTH} characters`;
   const error = count > BIO_MAX_LENGTH
     ? `Please shorten your description to ${BIO_MAX_LENGTH} characters before saving.`
@@ -21,6 +22,8 @@ function updateBioCount() {
 }
 
 bioInput.addEventListener("input", updateBioCount);
+bioInput.addEventListener("change", updateBioCount);
+updateBioCount();
 
 function showMessage(text, isError) {
   message.textContent = text;

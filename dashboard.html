@@ -102,7 +102,7 @@
 
     <div class="field-group">
       <label for="f-bio">Short bio</label>
-      <textarea id="f-bio" rows="3" aria-describedby="bio-hint bio-count" placeholder="A couple of warm, plain-language sentences shown on your card."></textarea>
+      <textarea id="f-bio" rows="3" maxlength="350" aria-describedby="bio-hint bio-count" placeholder="A couple of warm, plain-language sentences shown on your card."></textarea>
       <p class="field-hint" id="bio-hint">Up to 350 characters, including spaces. Introduce yourself and the work you offer.</p>
       <p class="field-hint" id="bio-count" role="status">0 / 350 characters</p>
     </div>
@@ -222,6 +222,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
-<script src="js/dashboard.js"></script>
+<script src="js/dashboard.js?v=bio-limit-350-2"></script>
 </body>
 </html>
