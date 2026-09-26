@@ -9,7 +9,7 @@ const statusBadge = document.getElementById("status-badge");
 const photoPreview = document.getElementById("photo-preview");
 const bioInput = document.getElementById("f-bio");
 const bioCount = document.getElementById("bio-count");
-const BIO_MAX_LENGTH = 350;
+const BIO_MAX_LENGTH = 1500;
 
 function updateBioCount() {
   // Match the browser's native maxlength measurement (UTF-16 code units).

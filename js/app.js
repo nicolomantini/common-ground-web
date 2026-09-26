@@ -212,15 +212,27 @@ function reviewsDetailHTML(c) {
     </div>`;
 }
 
+function escapeProfileText(value) {
+  return String(value || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function bioPreview(value) {
+  const text = String(value || "").replace(/\s+/g, " ").trim();
+  if (text.length <= 180) return text;
+  const excerpt = text.slice(0, 180);
+  const lastSpace = excerpt.lastIndexOf(" ");
+  return excerpt.slice(0, lastSpace > 120 ? lastSpace : 180).trimEnd() + "…";
+}
+
 function cardHTML(c) {
   return `
-    <article class="card" data-id="${c.id}" tabindex="0" aria-expanded="false">
+    <article class="card" data-id="${c.id}" tabindex="0" aria-haspopup="dialog" aria-label="Read the profile of ${escapeProfileText(c.name)}">
       <div class="mark">${avatarHTML(c)}</div>
       <div class="card-heading">
         <h3>${c.name}</h3>
         <p class="credentials">${c.pronouns || ""}</p>
       </div>
-      <p class="tagline">${c.bio || ""}</p>
+      <p class="tagline">${escapeProfileText(bioPreview(c.bio))}</p>
       <ul class="tag-list" aria-label="Specialties">
         ${(c.specialties || []).map((s) => `<li class="tag">${s}</li>`).join("")}
       </ul>
@@ -242,7 +254,7 @@ function cardHTML(c) {
             : ""
         }
       </div>
-      <p class="card-toggle" aria-hidden="true">Show more <span class="chev">&#8964;</span></p>
+      <button type="button" class="card-toggle" aria-haspopup="dialog">Read more<span class="visually-hidden"> about ${escapeProfileText(c.name)}</span> <span aria-hidden="true">→</span></button>
       <div class="card-detail" hidden>
         <dl>
           <dt>Approach</dt><dd>${(c.approach || []).join(", ")}</dd>
@@ -328,12 +340,15 @@ document.getElementById("clear-filters").addEventListener("click", () => {
   render();
 });
 
-// Expand / collapse cards without intercepting their links or buttons.
+// Native modal provides focus containment and Escape-to-close behavior.
+const profileDialog = document.getElementById("profile-dialog");
+const profileContent = document.getElementById("profile-dialog-content");
+let profileOpener = null;
+
 grid.addEventListener("click", (e) => {
-  if (e.target.closest("a[href], button")) return;
   const card = e.target.closest(".card");
-  if (!card) return;
-  toggleCard(card);
+  if (!card || (e.target.closest("a[href], button") && !e.target.closest(".card-toggle"))) return;
+  openProfile(card, e.target.closest(".card-toggle") || card);
 });
 
 grid.addEventListener("keydown", (e) => {
@@ -341,21 +356,38 @@ grid.addEventListener("keydown", (e) => {
   const card = e.target.closest(".card");
   if (!card || e.target !== card) return;
   e.preventDefault();
-  toggleCard(card);
+  openProfile(card, card);
 });
 
-function toggleCard(card) {
-  const detail = card.querySelector(".card-detail");
-  const toggleLabel = card.querySelector(".card-toggle");
-  const isOpen = !detail.hidden;
-  detail.hidden = isOpen;
-  card.setAttribute("aria-expanded", String(!isOpen));
-  if (toggleLabel) {
-    toggleLabel.innerHTML = isOpen
-      ? `Show more <span class="chev">&#8964;</span>`
-      : `Show less <span class="chev">&#8964;</span>`;
-  }
+function openProfile(card, opener) {
+  const counselor = COUNSELORS.find((c) => String(c.id) === card.dataset.id);
+  if (!counselor) return;
+  const profile = card.cloneNode(true);
+  profile.className = "profile-full";
+  profile.removeAttribute("tabindex");
+  profile.removeAttribute("aria-haspopup");
+  profile.removeAttribute("aria-label");
+  profile.removeAttribute("data-id");
+  profile.querySelector("h3").id = "profile-dialog-title";
+  profile.querySelector(".tagline").textContent = counselor.bio || "";
+  profile.querySelector(".card-toggle").remove();
+  profile.querySelector(".card-detail").hidden = false;
+  profileContent.replaceChildren(profile);
+  profileOpener = opener;
+  profileDialog.showModal();
+  profileDialog.scrollTop = 0;
+  document.body.classList.add("profile-is-open");
 }
+
+document.getElementById("close-profile").addEventListener("click", () => profileDialog.close());
+profileDialog.addEventListener("click", (e) => {
+  const bounds = profileDialog.getBoundingClientRect();
+  if (e.target === profileDialog && (e.clientX < bounds.left || e.clientX > bounds.right || e.clientY < bounds.top || e.clientY > bounds.bottom)) profileDialog.close();
+});
+profileDialog.addEventListener("close", () => {
+  document.body.classList.remove("profile-is-open");
+  if (profileOpener?.isConnected) profileOpener.focus();
+});
 
 document.getElementById("scroll-to-directory").addEventListener("click", () => {
   document.getElementById("directory").scrollIntoView({ behavior: "smooth", block: "start" });

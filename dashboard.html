@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your profile &mdash; Common Ground</title>
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" href="/favicon.ico?v=brand-2" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=brand-2">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=social-style-3">
 <style>
   .dash-wrap { max-width: 640px; margin: 0 auto; padding: 48px 24px 96px; }
   .dash-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 8px; }
@@ -23,14 +23,14 @@
   .field-hint { font-size: 0.78rem; color: var(--ink-soft); margin: 0; }
   .dash-form input, .dash-form select, .dash-form textarea {
     font-family: var(--font-body); font-size: 0.95rem; padding: 10px 12px;
-    border: 1px solid var(--line); border-radius: 8px; background: #fff;
+    border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface);
   }
   .dash-form textarea { resize: vertical; }
   .format-checks { display: flex; gap: 16px; flex-wrap: wrap; }
   .format-checks label { font-weight: 500; display: flex; align-items: center; gap: 6px; }
   .photo-row { display: flex; align-items: center; gap: 16px; }
   .photo-preview {
-    width: 96px; height: 72px; border-radius: 8px; overflow: hidden; background: var(--sand);
+    width: 96px; height: 72px; border-radius: var(--radius); overflow: hidden; background: var(--sand);
     flex: none; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;
     color: var(--ink-soft); font-family: var(--font-mono);
   }
@@ -54,6 +54,9 @@
   }
   .btn-delete:hover { background: #a13d3d; color: #fff; }
 </style>
+<meta name="theme-color" content="#9D5E53">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=brand-2">
+<link rel="manifest" href="/site.webmanifest?v=brand-2">
 </head>
 <body>
 
@@ -101,10 +104,10 @@
     </div>
 
     <div class="field-group">
-      <label for="f-bio">Short bio</label>
-      <textarea id="f-bio" rows="3" maxlength="350" aria-describedby="bio-hint bio-count" placeholder="A couple of warm, plain-language sentences shown on your card."></textarea>
-      <p class="field-hint" id="bio-hint">Up to 350 characters, including spaces. Introduce yourself and the work you offer.</p>
-      <p class="field-hint" id="bio-count" role="status">0 / 350 characters</p>
+      <label for="f-bio">About you</label>
+      <textarea id="f-bio" rows="8" maxlength="1500" aria-describedby="bio-hint bio-count" placeholder="Introduce yourself, your approach, and the work you offer."></textarea>
+      <p class="field-hint" id="bio-hint">Up to 1500 characters, including spaces. A short preview appears on your card; visitors can read your full introduction in your profile.</p>
+      <p class="field-hint" id="bio-count" role="status">0 / 1500 characters</p>
     </div>
 
     <div class="field-row">
@@ -228,7 +231,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
-<script src="js/booking-link.js?v=1"></script>
-<script src="js/dashboard.js?v=personal-booking-1"></script>
+<script src="js/booking-link.js?v=2"></script>
+<script src="js/dashboard.js?v=profile-dialog-1"></script>
 </body>
 </html>

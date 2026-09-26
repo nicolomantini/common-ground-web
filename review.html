@@ -4,17 +4,17 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Leave a review &mdash; Common Ground</title>
-<link rel="icon" href="/favicon.ico" sizes="any">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css">
+<link rel="icon" href="/favicon.ico?v=brand-2" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=brand-2">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=social-style-3">
 <style>
   .review-wrap { max-width: 480px; margin: 0 auto; padding: 56px 24px 96px; }
   .review-form { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
   .review-form label { font-size: 0.85rem; font-weight: 600; }
   .review-form input, .review-form textarea {
     font-family: var(--font-body); font-size: 0.95rem; padding: 10px 12px;
-    border: 1px solid var(--line); border-radius: 8px;
+    border: 1px solid var(--line); border-radius: var(--radius);
   }
   .review-form textarea { resize: vertical; }
   .star-picker { display: flex; gap: 6px; font-size: 1.8rem; }
@@ -26,6 +26,9 @@
   .review-message.is-error { color: #a13d3d; }
   .review-message.is-ok { color: var(--moss-deep); }
 </style>
+<meta name="theme-color" content="#9D5E53">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=brand-2">
+<link rel="manifest" href="/site.webmanifest?v=brand-2">
 </head>
 <body>
 

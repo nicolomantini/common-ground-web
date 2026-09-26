@@ -1,17 +1,17 @@
 /* ---------- Tokens ---------- */
 :root {
-  --bg: #F2F4EE;
-  --surface: #FFFFFF;
-  --ink: #24291F;
-  --ink-soft: #57604F;
-  --moss: #3F5A48;
-  --moss-deep: #2C4032;
-  --moss-light: #7C9A82;
-  --dusk: #5B6E8C;
-  --sand: #E4D9BE;
-  --line: #DAD5C6;
-  --radius: 14px;
-  --font-display: "Fraunces", Georgia, serif;
+  --bg: #FBE9DC;
+  --surface: #FFFCF9;
+  --ink: #314638;
+  --ink-soft: #626158;
+  --moss: #925348;
+  --moss-deep: #713F37;
+  --moss-light: #A7786A;
+  --dusk: #4B6454;
+  --sand: #F2DCCB;
+  --line: #DDC6B7;
+  --radius: 2px;
+  --font-display: "Cormorant Garamond", Georgia, serif;
   --font-body: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
@@ -40,8 +40,8 @@ body {
 }
 
 h1, h2, h3 { font-family: var(--font-display); color: var(--ink); margin: 0; line-height: 1.15; }
-h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 500; }
-h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 500; }
+h1 { font-size: clamp(2.1rem, 4vw, 3.4rem); font-weight: 400; }
+h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 400; }
 h3 { font-size: 1.15rem; font-weight: 600; }
 p { margin: 0 0 1em; color: var(--ink-soft); }
 
@@ -66,7 +66,7 @@ a { color: var(--moss-deep); }
 /* ---------- Header ---------- */
 .site-header {
   position: sticky; top: 0; z-index: 20;
-  background: rgba(242, 244, 238, 0.9);
+  background: rgba(251, 233, 220, 0.96);
   backdrop-filter: blur(6px);
   border-bottom: 1px solid var(--line);
 }
@@ -246,11 +246,11 @@ a { color: var(--moss-deep); }
 
 .btn-whatsapp {
   display: inline-flex; align-items: center; gap: 7px;
-  background: transparent; border: 1px solid #25D366; color: #128C4A;
+  background: transparent; border: 1px solid var(--dusk); color: var(--dusk);
   border-radius: 999px; padding: 9px 16px; font-family: var(--font-body); font-weight: 600;
   font-size: 0.88rem; text-decoration: none; transition: background 0.15s ease, color 0.15s ease;
 }
-.btn-whatsapp:hover { background: #25D366; color: #fff; }
+.btn-whatsapp:hover { background: var(--dusk); color: #fff; }
 
 .detail-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
 .btn-link {
@@ -278,10 +278,10 @@ a { color: var(--moss-deep); }
   background: var(--moss-deep); color: #fff; padding: 16px 24px;
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px;
 }
-.consent-banner p { color: #cfe0d3; margin: 0; font-size: 0.88rem; max-width: 60ch; }
+.consent-banner p { color: #FBE9DC; margin: 0; font-size: 0.88rem; max-width: 60ch; }
 .consent-banner a { color: #fff; text-decoration: underline; }
 .consent-actions { display: flex; gap: 12px; flex: none; }
-.consent-banner .btn-text { color: #cfe0d3; }
+.consent-banner .btn-text { color: #FBE9DC; }
 .consent-banner .btn-primary { padding: 8px 18px; font-size: 0.85rem; }
 
 .empty-state { text-align: center; padding: 40px 0; font-style: italic; }
@@ -290,7 +290,7 @@ a { color: var(--moss-deep); }
 .booking { background: var(--moss-deep); padding: 64px 0; }
 .booking-grid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 48px; }
 .booking-copy h2 { color: #fff; }
-.booking-copy p { color: #cfe0d3; max-width: 40ch; }
+.booking-copy p { color: #FBE9DC; max-width: 40ch; }
 
 .booking-form {
   background: var(--surface); border-radius: var(--radius); padding: 28px;
@@ -343,7 +343,7 @@ a { color: var(--moss-deep); }
 .home .header-row { gap: 24px; }
 .home .header-nav { gap: 22px; align-items: center; }
 .home .hero { padding: 88px 0 72px; }
-.home .hero h1 { font-size: clamp(2.8rem, 5.5vw, 4.4rem); letter-spacing: -0.035em; }
+.home .hero h1 { font-size: clamp(2.8rem, 5.3vw, 4.3rem); letter-spacing: -0.045em; text-transform: uppercase; font-weight: 300; line-height: 1.03; }
 .home .hero-sub { margin: 26px 0; max-width: 51ch; }
 .home .btn-primary { display: inline-block; text-decoration: none; }
 .home .collective-intro { padding: 48px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
@@ -353,7 +353,7 @@ a { color: var(--moss-deep); }
 .home .section-heading { max-width: 650px; margin-bottom: 30px; }
 .home .section-heading h2 { margin-bottom: 18px; }
 .home .gathering-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-.home .gathering-card { padding: 32px; border: 1px solid var(--line); border-radius: var(--radius); background: #f8f8f2; }
+.home .gathering-card { padding: 32px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
 .home .gathering-card h3, .home .recording-note h3 { font-size: 1.6rem; margin: 20px 0 14px; }
 .home .offer-status { display: inline-block; font-family: var(--font-mono); font-size: 0.73rem; color: var(--moss-deep); border: 1px solid var(--moss-light); border-radius: 999px; padding: 5px 10px; }
 .home .offer-detail { font-size: 0.84rem; border-top: 1px solid var(--line); padding-top: 18px; margin: 24px 0 0; }
@@ -365,14 +365,14 @@ a { color: var(--moss-deep); }
 .home .directory-filters[open] .filter-bar { padding-top: 16px; }
 .home .grid { grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
 .home .grid > .empty-state { grid-column: 1 / -1; background: var(--bg); border-radius: var(--radius); padding: 30px; text-align: left; }
-.home .recordings { background: #e8ecdf; }
+.home .recordings { background: #F2DCCB; }
 .home .recordings-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 80px; align-items: center; }
 .home .recordings h2 { margin-bottom: 22px; }
 .home .recording-note { border-left: 1px solid var(--moss-light); padding-left: 32px; }
 .home .recording-note p { margin-bottom: 0; }
 .home .booking-copy h2 { margin-bottom: 24px; }
 .home .booking-copy a { color: #fff; text-underline-offset: 3px; }
-.home .booking-copy .eyebrow { color: #cfe0d3; }
+.home .booking-copy .eyebrow { color: #FBE9DC; }
 .home .booking-form h3 { margin-bottom: 12px; }
 .home .booking-grid > * { min-width: 0; }
 .home .booking-form input, .home .booking-form select, .home .booking-form textarea { min-width: 0; width: 100%; }
@@ -405,4 +405,76 @@ a { color: var(--moss-deep); }
 a.btn-book { display: inline-block; text-decoration: none; }
 .btn-book:disabled { cursor: not-allowed; opacity: 0.55; }
 .btn-book:disabled:hover { background: transparent; color: var(--moss-deep); }
-.booking-unavailable { margin: 8px 0 0; font-size: 0.78rem; }
+
+
+/* Social identity: peach paper, terracotta panels, fine serif lettering. */
+:root { --terracotta: #9D5E53; --peach: #FBE9DC; }
+h2 { text-transform: uppercase; letter-spacing: -0.025em; font-size: clamp(2rem, 3.5vw, 3rem); }
+h3 { font-size: 1.5rem; font-weight: 500; }
+.logo { font-size: 1.5rem; font-weight: 400; text-transform: uppercase; letter-spacing: -0.04em; gap: 6px; }
+.logo, .logo span { color: var(--ink); }
+.logo-mark { margin-right: 6px; }
+.eyebrow { font-family: var(--font-body); font-size: 0.7rem; letter-spacing: 0.17em; }
+.btn-primary, .btn-book, .btn-whatsapp, .header-nav .nav-cta { border-radius: 2px; }
+.btn-primary { font-weight: 500; }
+.home .hero-grid { grid-template-columns: 1.35fr 0.85fr; gap: 56px; }
+.home .hero-marks { height: 390px; }
+.home .hero-illustration { width: 64%; max-height: 70%; object-fit: contain; opacity: 0.8; }
+.home .collective-intro { background: var(--terracotta); border-color: #fff; padding: 64px 0; }
+.home .collective-intro h2, .home .collective-intro .eyebrow { color: var(--peach); }
+.home .collective-intro p { color: #fff; }
+.home .gathering-grid { gap: 2px; background: #fff; border: 2px solid #fff; }
+.home .gathering-card { border: none; min-height: 280px; padding: 40px; background: var(--surface); }
+.home .gathering-card:nth-child(2) { background: var(--sand); }
+.home .gathering-card h3 { font-size: 2rem; font-weight: 400; }
+.home .offer-status { border-radius: 2px; font-family: var(--font-body); }
+.home .directory { border-block: 2px solid #fff; }
+.card { background: var(--peach); }
+.card-heading h3 { font-size: 1.8rem; font-weight: 400; }
+.home .recordings { background: var(--peach); }
+.booking { background: var(--terracotta); border-block: 2px solid #fff; }
+.booking-form { background: var(--peach); }
+.site-footer { background: var(--surface); padding-top: 36px; }
+@media (max-width: 960px) {
+  .home .header-nav { gap: 12px; }
+  .home .header-nav a { font-size: 0.82rem; }
+  .home .hero-grid { gap: 28px; }
+  .home .hero-marks { height: 320px; }
+}
+@media (max-width: 720px) {
+  .home .header-row { gap: 12px; }
+  .logo { font-size: clamp(1.05rem, 5.5vw, 1.5rem); }
+  .home .hero-grid { grid-template-columns: 1fr; }
+  .home .hero-marks { display: flex; height: 180px; }
+  .home .hero-illustration { width: 130px; max-height: 140px; }
+  .home .hero h1 { font-size: clamp(2.5rem, 8vw, 3.8rem); }
+  .home .collective-intro { padding: 48px 0; }
+  .home .gathering-grid { gap: 2px; }
+  .home .gathering-card { min-height: auto; padding: 28px; }
+  .home .header-nav a { font-size: 0.95rem; }
+}
+
+/* Full practitioner profiles */
+button.card-toggle { background: none; border: 0; font-family: var(--font-body); text-align: left; cursor: pointer; padding-top: 12px; text-decoration: underline; text-underline-offset: 4px; }
+.card > .tagline { min-height: 5.7em; }
+.profile-is-open { overflow: hidden; }
+.profile-dialog { width: min(760px, calc(100% - 48px)); max-height: calc(100dvh - 64px); padding: 0 32px 32px; border: 1px solid var(--line); background: var(--peach); color: var(--ink); overscroll-behavior: contain; }
+.profile-dialog::backdrop { background: rgba(35, 42, 34, 0.6); }
+.profile-dialog-toolbar { display: flex; justify-content: flex-end; position: sticky; top: 0; background: var(--peach); padding: 16px 0; z-index: 1; }
+.profile-full .mark { max-width: 320px; margin-bottom: 24px; }
+.profile-full h3 { font-size: 2.4rem; }
+.profile-full .tagline { white-space: pre-wrap; overflow-wrap: anywhere; margin: 20px 0; }
+.profile-full .card-detail { animation: none; }
+.profile-full .card-detail dd { overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+  .profile-dialog { width: 100%; max-width: 100%; height: 100dvh; max-height: 100dvh; margin: 0; border: 0; padding: 0 24px 32px; }
+}
+
+/* Shared controls follow the same restrained brand treatment. */
+.filter-row input[type="search"], .filter-row select, .nav-toggle { border-radius: var(--radius); }
+.connect-label { color: var(--moss-deep); }
+
+/* Tint the original transparent mark to match the terracotta identity. */
+.logo-mark, .home .hero-illustration {
+  filter: brightness(0) saturate(100%) invert(43%) sepia(22%) saturate(1059%) hue-rotate(321deg) brightness(91%) contrast(87%);
+}

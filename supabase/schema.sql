@@ -19,7 +19,7 @@ create table if not exists public.counselors (
   session_length text,
   price_range text,              -- "$", "$$", or "$$$"
   availability text,             -- "Accepting new clients" / "Waitlist" / etc.
-  bio text constraint counselors_bio_length check (char_length(bio) <= 350),
+  bio text constraint counselors_bio_length check (char_length(bio) <= 1500),
   focus text,
   website text,
   booking_url text,             -- personal HTTPS booking page, e.g. Cal.com
