@@ -27,6 +27,7 @@ create table if not exists public.counselors (
   instagram text,
   facebook text,
   linkedin text,
+  substack text,
   approved boolean not null default false,     -- member saves publish; admin-created starters remain hidden
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

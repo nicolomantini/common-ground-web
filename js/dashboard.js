@@ -2,6 +2,7 @@ let currentUser = null;
 let existingProfile = null; // null until we know whether one exists
 let pendingPhotoFile = null;
 let bookingLinksAvailable = false;
+let substackAvailable = false;
 
 const form = document.getElementById("profile-form");
 const message = document.getElementById("dash-message");
@@ -25,6 +26,8 @@ function updateBioCount() {
 bioInput.addEventListener("input", updateBioCount);
 bioInput.addEventListener("change", updateBioCount);
 updateBioCount();
+
+document.getElementById("f-substack").addEventListener("input", e => e.target.setCustomValidity(""));
 
 const bookingInput = document.getElementById("f-booking-url");
 function validateBookingLink() {
@@ -77,6 +80,12 @@ async function init() {
   document.getElementById("booking-link-hint").textContent = bookingLinksAvailable
     ? "Paste your HTTPS booking-page link from Cal.com or another provider. Leave blank to disable online booking."
     : "Booking link editing is temporarily unavailable. You can still save your other profile details.";
+  const substackProbe = await supabaseClient.from("counselors").select("substack").limit(0);
+  substackAvailable = !substackProbe.error;
+  document.getElementById("f-substack").disabled = !substackAvailable;
+  document.getElementById("substack-hint").textContent = substackAvailable
+    ? "Link to your Substack profile or publication, including a custom domain."
+    : "Substack links will be available once the journal setup is complete.";
   if (existingProfile) {
     populateForm(existingProfile);
     document.getElementById("save-btn").textContent = existingProfile.approved ? "Save changes" : "Publish profile";
@@ -107,6 +116,7 @@ function populateForm(p) {
   document.getElementById("f-instagram").value = p.instagram || "";
   document.getElementById("f-facebook").value = p.facebook || "";
   document.getElementById("f-linkedin").value = p.linkedin || "";
+  document.getElementById("f-substack").value = p.substack || "";
   document.querySelectorAll(".f-format").forEach((cb) => {
     cb.checked = (p.formats || []).includes(cb.value);
   });
@@ -146,6 +156,11 @@ form.addEventListener("submit", async (e) => {
     validateBookingLink();
     if (!bookingInput.reportValidity()) return;
   }
+  const substackInput = document.getElementById("f-substack");
+  if (substackAvailable) {
+    substackInput.setCustomValidity(substackInput.value.trim() && !normalizeBookingUrl(substackInput.value) ? "Enter a complete HTTPS Substack link." : "");
+    if (!substackInput.reportValidity()) return;
+  }
   showMessage("Saving…", false);
 
   try {
@@ -171,6 +186,7 @@ form.addEventListener("submit", async (e) => {
       linkedin: document.getElementById("f-linkedin").value.trim() || null,
       photo: photoUrl
     };
+    if (substackAvailable) payload.substack = normalizeBookingUrl(substackInput.value);
     if (bookingLinksAvailable) payload.booking_url = normalizeBookingUrl(bookingInput.value);
 
     let result;

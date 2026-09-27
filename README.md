@@ -73,3 +73,20 @@ Netlify and follow their DNS instructions.
   site is copyright-clean and works without any image assets.
 - Fonts (Fraunces / Inter / IBM Plex Mono) load from Google Fonts via `<link>` tags in
   `index.html` — no local font files needed.
+
+## Shared Blog
+
+Run `supabase/journal.sql` in the Supabase SQL Editor before enabling journal editing. This adds posts, protected editor roles, a cover-image bucket, and the Substack profile field. Nico's existing account (`nicolomantini@gmail.com`) is assigned the collective editor role; other existing members can manage their own posts. No accounts or passwords are created. Apply `supabase/limit-profile-description.sql` separately if not already applied.
+
+- Public journal: `blog.html`; legacy Journal URLs redirect here.
+- Member editor: `blog-editor.html`, linked from the dashboard.
+- The visual editor supports basic formatting and poetry line breaks, limited to 30,000 stored characters. Plain-text posts remain readable. If the original setup was already run, apply `supabase/blog-formatting.sql` to enable formatted posts.
+- Covers: JPEG, PNG, WebP up to 5 MB in Supabase Storage. Cover URLs are public even for drafts; removing a cover only removes its association with the post.
+- Videos: public or unlisted YouTube links. The external player loads only after a visitor chooses Play.
+- Save as draft unpublishes an existing post; Publish/Update makes it public immediately. No permanent-delete UI.
+- New posts link to their practitioner's profile. Original static articles remain reachable at their existing `post.html?slug=…` links.
+- Per-post social previews and automatic post sitemap generation are not part of this first version.
+
+Checks: `node tests/journal.test.cjs`, plus mobile and desktop editor checks. Database row-level policies must be verified against the deployed Supabase project after applying the migration (owner, another member, editor, anonymous visitor).
+
+The blog uses Quill 2.0.3 (BSD-3-Clause), vendored under `vendor/quill`, with its Snow icon toolbar and history module. Shift+Enter inserts a soft line break within a paragraph. Saved and pasted HTML passes through the shared formatting allowlist.

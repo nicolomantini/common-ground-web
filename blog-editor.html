@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Write for the blog — Common Ground</title><meta name="robots" content="noindex">
+<meta name="description" content="Poems, reflections, practices, and conversations from the Common Ground collective.">
+
+
+
+<meta property="og:site_name" content="Common Ground">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Blog — Common Ground">
+<meta property="og:description" content="Poems, reflections, practices, and conversations from the Common Ground collective.">
+<meta property="og:image" content="https://common-ground.space/images/common-ground-og.png?v=brand-2">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://common-ground.space/images/common-ground-og.png?v=brand-2">
+
+<link rel="icon" href="/favicon.ico?v=brand-2" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=brand-2">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=brand-2">
+<link rel="manifest" href="/site.webmanifest?v=brand-2">
+<meta name="theme-color" content="#9D5E53">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="vendor/quill/quill.snow.css?v=2.0.3">
+<link rel="stylesheet" href="css/styles.css?v=quill-3">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap header-row">
+    <a href="index.html" class="logo"><img src="images/logo-mark.png" alt="" class="logo-mark">Common <span>Ground</span></a>
+    <nav class="header-nav" id="header-nav" aria-label="Primary">
+      <a href="index.html#directory">Meet practitioners</a>
+      <a href="blog.html">Blog</a>
+      <a href="auth.html" class="nav-cta">Practitioner login</a>
+    </nav>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="header-nav">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main class="wrap journal-wrap">
+<a class="back-link" href="dashboard.html">← Back to dashboard</a><h1>Your blog</h1>
+<p>Share a poem, a practice, or a conversation with the collective.</p>
+<p id="editor-message" role="status">Loading your posts…</p>
+<div id="journal-workspace" hidden>
+<button type="button" id="new-post" class="btn-book">New post</button>
+<div id="editor-posts" class="editor-posts"></div>
+<form id="journal-form" class="journal-form">
+<p id="editing-label">New draft</p>
+<label for="j-title">Title</label><input id="j-title" maxlength="160" required>
+<label for="j-category">Category</label><select id="j-category"><option>Poems &amp; reflections</option><option>Practices</option><option>Conversations</option></select>
+<label id="writing-label">Your words</label>
+<div id="writing-toolbar" role="group" aria-label="Text formatting"><span class="ql-formats"><button type="button" class="ql-bold" aria-label="Bold" title="Bold"></button><button type="button" class="ql-italic" aria-label="Italic" title="Italic"></button></span><span class="ql-formats"><button type="button" class="ql-header" value="2" aria-label="Heading" title="Heading"></button><button type="button" class="ql-blockquote" aria-label="Quote" title="Quote"></button></span><span class="ql-formats"><button type="button" class="ql-list" value="bullet" aria-label="Bulleted list" title="Bulleted list"></button><button type="button" class="ql-list" value="ordered" aria-label="Numbered list" title="Numbered list"></button></span><span class="ql-formats"><button type="button" class="ql-align" value="" aria-label="Align left" title="Align left"></button><button type="button" class="ql-align" value="center" aria-label="Centre text" title="Centre text"></button></span><span class="ql-formats"><button type="button" class="ql-clean" aria-label="Clear formatting" title="Clear formatting"></button></span><span class="ql-formats"><button type="button" class="ql-undo" aria-label="Undo" title="Undo"><svg viewBox="0 0 18 18" aria-hidden="true"><path class="ql-stroke" fill="none" d="M6 4 2 8l4 4M2 8h8a5 5 0 0 1 5 5"/></svg></button><button type="button" class="ql-redo" aria-label="Redo" title="Redo"><svg viewBox="0 0 18 18" aria-hidden="true" style="transform:scaleX(-1)"><path class="ql-stroke" fill="none" d="M6 4 2 8l4 4M2 8h8a5 5 0 0 1 5 5"/></svg></button></span></div>
+<div id="writing-area"></div>
+<input type="hidden" id="j-body">
+<p id="writing-hint" class="form-note">Select text to format it. Enter starts a paragraph; Shift + Enter adds a line within a poem. Pasted text keeps its line breaks. Up to 30,000 characters including formatting.</p>
+<label for="j-cover">Cover image (optional)</label><input type="file" id="j-cover" accept="image/jpeg,image/png,image/webp">
+<p class="form-note">JPEG, PNG, or WebP, up to 5 MB. Uploaded cover images are public, including for drafts.</p>
+<img id="cover-preview" class="journal-cover" alt="Cover preview" hidden>
+<button type="button" class="btn-text" id="remove-cover">Remove cover from this post</button>
+<label for="j-alt">Image description</label><input id="j-alt" maxlength="300" placeholder="Describe the image for someone who cannot see it">
+<label for="j-video">YouTube video link (optional)</label><input type="url" id="j-video" placeholder="https://www.youtube.com/watch?v=…">
+<p class="form-note">Use a public or unlisted video with embedding enabled. Anyone with an unlisted link can watch it.</p>
+<div class="hero-actions">
+<button type="button" id="preview-post" class="btn-book">Preview</button>
+<button type="submit" name="action" value="draft" class="btn-book">Save as draft</button>
+<button type="submit" name="action" value="published" class="btn-primary">Publish</button>
+</div>
+<p class="form-note">Publishing makes the post public immediately. Saving a published post as a draft removes it from the blog.</p>
+</form></div>
+</main>
+<dialog id="journal-preview" class="profile-dialog" aria-label="Post preview"><div class="profile-dialog-toolbar"><button type="button" id="close-preview" class="btn-book" autofocus>Close preview</button></div><article id="preview-content"></article></dialog><footer class="site-footer">
+  <div class="wrap footer-row">
+    <p>&copy; 2026 Common Ground. Not a substitute for emergency care.</p>
+    <a href="privacy.html">Privacy</a> &middot; <a href="terms.html">Terms</a> &middot; <a href="index.html">Back to directory</a>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/nav-auth.js"></script>
+<script src="js/journal-common.js?v=3"></script>
+<script src="js/journal-nav.js?v=1"></script><script src="vendor/quill/quill.js?v=2.0.3"></script><script src="js/writing-editor.js?v=3"></script><script src="js/journal-editor.js?v=2"></script></body></html>
