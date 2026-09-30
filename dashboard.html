@@ -7,7 +7,7 @@
 <link rel="icon" href="/favicon.ico?v=brand-2" sizes="any">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=brand-2">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=blog-2">
+<link rel="stylesheet" href="css/styles.css?v=palette-1">
 <style>
   .dash-wrap { max-width: 640px; margin: 0 auto; padding: 48px 24px 96px; }
   .dash-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 8px; }
@@ -15,7 +15,7 @@
     font-family: var(--font-mono); font-size: 0.78rem; padding: 5px 12px; border-radius: 999px;
     background: var(--sand); color: var(--moss-deep); white-space: nowrap;
   }
-  .status-badge.is-pending { background: #f0e6cf; color: #8a6b3f; }
+  .status-badge.is-pending { background: var(--sand); color: var(--warning); }
   .dash-form { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
   .field-group { display: flex; flex-direction: column; gap: 6px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -41,18 +41,18 @@
     cursor: pointer; font-family: var(--font-body); font-size: 0.85rem;
   }
   .dash-message { font-size: 0.85rem; min-height: 1.2em; }
-  .dash-message.is-error { color: #a13d3d; }
-  .dash-message.is-ok { color: var(--moss-deep); }
+  .dash-message.is-error { color: var(--danger); }
+  .dash-message.is-ok { color: var(--success); }
 
   .dash-subsection { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--line); }
   .dash-subsection h2 { font-size: 1.15rem; margin-bottom: 12px; }
   .dash-danger { }
   .btn-delete {
-    background: none; border: 1px solid #a13d3d; color: #a13d3d; border-radius: 999px;
+    background: none; border: 1px solid var(--danger); color: var(--danger); border-radius: 999px;
     padding: 9px 18px; font-family: var(--font-body); font-weight: 600; font-size: 0.88rem;
     cursor: pointer; margin-top: 8px;
   }
-  .btn-delete:hover { background: #a13d3d; color: #fff; }
+  .btn-delete:hover { background: var(--danger); color: #fff; }
 </style>
 <meta name="theme-color" content="#9D5E53">
 <link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=brand-2">
