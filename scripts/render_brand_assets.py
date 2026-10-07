@@ -3,9 +3,9 @@ from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
 
 ROOT = Path(__file__).resolve().parents[1]
-PEACH = '#FBE9DC'
-TERRA = '#9D5E53'
-GREEN = '#314638'
+PEACH = '#FEEADD'
+TERRA = '#9E5D54'
+INK = '#3F2522'
 # Cubic curves simplify the existing branching mark for small icon sizes.
 CURVES = [
     ((51,53),(58,39),(70,20),(80,9)),
@@ -42,9 +42,9 @@ share = Image.new('RGB',(1200,630),PEACH)
 draw = ImageDraw.Draw(share)
 serif = ImageFont.truetype('/usr/share/fonts/truetype/adf/AccanthisADFStd-Regular.otf',86)
 body = ImageFont.truetype('/usr/share/fonts/truetype/lato/Lato-Regular.ttf',25)
-draw.text((85,185),'COMMON',font=serif,fill=GREEN)
-draw.text((85,285),'GROUND',font=serif,fill=GREEN)
-draw.text((88,427),'Presence · Inquiry · Connection',font=body,fill=GREEN)
+draw.text((85,185),'COMMON',font=serif,fill=INK)
+draw.text((85,285),'GROUND',font=serif,fill=INK)
+draw.text((88,427),'Presence · Inquiry · Connection',font=body,fill=INK)
 draw.text((88,545),'common-ground.space',font=body,fill=TERRA)
 mark(draw,(775,120),330,TERRA,3)
 share.save(ROOT/'images/common-ground-og.png')
