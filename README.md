@@ -90,3 +90,11 @@ Run `supabase/journal.sql` in the Supabase SQL Editor before enabling journal ed
 Checks: `node tests/journal.test.cjs`, plus mobile and desktop editor checks. Database row-level policies must be verified against the deployed Supabase project after applying the migration (owner, another member, editor, anonymous visitor).
 
 The blog uses Quill 2.0.3 (BSD-3-Clause), vendored under `vendor/quill`, with its Snow icon toolbar and history module. Shift+Enter inserts a soft line break within a paragraph. Saved and pasted HTML passes through the shared formatting allowlist.
+
+## Shared event links
+
+The public Linktree-style page is `/events/` (the `/events` directory route also works). Run `supabase/events.sql` in Supabase SQL Editor before use. No extra service or build step is needed. Existing practitioners can manage their own event links on the same page after signing in; the dashboard links there. Visitors see published links only. Members can hide and restore links, and cannot edit another member's links. Dates are optional calendar dates, ordered earliest first, with undated links last. Events remain visible until their owner hides them. The homepage's featured Luma card remains separately curated.
+
+Verify database permissions after setup: anonymous read of published links, owner create/edit/hide, rejection of another user's updates and of creation by accounts without practitioner profiles.
+
+Run `supabase/event-details.sql` after `supabase/events.sql` to enable up to eight practitioner hosts and an optional cover image per event. Host selection does not grant editing rights. The cards link to host profiles and use initials when no photo is available. Covers accept JPEG, PNG, or WebP up to 5 MB in the public `event-covers` bucket; hidden-event covers are public too. Removing a cover detaches it but does not delete the stored file. Existing links continue working before the migration; extra fields remain disabled until it is applied.

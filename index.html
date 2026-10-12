@@ -27,7 +27,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=brand-scale-3">
+<link rel="stylesheet" href="css/styles.css?v=events-4">
 </head>
 <body class="home">
 
@@ -38,7 +38,7 @@
     <a href="#top" class="logo"><img src="images/logo-mark.png" alt="" class="logo-mark">Common <span>Ground</span></a>
     <nav class="header-nav" id="header-nav" aria-label="Primary">
       <a href="#about">About</a>
-      <a href="#gatherings">Gatherings</a>
+      <a href="/events/">Events</a>
       <a href="#directory">Practitioners</a>
       <a href="#recordings">Conversations</a>
       <a href="blog.html">Blog</a>
@@ -59,7 +59,7 @@
         <h1>Common Ground</h1>
         <p class="hero-sub">Common Ground brings together independent practitioners offering meditation, inquiry, counselling, and meaningful conversations. We share a commitment to presence, curiosity, and meeting each other where we are.</p>
         <div class="hero-actions">
-          <a class="btn-primary" href="#gatherings">Explore gatherings</a>
+          <a class="btn-primary" href="#events">Explore events</a>
           <a class="btn-ghost" href="#directory" id="scroll-to-directory">Meet the practitioners</a>
         </div>
       </div>
@@ -82,30 +82,16 @@
     </div>
   </section>
 
-  <section class="gatherings home-section" id="gatherings" aria-labelledby="gatherings-title">
+  <section class="gatherings home-section" id="events" aria-labelledby="events-title">
     <div class="wrap">
       <div class="section-heading">
         <p class="eyebrow">Come together</p>
-        <h2 id="gatherings-title">Upcoming gatherings</h2>
+        <h2 id="events-title">Upcoming events</h2>
         <p>Join us for shared exploration, meditation, and inquiry. Find the details and registration link in each invitation.</p>
       </div>
-      <div class="gathering-grid">
-        <article class="gathering-card">
-          <span class="offer-status">Online inquiry circle</span>
-          <h3>Questioning Guidance</h3>
-          <p>What happens in you when you are guided by someone else? Explore trust and resistance through guided reflection, silence, embodied awareness, and inquiry in pairs.</p>
-          <p class="offer-detail"><time datetime="2026-10-15T19:00:00+02:00">Thursday, 15 October 2026 · 19:00–20:30 CEST</time><br>Online via Zoom · In English<br>With Nico and Irene</p>
-          <p>No previous experience needed.<br>Sliding-scale contribution: €10–€35.</p>
-          <a href="https://luma.com/event/evt-4XatCwOgDDgSX61" class="btn-primary luma-checkout--button" data-luma-action="checkout" data-luma-event-id="evt-4XatCwOgDDgSX61">Register for event</a>
-        </article>
-        <article class="gathering-card">
-          <span class="offer-status">In preparation</span>
-          <h3>A pause for meditation</h3>
-          <p>A shared time to slow down and bring attention to present experience.</p>
-          <p class="offer-detail">Host, date, format, and cost to be confirmed.</p>
-        </article>
-      </div>
-      <p class="section-note">Each invitation explains who the gathering is for and how to take part. Registration for Questioning Guidance is handled on Luma.</p>
+      <p id="home-events-message" role="status">Loading upcoming events…</p>
+      <div id="home-events" class="home-events-grid"></div>
+      <p class="events-all"><a class="btn-ghost" href="/events/">View all events <span aria-hidden="true">→</span></a></p>
     </div>
   </section>
 
@@ -176,7 +162,7 @@
       <div class="booking-copy">
         <p class="eyebrow">Your next step</p>
         <h2>Take part in your own way.</h2>
-        <p>For a shared experience, <a href="#gatherings">explore our gatherings</a>. For individual work, meet the practitioners and choose someone whose approach feels right for you.</p>
+        <p>For a shared experience, <a href="#events">explore our events</a>. For individual work, meet the practitioners and choose someone whose approach feels right for you.</p>
       </div>
       <div class="booking-form">
         <h3>Book directly with a practitioner</h3>
@@ -207,7 +193,9 @@
 <script src="js/nav-auth.js"></script>
 <script src="js/booking-link.js?v=2"></script>
 <script src="js/app.js?v=blog-2"></script>
+<script src="js/journal-common.js?v=3"></script>
+<script src="js/event-cards.js?v=1"></script>
+<script src="js/home-events.js?v=1"></script>
 <script src="js/analytics.js"></script>
-<script id="luma-checkout" src="https://embed.lu.ma/checkout-button.js" defer></script>
 </body>
 </html>

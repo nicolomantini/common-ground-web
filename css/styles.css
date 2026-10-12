@@ -1,7 +1,7 @@
 /* ---------- Tokens ---------- */
 :root {
   /* Supporting tones are tints and shades of these two brand colours. */
-  --peach: #FEEADD;
+  --peach: #F7E0D3;
   --terracotta: #9E5D54;
   --bg: #FFF8F3;
   --surface: #FFFCFB;
@@ -584,3 +584,96 @@ input, select, textarea { color: var(--ink); accent-color: var(--moss); }
 ::selection { background: var(--peach); color: var(--ink); }
 #writing-toolbar button:hover .ql-stroke, #writing-toolbar button:focus .ql-stroke { stroke: var(--moss-deep); }
 #writing-toolbar button:hover .ql-fill, #writing-toolbar button:focus .ql-fill, #writing-toolbar button.ql-active .ql-fill { fill: var(--moss-deep); }
+
+/* "Shared values. Distinct voices." uses the same light background as gatherings. */
+.home .collective-intro { background: #FFFCFB; }
+.home .gathering-card { background: #FFF8F3; }
+
+/* "Take part in your own way." on terracotta */
+.booking, .home .booking { background: var(--terracotta); border-block-color: var(--terracotta); }
+.home .booking-copy h2 { color: var(--surface); }
+.home .booking-copy p { color: var(--peach); }
+.home .booking-copy a { color: var(--surface); }
+.home .booking-copy .eyebrow { color: var(--peach); }
+
+/* Upcoming gatherings: near-white section background. */
+.home .gatherings { background: #FFFCFB; }
+
+/* Hero ("Common Ground"): #9E5D54 background, #FFF8F3 text */
+.home .hero { background: #9E5D54; }
+.home .hero h1, .home .hero .eyebrow, .home .hero-sub { color: #FFF8F3; }
+.home .hero .btn-primary { background: #FFF8F3; color: #9E5D54; }
+.home .hero .btn-primary:hover { background: #F7E0D3; }
+.home .hero .btn-ghost, .home .hero .btn-ghost:hover { color: #FFF8F3; border-color: #FFF8F3; }
+.home .hero :focus-visible { outline-color: #FFF8F3; }
+.home .hero-marks::after { background: #FFF8F3; }
+
+/* "A conversation can be a place to begin." */
+.home .recordings { background: #FFFCFB; }
+
+/* Top menu bar */
+.site-header, .home .site-header { background: #FFFCFB; }
+.home .header-nav { background: #FFFCFB; }
+
+/* Header logo mark in #9E5D54; hero mark nudged left */
+.logo:has(.logo-mark)::before { background: #9E5D54; }
+.home .hero-marks::after { transform: translateX(-22%); }
+
+/* Gathering cards: white background, terracotta frame */
+.home .gathering-card { background: #FFFFFF; border-color: #9E5D54; }
+
+/* A compact, shareable event-link hub. */
+.event-hub { max-width: 680px; margin: auto; padding: 64px 24px 80px; }
+.event-hub > h1 { margin-bottom: 20px; }
+.event-links { display: grid; gap: 16px; margin: 32px 0; }
+.event-link { display: block; padding: 24px; background: var(--surface); border: 1px solid var(--terracotta); border-radius: var(--radius); text-decoration: none; overflow-wrap: anywhere; }
+.event-link h2 { font-size: 1.4rem; margin-bottom: 10px; }
+.event-link p { margin-bottom: 12px; }
+.event-link time { display: block; font-size: .85rem; color: var(--ink-soft); }
+.event-register { display: inline-block; margin-top: 16px; text-decoration: none; }
+#event-manager { border-top: 1px solid var(--line); margin-top: 48px; padding-top: 32px; }
+#event-manager h2 { margin-bottom: 16px; }
+.event-publish { display: flex; gap: 10px; align-items: center; }
+.journal-form .event-publish input { width: auto; }
+
+.events-page .header-row { gap: 20px; }
+.events-page .logo { white-space: nowrap; }
+.events-page .header-row > a:last-child { font-size: .85rem; }
+@media (max-width: 420px) { .events-page .header-row { flex-wrap: wrap; gap: 8px 20px; } }
+
+/* Event invitations: optional cover, clear date, and the people hosting. */
+.event-hub { max-width: 760px; }
+.event-links { gap: 24px; }
+.event-link { padding: 0; overflow: hidden; border-color: var(--line); border-radius: 12px; box-shadow: 0 4px 18px rgba(63,37,34,.04); }
+.event-cover { display: block; width: 100%; aspect-ratio: 16/7; object-fit: cover; }
+.event-content { padding: 28px; }
+.event-content > time { margin-bottom: 12px; color: var(--moss-deep); font-size: .8rem; font-weight: 600; }
+.event-content > h2 { font-size: 1.65rem; margin-bottom: 14px; }
+.event-card-footer { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px; margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--line); }
+.event-register { margin-top: 0; border-radius: 6px; }
+.event-host-label { font-size: .75rem; color: var(--ink-soft); margin-bottom: 8px !important; }
+.event-hosts { display: flex; flex-wrap: wrap; gap: 12px; }
+.event-host { display: inline-flex; align-items: center; gap: 8px; font-size: .82rem; text-decoration: none; }
+.event-host:hover { text-decoration: underline; }
+.event-avatar { position: relative; width: 34px; height: 34px; flex-shrink: 0; border-radius: 50%; overflow: hidden; display: inline-flex; align-items: center; justify-content: center; background: var(--sand); color: var(--moss-deep); font-size: .7rem; }
+.event-avatar img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+#event-host-field { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 8px; }
+.event-host-options { display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: 8px; margin-top: 12px; }
+.journal-form .event-host-choice { display: flex; align-items: center; gap: 8px; margin: 0; font-size: .85rem; cursor: pointer; }
+.journal-form .event-host-choice input { width: auto; }
+.event-photo-preview { width: 100%; max-height: 220px; object-fit: contain; border-radius: 8px; }
+.event-photo-preview[hidden] { display: none; }
+@media(max-width:480px) { .event-content { padding: 20px; } .event-content > h2 { font-size: 1.4rem; } .event-cover { aspect-ratio: 16/9; } }
+
+/* Upcoming invitations: a compact preview with matching host and registration details. */
+.home-events-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 24px; }
+.home-events-grid .event-link { display: flex; flex-direction: column; max-width: 520px; }
+.home-events-grid .event-cover { aspect-ratio: 16/9; }
+.home-events-grid .event-content { display: flex; flex: 1; flex-direction: column; padding: 24px; }
+.home-events-grid h3 { font-size: 1.5rem; margin-bottom: 14px; }
+.home-events-grid .event-content > p { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; }
+.home-events-grid .event-card-footer { margin-top: auto; padding-top: 18px; }
+.home-events-grid .event-content > p:last-of-type { margin-bottom: 24px; }
+.events-all { margin-top: 28px; }
+.home-events-grid .event-cover-placeholder { aspect-ratio: 16/9; background: var(--peach); display: grid; place-items: center; }
+.home-events-grid .event-cover-placeholder::after { content: ''; width: 90px; height: 100px; background: var(--terracotta); mask: url('../images/logo-mark.png') center / contain no-repeat; -webkit-mask: url('../images/logo-mark.png') center / contain no-repeat; opacity: .65; }
