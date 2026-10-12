@@ -5,7 +5,7 @@
   const tell = text => {message.textContent = text;};
   const setBusy = value => {busy = value; WritingEditor.disable(value); form.querySelectorAll('input,textarea,select,button').forEach(e=>e.disabled=value); $('new-post').disabled=value; $('editor-posts').querySelectorAll('button').forEach(e=>e.disabled=value);};
   function values() {
-    return {title:$('j-title').value.trim(),category:$('j-category').value,body:$('j-body').value,body_format:'html',cover_url:coverURL,cover_alt:$('j-alt').value.trim(),video_url:Journal.httpsURL($('j-video').value.trim())};
+    return {title:$('j-title').value.trim(),category:$('j-category').value,body:$('j-body').value,body_format:'html',cover_url:coverURL,cover_alt:coverURL === current?.cover_url ? (current?.cover_alt || '') : '',video_url:Journal.httpsURL($('j-video').value.trim())};
   }
   function validateVideo() {
     $('j-video').setCustomValidity($('j-video').value.trim() && !Journal.videoEmbed($('j-video').value.trim()) ? 'Enter a valid HTTPS YouTube video link.' : '');
@@ -20,7 +20,7 @@
     if(busy || (dirty && !confirm('Discard your unsaved changes?'))) return;
     current = post || null; form.reset(); clearLocalCover(); coverURL=post?.cover_url || null;
     $('j-title').value=post?.title || ''; $('j-category').value=post?.category || Journal.categories[0];
-    WritingEditor.set(post); $('j-alt').value=post?.cover_alt || ''; $('j-video').value=post?.video_url || '';
+    WritingEditor.set(post); $('j-video').value=post?.video_url || '';
     $('editing-label').textContent=post ? `${post.status === 'published' ? 'Published' : 'Draft'} · ${post.counselors?.name || author.name}` : 'New draft';
     form.querySelector('[value="published"]').textContent=post?.status==='published' ? 'Update published post' : 'Publish';
     validateVideo(); updateCoverPreview(); dirty=false;
