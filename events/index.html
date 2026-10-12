@@ -35,7 +35,7 @@
 <div id="event-links" class="event-links"></div>
 <p id="events-login"><a href="/auth.html">Practitioner login</a> to share an event.</p>
 <section id="event-manager" hidden aria-labelledby="manage-title">
-<h2 id="manage-title">Your event links</h2><p>Add an invitation from Luma or any other event website. Published links appear above immediately.</p>
+<h2 id="manage-title">Events you manage</h2><p>Add an invitation from Luma or any other event website. You can edit events you created or are hosting. Published links appear above immediately.</p>
 <div id="own-events" class="editor-posts"></div>
 <button type="button" id="new-event" class="btn-book">Add an event</button>
 <form id="event-form" class="journal-form">
@@ -43,7 +43,7 @@
 <label for="event-url">Event link</label><input id="event-url" type="url" required maxlength="2000" placeholder="https://…">
 <label for="event-description">Short description (optional)</label><textarea id="event-description" maxlength="240" rows="3"></textarea>
 <label for="event-date">Event date (optional)</label><input id="event-date" type="date"><p class="field-hint">Add a future date to include this event on the homepage.</p>
-<fieldset id="event-host-field"><legend>Hosts (optional)</legend><p class="field-hint">Select the practitioners hosting this event.</p><div id="event-host-options" class="event-host-options"></div></fieldset>
+<fieldset id="event-host-field"><legend>Hosts (optional)</legend><p class="field-hint">Select the practitioners hosting this event. Every selected host can edit it.</p><div id="event-host-options" class="event-host-options"></div></fieldset>
 <label for="event-photo">Event image (optional)</label><input id="event-photo" type="file" accept="image/jpeg,image/png,image/webp">
 <p class="field-hint">JPEG, PNG or WebP, up to 5 MB. Uploaded images are public, even for hidden events.</p>
 <img id="event-photo-preview" class="event-photo-preview" alt="Event image preview" hidden>
@@ -55,5 +55,5 @@
 </form></section>
 </main>
 <footer class="site-footer"><div class="wrap"><a href="/">Common Ground</a> · <a href="/privacy.html">Privacy</a></div></footer>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/js/supabase-client.js"></script><script src="/js/journal-common.js?v=3"></script><script src="/js/event-cards.js?v=1"></script><script src="/js/events.js?v=4"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="/js/supabase-client.js"></script><script src="/js/journal-common.js?v=3"></script><script src="/js/event-cards.js?v=1"></script><script src="/js/events.js?v=5"></script>
 </body></html>

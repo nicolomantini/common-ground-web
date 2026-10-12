@@ -1,7 +1,7 @@
 (async () => {
   const $ = id => document.getElementById(id);
   const node = Journal.node;
-  let user = null, current = null, busy = false, dirty = false;
+  let user = null, practitionerId = null, current = null, currentOwner = null, busy = false, dirty = false;
   const form = $('event-form');
   let practitioners = [], selectedHosts = [], coverURL = null, pendingPhoto = null, previewURL = null, extrasReady = false;
   const avatar = EventCards.avatar;
@@ -35,6 +35,7 @@
   function edit(event) {
     if (busy || (dirty && !confirm('Discard unsaved changes?'))) return;
     current = event?.id || null;
+    currentOwner = event?.user_id || null;
     form.reset();
     selectedHosts=event?.host_ids || [];coverURL=event?.cover_url || null;pendingPhoto=null;clearPreview();
     hostOptions();previewPhoto();extraControls();
@@ -58,7 +59,11 @@
     $('events-message').textContent = $('event-links').children.length ? '' : 'New invitations will appear here soon.';
   }
   async function loadOwn() {
-    const {data,error} = await supabaseClient.from('event_links').select('*').eq('user_id',user.id).order('created_at',{ascending:false});
+    let query = supabaseClient.from('event_links').select('*');
+    query = extrasReady
+      ? query.or(`user_id.eq.${user.id},host_ids.cs.{${practitionerId}}`)
+      : query.eq('user_id',user.id);
+    const {data,error} = await query.order('created_at',{ascending:false});
     if(error) throw error;
     $('own-events').replaceChildren();
     for(const event of data || []) {
@@ -77,6 +82,9 @@
     const payload = {title:$('event-title').value.trim(),url,description:$('event-description').value.trim(),event_date:$('event-date').value || null,published:$('event-published').checked};
     if(!payload.title){$('event-save-message').textContent='Please enter an event title.';return;}
     if(selectedHosts.length>8){$('event-save-message').textContent='Select up to eight hosts.';return;}
+    if(current && currentOwner !== user.id && !selectedHosts.includes(practitionerId)) {
+      $('event-save-message').textContent='Keep yourself selected as a host while editing this event. The creator or another host can remove you.';return;
+    }
     busy=true;extraControls(); document.querySelectorAll('#event-manager input,#event-manager textarea,#event-manager button').forEach(el=>el.disabled=true);
     $('event-save-message').textContent='Saving…';
     try {
@@ -91,9 +99,9 @@
         }
         Object.assign(payload,{host_ids:selectedHosts,cover_url:coverURL});
       }
-      const result = current ? await supabaseClient.from('event_links').update(payload).eq('id',current).eq('user_id',user.id).select('id').single() : await supabaseClient.from('event_links').insert({...payload,user_id:user.id}).select('id').single();
+      const result = current ? await supabaseClient.from('event_links').update(payload).eq('id',current).select('id').single() : await supabaseClient.from('event_links').insert({...payload,user_id:user.id}).select('id').single();
       if(result.error) throw result.error;
-      current=result.data.id; dirty=false;
+      currentOwner=currentOwner || user.id; current=result.data.id; dirty=false;
       $('event-save-message').textContent=payload.published ? 'Saved. Your event is visible.' : 'Saved. Your event is hidden.';
       try {await Promise.all([loadPublic(),loadOwn()]);} catch {$('event-save-message').textContent='Saved, but the list could not refresh. Reload the page to see it.';}
     } catch {$('event-save-message').textContent='Could not save. Your changes are still here; please try again.';}
@@ -111,6 +119,7 @@
     const profile=await supabaseClient.from('counselors').select('id').eq('user_id',user.id).maybeSingle();
     if(profile.error)throw profile.error;
     if(!profile.data){$('events-login').textContent='A Common Ground practitioner profile is needed to share events.';return;}
+    practitionerId=profile.data.id;
     const probe=await supabaseClient.from('event_links').select('host_ids,cover_url,cover_alt').limit(0);
     extrasReady=!probe.error;
     if(!extrasReady)$('event-extras-message').textContent='Host selection and images will be available after the event setup is updated.';

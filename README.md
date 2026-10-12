@@ -93,8 +93,16 @@ The blog uses Quill 2.0.3 (BSD-3-Clause), vendored under `vendor/quill`, with it
 
 ## Shared event links
 
-The public Linktree-style page is `/events/` (the `/events` directory route also works). Run `supabase/events.sql` in Supabase SQL Editor before use. No extra service or build step is needed. Existing practitioners can manage their own event links on the same page after signing in; the dashboard links there. Visitors see published links only. Members can hide and restore links, and cannot edit another member's links. Dates are optional calendar dates, ordered earliest first, with undated links last. Events remain visible until their owner hides them. The homepage's featured Luma card remains separately curated.
+The public Linktree-style page is `/events/`. Run these scripts in Supabase SQL Editor, in order:
 
-Verify database permissions after setup: anonymous read of published links, owner create/edit/hide, rejection of another user's updates and of creation by accounts without practitioner profiles.
+1. `supabase/events.sql`
+2. `supabase/event-details.sql`
+3. `supabase/event-host-editing.sql` (also run this on existing installations to enable shared editing).
 
-Run `supabase/event-details.sql` after `supabase/events.sql` to enable up to eight practitioner hosts and an optional cover image per event. Host selection does not grant editing rights. The cards link to host profiles and use initials when no photo is available. Covers accept JPEG, PNG, or WebP up to 5 MB in the public `event-covers` bucket; hidden-event covers are public too. Removing a cover detaches it but does not delete the stored file. Existing links continue working before the migration; extra fields remain disabled until it is applied.
+Existing practitioners can create events and edit events they created or are selected to host, including hidden events. The dashboard links to this editor. Each associated host can change details, the cover, host selection, and publication status. A host must keep themselves selected when saving; the creator or another host can remove them. Removing a host revokes their editing access unless they created the event. Ownership cannot be transferred through the editor or API.
+
+Visitors see published events only. Dates are optional; the directory orders event dates newest first, with undated links last. The homepage shows the next three strictly future calendar dates, nearest first; today's and undated events are excluded. Events remain in the directory until hidden.
+
+Host profiles appear with small photos (initials when missing). Covers accept JPEG, PNG, or WebP up to 5 MB in the public `event-covers` bucket; hidden-event covers are public too. Removing a cover detaches it but does not delete the stored file. Extra fields remain disabled until the details migration is applied.
+
+Verify deployed database permissions after setup: anonymous read of published links only; creator and associated host read/edit/hide; unassociated and removed hosts cannot update or read hidden links; accounts without practitioner profiles cannot create links; creator IDs cannot be changed. Local frontend checks do not validate deployed RLS policies.
