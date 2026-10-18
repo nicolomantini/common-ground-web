@@ -677,3 +677,18 @@ input, select, textarea { color: var(--ink); accent-color: var(--moss); }
 .events-all { margin-top: 28px; }
 .home-events-grid .event-cover-placeholder { aspect-ratio: 16/9; background: var(--peach); display: grid; place-items: center; }
 .home-events-grid .event-cover-placeholder::after { content: ''; width: 90px; height: 100px; background: var(--terracotta); mask: url('../images/logo-mark.png') center / contain no-repeat; -webkit-mask: url('../images/logo-mark.png') center / contain no-repeat; opacity: .65; }
+
+/* Luma data in the original vertical invitation-card layout. */
+.luma-events-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)); gap: 24px; align-items: stretch; }
+.luma-event-card { display: flex; flex-direction: column; max-width: 520px; min-width: 0; overflow: hidden; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); box-shadow: 0 4px 18px rgba(63,37,34,.04); }
+.luma-event-cover { position: relative; width: 100%; aspect-ratio: 16/9; background: var(--peach); }
+.luma-event-cover::before { content: ''; position: absolute; inset: 25%; background: var(--terracotta); mask: url('../images/logo-mark.png') center / contain no-repeat; }
+.luma-event-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; background: var(--peach); }
+.luma-event-body { display: flex; flex: 1; flex-direction: column; padding: 24px; }
+.luma-event-content h3 { font-size: 1.5rem; line-height: 1.25; margin-bottom: 14px; overflow-wrap: anywhere; }
+.luma-event-time { display: block; margin-bottom: 12px; color: var(--moss-deep); font-size: .8rem; font-weight: 600; }
+.luma-event-description { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; margin-bottom: 24px; }
+.luma-event-footer { display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 20px; margin-top: auto; padding-top: 20px; border-top: 1px solid var(--line); }
+.luma-event-register { flex-shrink: 0; border-radius: 6px; }
+.luma-event-host-group { min-width: 0; }
+@media (max-width: 480px) { .luma-event-body { padding: 20px; } }

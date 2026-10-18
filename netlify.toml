@@ -6,3 +6,10 @@
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+
+# Read the public calendar and event cover metadata on the server.
+[[redirects]]
+  from = "/api/luma-events"
+  to = "/.netlify/functions/luma-events"
+  status = 200
+  force = true
