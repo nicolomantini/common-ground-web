@@ -43,7 +43,7 @@
 
   <h2>What we collect</h2>
   <ul>
-    <li><strong>If you browse the site:</strong> no personal data is collected beyond standard, aggregated analytics (see "Analytics" below).</li>
+    <li><strong>If you browse the site:</strong> optional Google Analytics collects usage information after consent (see "Analytics" below).</li>
     <li><strong>If you book a session:</strong> the booking button opens the practitioner’s external booking page. Information you enter there is handled by that practitioner and their booking provider under their own privacy terms.</li>
     <li><strong>If you're a counselor with a profile:</strong> your name, email, bio, specialties, location, languages, session details, and photo, all of which you provide and control yourself through your dashboard.</li>
     <li><strong>If you request access as a counselor:</strong> the name, email, and message you submit on the access-request form.</li>
@@ -67,9 +67,12 @@
   <h2>Analytics</h2>
   <p>
     We use Google Analytics to understand overall visitor traffic (e.g. how many people visit,
-    which pages are popular). This does not identify you individually. Google's own privacy
-    policy governs how this data is handled on their end.
+    which pages are popular), only after you accept analytics. Google Analytics uses cookies and
+    records information such as page visits, device/browser details and interactions with public pages.
+    We do not enable advertising personalisation. See <a href="https://policies.google.com/privacy">Google’s privacy policy</a> for how Google handles data.
   </p>
+
+  <p><button type="button" class="btn-text" id="analytics-settings">Turn off analytics on this browser</button></p>
 
   <h2>Your rights</h2>
   <ul>
@@ -80,8 +83,9 @@
   <h2>Cookies</h2>
   <p>
     This site uses minimal cookies/local storage: one to remember your analytics consent choice,
-    and Supabase's own session cookie if you're logged in as a counselor. We don't use advertising
-    or tracking cookies.
+    and Supabase’s authentication storage if you’re logged in as a practitioner.
+    If you accept analytics, Google Analytics also sets measurement cookies. Declining prevents
+    the Analytics script from loading. We do not use Google Ads tracking.
   </p>
 
   <h2>Contact</h2>
@@ -101,6 +105,6 @@
   </div>
 </footer>
 
-<script src="js/analytics.js"></script>
+<script src="/js/analytics.js?v=ga4-1"></script>
 </body>
 </html>
