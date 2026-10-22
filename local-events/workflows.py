@@ -47,11 +47,11 @@ def room(db,event,ticket):
     return total<event['capacity'] and count<ticket['capacity']
 
 def notify(db,email,b,event,subject):
-    detail=event['location'] if b['status']=='confirmed' else 'Location and joining details are shared after confirmation.'
+    detail=(event['location']+'\n'+event['confirmation_message']) if b['status']=='confirmed' else 'Location and joining details are shared after confirmation.'
     email(db,b['email'],subject+': '+event['title'],f"Hello {b['name']},\n\nYour registration status: {b['status']}.\nTicket: {b['ticket_name']}\n{event['starts']} ({event['zone']})\n{detail}\n\nManage your local test booking: http://127.0.0.1:8030/?booking={b['id']}\n\nLocal test only — no real payment was processed.")
 
 def register(db,event,p,email):
-    if not event or not event['published'] or event['cancelled']:raise ValueError('This event is not open for registration.')
+    if not event or not event['published'] or event['cancelled'] or not event['registration_open']:raise ValueError('This event is not open for registration.')
     start=datetime.fromisoformat(event['starts']).replace(tzinfo=ZoneInfo(event['zone']))
     if start<=datetime.now(timezone.utc):raise ValueError('Registration has closed because this event has started.')
     name=str(p['name']).strip();address=str(p['email']).strip().lower()
@@ -69,6 +69,12 @@ def register(db,event,p,email):
             amount=int(value)
         except (InvalidOperation,KeyError):raise ValueError('Choose your contribution.')
         if not event['donation_min']<=amount<=event['donation_max'] or 0<amount<50:raise ValueError('Choose an amount within the event’s sliding scale (positive contributions start at €0.50).')
+    voucher=str(p.get('voucher','')).strip().upper()
+    if voucher:
+        v=db.execute('SELECT * FROM vouchers WHERE code=? AND active=1',(voucher,)).fetchone()
+        if not v:raise ValueError('This voucher is not available.')
+        amount=(amount*(100-v['percent'])+50)//100
+        if 0<amount<50:raise ValueError('The discounted contribution must be free or at least €0.50.')
     answers=[];submitted=p.get('answers',{})
     for q in json.loads(event['questions']):
         answer=str(submitted.get(q['id'],'')).strip()
@@ -81,6 +87,7 @@ def register(db,event,p,email):
     else:status='approval' if event['approval'] else ('pending' if amount else 'confirmed')
     bid=str(uuid.uuid4());created=datetime.now(timezone.utc).isoformat()
     db.execute('INSERT INTO bookings(id,event_id,name,email,status,created,ticket_id,ticket_name,amount,answers) VALUES(?,?,?,?,?,?,?,?,?,?)',(bid,event['id'],name,address,status,created,ticket['id'],ticket['name'],amount,json.dumps(answers)))
+    db.execute('UPDATE bookings SET voucher=? WHERE id=?',(voucher,bid))
     b=dict(db.execute('SELECT * FROM bookings WHERE id=?',(bid,)).fetchone())
     if status!='pending':notify(db,email,b,event,{'confirmed':'You’re registered','waitlist':'You’re on the waiting list','approval':'Registration requested'}[status])
     return b

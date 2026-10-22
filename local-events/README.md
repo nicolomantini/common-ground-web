@@ -50,3 +50,40 @@ Stripe supports pay-what-you-want Prices through `custom_unit_amount` (`minimum`
 For this registration flow, the recommended integration is to choose an amount in Common Ground, validate and store it on the server, then create a Stripe Checkout Session using that fixed amount for this one booking. This avoids mismatches between the registration amount, approval flow and Stripe's editable amount. Zero-contribution bookings should skip paid checkout. The applicable positive minimum must be checked against the live account's currency/settlement configuration: https://docs.stripe.com/currencies .
 
 This prototype does not call Stripe, create Prices, or process donations/payments. A real integration still needs a test secret key, authenticated server routes, idempotent session creation, verified payment webhooks and refund handling. “Contribution” describes event pricing; no charitable or tax-deductibility claims are made.
+
+## Common Ground management workspace
+
+Open `http://127.0.0.1:8030/#calendar/events`. The host workspace is tailored to
+Common Ground, using Luma's separation between calendar and event management.
+
+- Calendar: Events (upcoming/past/drafts/cancelled, search and tags), People
+  (contacts, consent flag, search and CSV), Newsletters (saved drafts and preview
+  scheduling), Payment (test totals, vouchers, refund policy and CSV), Insights
+  (local preview views and guest feedback), Settings (tags and Resend usage).
+- Event: Overview (details, practitioner hosts, invitations), Guests (approval,
+  waitlist, check-in, filters and CSV), Registration (open/closed, guest names,
+  custom confirmation, sliding scale, tickets and questions), Updates (drafts,
+  audience selection, reminder and feedback previews), Insights, More
+  (duplicate/cancel).
+- No Luma membership, crypto, upsell, display/options/developer, embed, or custom
+  event URL panels. No changes are made to live Luma calendars or guest data.
+- Settings and drafts persist in the local SQLite database. Guest registration
+  does not automatically subscribe people to newsletters.
+- Scheduled messages/reminders are evaluated when `/api/state` is refreshed.
+  They create outbox previews only, not automatic live sends. The server must be
+  running and the dashboard refreshed for these local simulations to run.
+- Stripe remains simulated. All real email delivery remains an explicit test
+  action to `EMAIL_TEST_RECIPIENT`, never to an invitation's original recipient.
+- Resend Email API Free allowance: 100/day and 3,000/month, checked against
+  https://resend.com/pricing on 2026-10-22. Local successful test sends are counted
+  by UTC date/month and blocked at those limits. This is not an account-wide
+  usage integration; Resend remains authoritative and other apps share its quota.
+  Historical sends without a timestamp cannot be included in these counters.
+- Newsletter production delivery needs unsubscribe management and a deliberate
+  Resend marketing/transactional integration decision; this version stores
+  drafts and previews only. There are no live newsletter sends.
+- This is still a **loopback-only prototype without host authentication**. Do not
+  deploy it or expose it publicly. Keep work on `codex/local-event-tool`.
+
+Run tests with `python3 -m unittest discover -s local-events -p 'test_*.py'` from
+repository root. Tests use temporary databases and mocked delivery, no real mail.

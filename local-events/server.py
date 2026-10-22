@@ -6,6 +6,7 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
 from mailer import load_config, send_preview
 import workflows
+import dashboard
 from practitioners import get_practitioners, selected_hosts
 from urllib.parse import urlparse, parse_qs
 
@@ -27,6 +28,7 @@ CREATE TABLE IF NOT EXISTS emails(id TEXT PRIMARY KEY,recipient TEXT,subject TEX
         for column in ['ends','cover']:
             if column not in columns:db.execute(f"ALTER TABLE events ADD COLUMN {column} TEXT NOT NULL DEFAULT ''")
         workflows.migrate(db)
+        dashboard.migrate(db)
         if not db.execute('SELECT 1 FROM events').fetchone():
             start = (datetime.now()+timedelta(days=7)).strftime('%Y-%m-%dT19:00')
             db.execute('INSERT INTO events(id,title,description,starts,zone,location,hosts,capacity,price,published) VALUES(?,?,?,?,?,?,?,?,?,?)',('demo','An evening of inquiry','A shared space to pause, listen, and explore together.\n\nWe begin with a short meditation, followed by inquiry in pairs and time to reflect.',start,'Europe/Zurich','Online · Zoom link shared by your host','Nico, Irene',12,1500,1))
@@ -59,12 +61,14 @@ class Handler(SimpleHTTPRequestHandler):
         elif self.path=='/api/state':
             with connect() as db:
                 expire(db)
+                dashboard.run_schedules(db,email)
                 state={t:[dict(r) for r in db.execute('SELECT * FROM '+t)] for t in ['events','bookings','emails']}
                 from zoneinfo import ZoneInfo
                 for event in state['events']:
                     event['has_started']=datetime.fromisoformat(event['starts']).replace(tzinfo=ZoneInfo(event['zone']))<=datetime.now(timezone.utc)
+                state.update(dashboard.snapshot(db))
                 self.reply(200,state)
-        elif self.path.split('?')[0] in ['/', '/index.html', '/app.js', '/advanced.js', '/event-settings.js', '/style.css']:
+        elif self.path.split('?')[0] in ['/', '/index.html', '/app.js', '/advanced.js', '/event-settings.js', '/style.css', '/dashboard.js', '/dashboard.css']:
             super().do_GET()
         else: self.send_error(404)
     def do_POST(self):
@@ -83,12 +87,14 @@ class Handler(SimpleHTTPRequestHandler):
         except (ValueError,KeyError,TypeError,InvalidOperation) as e:self.reply(400,{'error':str(e)})
         except Exception:self.reply(500,{'error':'Could not save. Please try again.'})
     def action(self,db,path,p):
+        if path in dashboard.PATHS:return dashboard.action(db,path,p,email)
         if path=='/api/send-preview':
             message=db.execute('SELECT * FROM emails WHERE id=?',(p.get('id'),)).fetchone()
             if not message:raise ValueError('Email preview not found.')
             if message['sent_id']:return {'sent':True}
+            dashboard.check_send_limit(db)
             sent_id=send_preview(message)
-            db.execute('UPDATE emails SET sent_id=? WHERE id=?',(sent_id,message['id']))
+            db.execute('UPDATE emails SET sent_id=?,sent_at=? WHERE id=?',(sent_id,dashboard.now(),message['id']))
             return {'sent':True}
         if path in ['/api/guest-action','/api/duplicate','/api/cancel-event','/api/blast']:
             return workflows.action(db,path,p,email)
@@ -146,6 +152,9 @@ class Handler(SimpleHTTPRequestHandler):
             db.execute('UPDATE events SET approval=?,waitlist=?,visibility=?,tickets=?,questions=?,theme=? WHERE id=?',(*extra,eid))
             db.execute('UPDATE events SET description_html=? WHERE id=?',(html,eid))
             db.execute('UPDATE events SET host_ids=?,location_type=?,pricing_mode=?,donation_min=?,donation_suggested=?,donation_max=? WHERE id=?',(json.dumps(host_ids or []),location_type,pricing_mode,low,suggested,high,eid))
+            if not old:
+                defaults=dashboard.settings(db)
+                db.execute('UPDATE events SET guest_list_visible=? WHERE id=?',(int(defaults['default_guest_list']),eid))
             return {'id':eid}
         eid=p.get('event_id');event=db.execute('SELECT * FROM events WHERE id=?',(eid,)).fetchone()
         if path=='/api/register':
