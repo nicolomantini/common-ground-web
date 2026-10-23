@@ -10,3 +10,12 @@ local-events/__pycache__/
 .env
 .env.*
 !.env.example
+
+# Isolated Python runtime
+local-events/.venv/
+
+# Separate Netlify test build and local site link
+event-test/public/
+event-test/.netlify/
+
+event-test/scripts/__pycache__/

@@ -1,3 +1,5 @@
+import database
+import refunds
 """Calendar and event management for the loopback-only prototype.
 All messages are outbox previews. No live Stripe, bulk mail, or account permissions.
 """
@@ -17,15 +19,15 @@ CREATE TABLE IF NOT EXISTS feedback(id TEXT PRIMARY KEY,booking_id TEXT UNIQUE,e
 CREATE TABLE IF NOT EXISTS vouchers(code TEXT PRIMARY KEY,percent INTEGER,active INTEGER);
 CREATE TABLE IF NOT EXISTS scheduled_previews(key TEXT PRIMARY KEY);
 ''')
-    db.execute('INSERT OR IGNORE INTO calendar_settings VALUES(1,?)',(json.dumps(DEFAULTS),))
+    db.execute('INSERT INTO calendar_settings VALUES(1,?) ON CONFLICT DO NOTHING',(json.dumps(DEFAULTS),))
     additions={'events':{'registration_open':'INTEGER NOT NULL DEFAULT 1','guest_list_visible':'INTEGER NOT NULL DEFAULT 0','confirmation_message':"TEXT NOT NULL DEFAULT ''",'reminders':'INTEGER NOT NULL DEFAULT 0','feedback_enabled':'INTEGER NOT NULL DEFAULT 0','tags':"TEXT NOT NULL DEFAULT '[]'"},'emails':{'sent_at':"TEXT NOT NULL DEFAULT ''"},'bookings':{'voucher':"TEXT NOT NULL DEFAULT ''"}}
     for table,cols in additions.items():
-        current={r[1] for r in db.execute('PRAGMA table_info('+table+')')}
+        current=database.columns(db, table)
         for key,definition in cols.items():
             if key not in current:db.execute(f'ALTER TABLE {table} ADD COLUMN {key} {definition}')
 
 def now():return datetime.now(timezone.utc).isoformat()
-def settings(db):return {**DEFAULTS,**json.loads(db.execute('SELECT value FROM calendar_settings WHERE id=1').fetchone()[0])}
+def settings(db):return {**DEFAULTS,**json.loads(db.execute('SELECT value FROM calendar_settings WHERE id=1').fetchone()[0]),'refund_policy':refunds.POLICY}
 def rows(db,table):return [dict(r) for r in db.execute('SELECT * FROM '+table)]
 def snapshot(db):
     return {'email_usage':email_usage(db),'calendar':settings(db),**{t:rows(db,t) for t in ['contacts','campaigns','invitations','page_views','feedback','vouchers']}}
@@ -65,7 +67,7 @@ def run_schedules(db,email):
         for kind,subject,body in tasks:
             for b in db.execute("SELECT * FROM bookings WHERE event_id=? AND status='confirmed'",(e['id'],)).fetchall():
                 key=e['id']+':'+kind+':'+b['id']
-                if db.execute('INSERT OR IGNORE INTO scheduled_previews VALUES(?)',(key,)).rowcount:
+                if db.execute('INSERT INTO scheduled_previews VALUES(?) ON CONFLICT DO NOTHING',(key,)).rowcount:
                     email(db,b['email'],subject,body+'\nhttp://127.0.0.1:8030/?booking='+b['id']+'\nLocal preview only.')
 
 def action(db,path,p,email):
@@ -138,7 +140,7 @@ def action(db,path,p,email):
     if path=='/api/invite':
         count=0
         for address in addresses(p.get('emails','')):
-            if db.execute('INSERT OR IGNORE INTO invitations VALUES(?,?,?,?)',(str(uuid.uuid4()),e['id'],address,now())).rowcount:
+            if db.execute('INSERT INTO invitations VALUES(?,?,?,?) ON CONFLICT DO NOTHING',(str(uuid.uuid4()),e['id'],address,now())).rowcount:
                 email(db,address,'Invitation: '+e['title'],text(p,'message',3000)+'\n\n'+e['starts']+'\nhttp://127.0.0.1:8030/?event='+e['id']+'\nLocal preview only.');count+=1
         return {'count':count}
     raise ValueError('Unknown dashboard action.')

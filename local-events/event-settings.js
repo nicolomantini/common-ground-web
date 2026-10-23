@@ -14,6 +14,7 @@ function updateLocation(){const online=$('location-type').value==='online';$('lo
 $('location-type').onchange=()=>{ $('location-value').value='';updateLocation();};
 function editHostLocationContribution(e){
  pickedHosts=JSON.parse(e?.host_ids||'[]');
+ if(!e&&state?.host?.practitioner_id)pickedHosts=[state.host.practitioner_id];
  // Only preselect exact full-name matches for old prototype events.
  if(!pickedHosts.length&&e?.hosts){const names=e.hosts.split(',').map(n=>n.trim().toLowerCase());pickedHosts=hostDirectory.filter(p=>names.includes(p.name.toLowerCase())).map(p=>p.id);}
  renderHostPicker();loadHosts();
@@ -26,7 +27,7 @@ function saveHostLocationContribution(p){
  if(!pickedHosts.length)throw Error('Select at least one Common Ground practitioner as a host.');
  if(pickedHosts.some(id=>!hostDirectory.some(h=>h.id===id)))throw Error('Choose hosts from the loaded Common Ground directory.');
  const low=Number(p.donation_min),suggested=Number(p.donation_suggested),high=Number(p.donation_max);
- if(!(0<=low&&low<=suggested&&suggested<=high&&high<=10000&&high>=.5)||[low,suggested,high].some(v=>v>0&&v<.5))throw Error('Use minimum ≤ suggested ≤ maximum. Positive contributions start at €0.50.');
+ if(!(0<=low&&low<=suggested&&suggested<=high&&high<=10000&&high>=5)||[low,suggested,high].some(v=>!Number.isFinite(v)||v%5!==0))throw Error('Use minimum ≤ suggested ≤ maximum. Use multiples of €5.');
  p.host_ids=pickedHosts;p.hosts=hostDirectory.filter(h=>pickedHosts.includes(h.id)).map(h=>h.name).join(', ');p.pricing_mode='donation';p.price=p.donation_suggested;
  if(p.location_type==='online'&&!Journal.httpsURL(p.location))throw Error('Paste a complete HTTPS Zoom or other meeting link.');
 }
@@ -35,22 +36,23 @@ function showContribution(e){
  const enabled=e.pricing_mode==='donation',input=$('contribution-amount'),slider=$('contribution-slider');
  $('contribution-choice').hidden=!enabled;input.disabled=!enabled;input.required=enabled;slider.disabled=!enabled;
  if(!enabled)return;
- const min=e.donation_min/100,max=e.donation_max/100;
- input.min=slider.min=min;input.max=slider.max=max;input.value=e.donation_suggested/100;input.setCustomValidity('');
- $('contribution-low').textContent=money(e.donation_min);$('contribution-high').textContent=money(e.donation_max);
+ const min=Math.ceil(e.donation_min/500)*5,max=Math.floor(e.donation_max/500)*5;
+ const suggested=Math.min(max,Math.max(min,Math.round(e.donation_suggested/500)*5));
+ input.min=slider.min=min;input.max=slider.max=max;input.step=slider.step=5;input.value=suggested;input.setCustomValidity('');
+ $('contribution-low').textContent=money(min*100);$('contribution-high').textContent=money(max*100);
  function sync(){
   const value=Number(input.value),valid=input.value!==''&&Number.isFinite(value);
-  input.setCustomValidity(valid&&value>0&&value<.5?'Choose zero or at least €0.50.':'');
+  input.setCustomValidity(!valid||value%5!==0||value<min||value>max?'Choose an amount in €5 steps within this range.':'');
   if(!valid){$('contribution-display').textContent='Choose an amount';return;}
   slider.value=Math.min(max,Math.max(min,value));
   $('contribution-display').textContent=money(Math.round(value*100));
   slider.setAttribute('aria-valuetext',money(Math.round(Number(slider.value)*100)));
   slider.style.setProperty('--progress',(max===min?100:(Number(slider.value)-min)/(max-min)*100)+'%');
  }
- slider.oninput=()=>{let value=Number(slider.value);if(value>0&&value<.5)value=value<.25?0:.5;input.value=value.toFixed(2);sync();};
+ slider.oninput=()=>{input.value=String(Number(slider.value));sync();};
  input.oninput=sync;
- $('contribution-hint').textContent=`Choose what works for you, from ${money(e.donation_min)} to ${money(e.donation_max)}. Suggested contribution: ${money(e.donation_suggested)}.`;
- $('contribution-presets').replaceChildren();for(const n of [...new Set([e.donation_min,e.donation_suggested,e.donation_max])])$('contribution-presets').append(button(money(n)+(n===e.donation_suggested?' · Suggested':''),()=>{input.value=(n/100).toFixed(2);sync();}));
+ $('contribution-hint').textContent=`Choose what works for you, in €5 steps, from ${money(min*100)} to ${money(max*100)}. Suggested contribution: ${money(suggested*100)}.`;
+ $('contribution-presets').replaceChildren();for(const n of [...new Set([min*100,suggested*100,max*100])])$('contribution-presets').append(button(money(n)+(n===suggested*100?' · Suggested':''),()=>{input.value=(n/100).toFixed(2);sync();}));
  sync();
 }
 

@@ -1,3 +1,4 @@
+import database
 """Local prototype workflows. No live payments, notifications, or host authentication."""
 import json, uuid
 from datetime import datetime, timezone, timedelta
@@ -11,7 +12,7 @@ def migrate(db):
         'bookings':{'ticket_id':"TEXT NOT NULL DEFAULT 'standard'",'ticket_name':"TEXT NOT NULL DEFAULT 'Standard'",'amount':'INTEGER NOT NULL DEFAULT 0','answers':"TEXT NOT NULL DEFAULT '[]'",'checked_in':'INTEGER NOT NULL DEFAULT 0'}
     }
     for table,columns in changes.items():
-        present={r[1] for r in db.execute('PRAGMA table_info('+table+')')}
+        present=database.columns(db, table)
         for name,definition in columns.items():
             if name not in present:
                 db.execute(f'ALTER TABLE {table} ADD COLUMN {name} {definition}')
@@ -47,8 +48,10 @@ def room(db,event,ticket):
     return total<event['capacity'] and count<ticket['capacity']
 
 def notify(db,email,b,event,subject):
+    import refunds
     detail=(event['location']+'\n'+event['confirmation_message']) if b['status']=='confirmed' else 'Location and joining details are shared after confirmation.'
-    email(db,b['email'],subject+': '+event['title'],f"Hello {b['name']},\n\nYour registration status: {b['status']}.\nTicket: {b['ticket_name']}\n{event['starts']} ({event['zone']})\n{detail}\n\nManage your local test booking: http://127.0.0.1:8030/?booking={b['id']}\n\nLocal test only — no real payment was processed.")
+    detail+='\n'+refunds.description(b['refund_status']) if 'refund_status' in dict(b) else ''
+    getattr(email,'transactional',email)(db,b['email'],subject+': '+event['title'],f"Hello {b['name']},\n\nYour registration status: {b['status']}.\nTicket: {b['ticket_name']}\n{event['starts']} ({event['zone']})\n{detail}\n\nManage your local test booking: http://127.0.0.1:8030/?booking={b['id']}\n\nLocal test only — no real payment was processed.")
 
 def register(db,event,p,email):
     if not event or not event['published'] or event['cancelled'] or not event['registration_open']:raise ValueError('This event is not open for registration.')
@@ -68,7 +71,7 @@ def register(db,event,p,email):
             if not value.is_finite() or value!=value.to_integral_value():raise ValueError('Use an amount with up to two decimal places.')
             amount=int(value)
         except (InvalidOperation,KeyError):raise ValueError('Choose your contribution.')
-        if not event['donation_min']<=amount<=event['donation_max'] or 0<amount<50:raise ValueError('Choose an amount within the event’s sliding scale (positive contributions start at €0.50).')
+        if not event['donation_min']<=amount<=event['donation_max'] or amount%500!=0:raise ValueError('Choose an amount in €5 steps within the event’s sliding scale.')
     voucher=str(p.get('voucher','')).strip().upper()
     if voucher:
         v=db.execute('SELECT * FROM vouchers WHERE code=? AND active=1',(voucher,)).fetchone()
@@ -92,7 +95,7 @@ def register(db,event,p,email):
     if status!='pending':notify(db,email,b,event,{'confirmed':'You’re registered','waitlist':'You’re on the waiting list','approval':'Registration requested'}[status])
     return b
 
-def transition(db,b,action,email):
+def transition(db,b,action,email,*,event_cancelled=False):
     if not b:raise ValueError('Registration not found.')
     event=db.execute('SELECT * FROM events WHERE id=?',(b['event_id'],)).fetchone()
     if event['cancelled'] and action!='cancel':raise ValueError('This event has been cancelled.')
@@ -113,6 +116,12 @@ def transition(db,b,action,email):
         if b['status']!='pending':raise ValueError('This reservation has expired or is not ready for payment.')
         status='confirmed';db.execute('UPDATE bookings SET status=? WHERE id=?',(status,b['id']))
     elif action=='cancel':
+        import payments,refunds
+        if b['status']=='cancelled' and not event_cancelled:return {'status':'cancelled'}
+        cancelled_at=refunds.now()
+        paid_session=payments.before_cancel(db,b,email)
+        refunds.queue(db,b,event,paid_session,event_cancelled,cancelled_at)
+        db.execute('UPDATE bookings SET cancelled_at=?,cancellation_reason=? WHERE id=?',(b['cancelled_at'] or cancelled_at.isoformat(),'event_cancelled' if event_cancelled else 'guest_cancelled',b['id']))
         if b['status']=='cancelled':return {'status':'cancelled'}
         status='cancelled';db.execute('UPDATE bookings SET status=?,checked_in=0 WHERE id=?',(status,b['id']))
     else:raise ValueError('Unknown guest action.')
@@ -123,6 +132,7 @@ def transition(db,b,action,email):
 
 def action(db,path,p,email):
     if path=='/api/guest-action':
+        if p.get('action') not in ['approve','decline','checkin','cancel']:raise ValueError('Unknown guest action.')
         ids=p.get('ids',[])
         if not isinstance(ids,list) or not 1<=len(ids)<=200:raise ValueError('Select between one and 200 guests.')
         for bid in dict.fromkeys(ids):
@@ -138,7 +148,7 @@ def action(db,path,p,email):
         return {'id':data['id']}
     if path=='/api/cancel-event':
         if event['cancelled']:return {'ok':True}
-        for b in db.execute("SELECT * FROM bookings WHERE event_id=? AND status IN ('pending','confirmed','approval','waitlist')",(event['id'],)).fetchall():transition(db,b,'cancel',email)
+        for b in db.execute("SELECT * FROM bookings WHERE event_id=? AND status IN ('pending','confirmed','approval','waitlist','cancelled')",(event['id'],)).fetchall():transition(db,b,'cancel',email,event_cancelled=True)
         db.execute('UPDATE events SET cancelled=1,published=0 WHERE id=?',(event['id'],));return {'ok':True}
     if path=='/api/blast':
         subject=str(p.get('subject','')).strip();body=str(p.get('body','')).strip();status=p.get('status','confirmed')

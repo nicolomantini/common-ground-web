@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Your profile &mdash; Common Ground</title>
-<link rel="icon" href="/favicon.ico?v=brand-5" sizes="any">
-<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=brand-5">
+<link rel="icon" href="/favicon.ico?v=brand-6" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg?v=brand-6">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css?v=design-review-1">
 <style>
@@ -55,8 +55,8 @@
   .btn-delete:hover { background: var(--danger); color: #fff; }
 </style>
 <meta name="theme-color" content="#9E5D54">
-<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=brand-5">
-<link rel="manifest" href="/site.webmanifest?v=brand-5">
+<link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=brand-6">
+<link rel="manifest" href="/site.webmanifest?v=brand-6">
 </head>
 <body>
 
@@ -77,7 +77,12 @@
     <span id="status-badge" class="status-badge" hidden></span>
   </div>
 
-  <p><a class="btn-book" href="blog-editor.html">Write for the blog</a> <a class="btn-book" href="/events/#event-manager">Manage event links</a></p>
+  <p><a class="btn-book" href="blog-editor.html">Write for the blog</a> <a class="btn-book" href="https://luma.com/common-ground-space" target="_blank" rel="noopener noreferrer">Events on Luma</a></p>
+  <section class="dash-subsection" id="project-hub" hidden>
+    <h2>Common Ground project</h2>
+    <p class="field-hint">The Living Project Hub holds the meeting findings, participation table, decisions, and proposed working guidelines. It links to the Meeting Archive when you need a transcript.</p>
+    <p><a class="btn-book" href="https://app.notion.com/p/3bd9b3015a24811b9c0bf194e729622b" target="_blank" rel="noopener noreferrer">Open Living Project Hub<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+  </section>
   <form id="profile-form" class="dash-form">
     <div class="field-group">
       <label for="f-name">Full name</label>
@@ -235,6 +240,6 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/booking-link.js?v=2"></script>
-<script src="js/dashboard.js?v=blog-2"></script>
+<script src="js/dashboard.js?v=hub-1"></script>
 </body>
 </html>

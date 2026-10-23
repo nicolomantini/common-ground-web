@@ -25,12 +25,17 @@ class SettingsTests(unittest.TestCase):
         eid=self.act('event',self.payload())['id']
         def register(n,amount):return self.act('register',{'event_id':eid,'name':'Guest','email':f'{n}@example.com','contribution':amount})
         free=register('free','0');self.assertEqual(free['status'],'confirmed');self.assertEqual(free['amount'],0)
-        paid=register('paid','12.34');self.assertEqual(paid['amount'],1234);self.assertEqual(paid['status'],'pending')
-        for amount in ['-1','31','0.10','10.001','NaN']:
+        paid=register('paid','15');self.assertEqual(paid['amount'],1500);self.assertEqual(paid['status'],'pending')
+        for amount in ['-1','31','0.10','10.001','NaN','12.34','12','7','0.50']:
             with self.assertRaises(ValueError):register('invalid',amount)
     def test_range_validation_and_price_snapshot(self):
         p=self.payload();p['donation_min']='20'
         with self.assertRaises(ValueError):self.act('event',p)
-        p=self.payload();eid=self.act('event',p)['id'];b=self.act('register',{'event_id':eid,'name':'Guest','email':'one@example.com','contribution':'12'})
+        p=self.payload();eid=self.act('event',p)['id'];b=self.act('register',{'event_id':eid,'name':'Guest','email':'one@example.com','contribution':'10'})
         p.update(id=eid,donation_min='20',donation_suggested='25');self.act('event',p)
-        with server.connect() as db:self.assertEqual(db.execute('SELECT amount FROM bookings WHERE id=?',(b['id'],)).fetchone()[0],1200)
+        with server.connect() as db:self.assertEqual(db.execute('SELECT amount FROM bookings WHERE id=?',(b['id'],)).fetchone()[0],1000)
+
+    def test_host_range_uses_five_euro_steps(self):
+        for key,value in [('donation_min','2'),('donation_suggested','12'),('donation_max','32')]:
+            p=self.payload();p[key]=value
+            with self.assertRaises(ValueError):self.act('event',p)

@@ -1,5 +1,6 @@
 """Read only the public Common Ground practitioner directory."""
-import json,re,time
+import json,re,time,os
+import database
 from pathlib import Path
 from urllib.request import Request,urlopen
 _cache=None
@@ -8,6 +9,11 @@ _loaded=0
 def get_practitioners():
     global _cache,_loaded
     if _cache is not None and time.monotonic()-_loaded<300:return _cache
+    if os.environ.get('CG_EVENTS_BACKEND') == 'supabase-test':
+        with database.connect(None) as db:
+            _cache=[dict(r) for r in db.execute('SELECT id,name,photo FROM practitioners ORDER BY name')]
+        _loaded=time.monotonic()
+        return _cache
     config=(Path(__file__).resolve().parent.parent/'js/supabase-client.js').read_text()
     url=re.search(r'const SUPABASE_URL = "([^"]+)"',config).group(1)
     key=re.search(r'const SUPABASE_ANON_KEY = "([^"]+)"',config).group(1)

@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFile,readdir} from 'node:fs/promises';
+import {join} from 'node:path';
+import {fileURLToPath} from 'node:url';
+const root=new URL('../public/',import.meta.url);
+test('full site and event tool have separate entry points',async()=>{const home=await readFile(new URL('index.html',root),'utf8'),tool=await readFile(new URL('event-tool/index.html',root),'utf8');assert.match(home,/Meet the practitioners/);assert.match(home,/TEST WEBSITE/);assert.match(tool,/event-form/);assert.match(await readFile(new URL('event-tool/host.js',root),'utf8'),/\/event-tool\/#calendar\/events/);});
+test('production connections and analytics are excluded',async()=>{const config=await readFile(new URL('js/supabase-client.js',root),'utf8');assert.match(config,/eicpgkmajosuhrqtrgrf/);assert.ok(!config.includes('plgilmcclpldcjzkepbp'));assert.ok(!(await readFile(new URL('js/analytics.js',root),'utf8')).includes('googletagmanager'));assert.match(await readFile(new URL('robots.txt',root),'utf8'),/Disallow: \//);});
+test('guest links and return validation stay under event-tool',async()=>{const guest=await readFile(new URL('event-tool/guest.js',root),'utf8'),visitor=await readFile(new URL('event-tool/visitor.js',root),'utf8');assert.ok(guest.includes('^\\/event-tool\\/\\?event'));assert.match(visitor,/\/event-tool\/guest.html\?return=/);assert.ok(!visitor.includes("href='/?event="));});
+test('publish directory contains no backend or secret files',async()=>{async function walk(p){for(const e of await readdir(p,{withFileTypes:true})){assert.ok(!['.git','.env','server.py','node_modules','functions','scripts','test-config.json'].includes(e.name));if(e.isDirectory())await walk(join(p,e.name));}}await walk(fileURLToPath(root));});

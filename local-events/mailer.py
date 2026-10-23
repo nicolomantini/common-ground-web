@@ -12,15 +12,24 @@ def load_config():
             key,value=line.split('=',1)
             os.environ.setdefault(key.strip(),value.strip().strip('\"').strip("'"))
 
-def send_preview(message):
+def allowed_recipients():
+    return {x.strip().lower() for x in os.environ.get("EMAIL_TEST_ALLOWLIST", "").split(",") if x.strip()}
+
+def automatic_enabled():
+    return os.environ.get("EMAIL_AUTOMATIC", "off") == "test"
+
+def send_preview(message, *, transactional=False):
     if os.environ.get('EMAIL_DELIVERY','off')!='test':raise ValueError('Email delivery is off. Set EMAIL_DELIVERY=test in the local .env file and restart.')
     key=os.environ.get('RESEND_API_KEY','')
     target=os.environ.get('EMAIL_TEST_RECIPIENT','').strip()
+    if transactional:
+        target=message['recipient'].strip().lower()
+        if not automatic_enabled() or target not in allowed_recipients():raise ValueError('Automatic delivery is restricted to approved test addresses.')
     if not key or '@' not in target:raise ValueError('Configure RESEND_API_KEY and EMAIL_TEST_RECIPIENT, then restart.')
     body='Common Ground — local event test\n\n'+message['body']+'\n\nThis is a test delivery. No real payment was processed.'
     body=body.replace('No email was sent.','').replace('This is a local email preview.','').replace('Local preview only.','')
     payload={'from':'Common Ground <hello@common-ground.space>','to':[target],'subject':'[TEST] '+message['subject'],'text':body}
-    request=Request('https://api.resend.com/emails',data=json.dumps(payload).encode(),headers={'Authorization':'Bearer '+key,'Content-Type':'application/json','Idempotency-Key':'cg-local-'+message['id'],'User-Agent':'CommonGroundLocal/1.0'})
+    request=Request('https://api.resend.com/emails',data=json.dumps(payload).encode(),headers={'Authorization':'Bearer '+key,'Content-Type':'application/json','Idempotency-Key':('cg-transactional-' if transactional else 'cg-local-')+message['id'],'User-Agent':'CommonGroundLocal/1.0'})
     try:
         with urlopen(request,timeout=15) as response:result=json.load(response)
     except HTTPError as error:

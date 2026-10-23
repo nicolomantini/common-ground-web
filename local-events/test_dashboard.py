@@ -12,6 +12,10 @@ class DashboardTests(unittest.TestCase):
     def act(self,name,p):
         with server.connect() as db:
             db.execute('BEGIN IMMEDIATE')
+            # These unit tests exercise the internal verified-payment transition; HTTP payment verification is tested separately.
+            if name=='pay':
+                import workflows
+                return workflows.transition(db,db.execute('SELECT * FROM bookings WHERE id=?',(p['id'],)).fetchone(),'pay',server.email)
             return server.Handler.action(None,db,'/api/'+name,p)
     def booking(self,email='guest@example.com',**extra):return self.act('register',dict(event_id='demo',name='Guest',email=email,**extra))
     def count(self,table):

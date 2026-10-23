@@ -10,6 +10,10 @@ class BookingTests(unittest.TestCase):
     def act(self,path,p):
         with server.connect() as db:
             db.execute('BEGIN IMMEDIATE');server.expire(db)
+            # These unit tests exercise the internal verified-payment transition; HTTP payment verification is tested separately.
+            if path=='pay':
+                import workflows
+                return workflows.transition(db,db.execute('SELECT * FROM bookings WHERE id=?',(p['id'],)).fetchone(),'pay',server.email)
             return server.Handler.action(None,db,'/api/'+path,p)
     def register(self,address):return self.act('register',{'event_id':'demo','name':'Test','email':address})
     def test_paid_capacity_duplicate_and_cancel(self):

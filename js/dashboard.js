@@ -59,6 +59,7 @@ async function init() {
     return;
   }
   currentUser = sessionData.session.user;
+  document.getElementById("project-hub").hidden = false;
 
   const { data, error } = await supabaseClient
     .from("counselors")

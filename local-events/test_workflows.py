@@ -11,6 +11,10 @@ class WorkflowTests(unittest.TestCase):
     def act(self,path,p):
         with server.connect() as db:
             db.execute('BEGIN IMMEDIATE');server.expire(db)
+            # These unit tests exercise the internal verified-payment transition; HTTP payment verification is tested separately.
+            if path=='pay':
+                import workflows
+                return workflows.transition(db,db.execute('SELECT * FROM bookings WHERE id=?',(p['id'],)).fetchone(),'pay',server.email)
             return server.Handler.action(None,db,'/api/'+path,p)
     def register(self,email='a@example.com',**kwargs):return self.act('register',{'event_id':'demo','name':'Guest','email':email,**kwargs})
     def guest(self,b,action):return self.act('guest-action',{'event_id':'demo','ids':[b['id']],'action':action})
