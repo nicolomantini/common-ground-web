@@ -90,8 +90,8 @@ async function init() {
   if (existingProfile) {
     populateForm(existingProfile);
     document.getElementById("save-btn").textContent = existingProfile.approved ? "Save changes" : "Publish profile";
-    statusBadge.hidden = false;
-    statusBadge.textContent = existingProfile.approved ? "Live on the site" : "Not published yet";
+    statusBadge.hidden = !!existingProfile.approved;
+    statusBadge.textContent = "Not published yet";
     statusBadge.classList.toggle("is-pending", !existingProfile.approved);
   } else {
     document.getElementById("save-btn").textContent = "Publish profile";
@@ -202,8 +202,8 @@ form.addEventListener("submit", async (e) => {
     existingProfile = result.data;
     pendingPhotoFile = null;
     document.getElementById("save-btn").textContent = existingProfile.approved ? "Save changes" : "Publish profile";
-    statusBadge.hidden = false;
-    statusBadge.textContent = existingProfile.approved ? "Live on the site" : "Not published yet";
+    statusBadge.hidden = !!existingProfile.approved;
+    statusBadge.textContent = "Not published yet";
     statusBadge.classList.toggle("is-pending", !existingProfile.approved);
 
     showMessage(

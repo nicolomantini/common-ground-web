@@ -16,6 +16,7 @@
     background: var(--sand); color: var(--moss-deep); white-space: nowrap;
   }
   .status-badge.is-pending { background: var(--sand); color: var(--warning); }
+  .dash-shortcuts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
   .dash-form { display: flex; flex-direction: column; gap: 16px; margin-top: 24px; }
   .field-group { display: flex; flex-direction: column; gap: 6px; }
   .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
@@ -77,12 +78,8 @@
     <span id="status-badge" class="status-badge" hidden></span>
   </div>
 
-  <p><a class="btn-book" href="blog-editor.html">Write for the blog</a> <a class="btn-book" href="https://luma.com/common-ground-space" target="_blank" rel="noopener noreferrer">Events on Luma</a></p>
-  <section class="dash-subsection" id="project-hub" hidden>
-    <h2>Common Ground project</h2>
-    <p class="field-hint">The Living Project Hub holds the meeting findings, participation table, decisions, and proposed working guidelines. It links to the Meeting Archive when you need a transcript.</p>
-    <p><a class="btn-book" href="https://app.notion.com/p/3bd9b3015a24811b9c0bf194e729622b" target="_blank" rel="noopener noreferrer">Open Living Project Hub<span class="visually-hidden"> (opens in a new tab)</span></a></p>
-  </section>
+  <p class="dash-shortcuts"><a class="btn-book" href="blog-editor.html">Write for the blog</a> <span id="project-hub" hidden><a class="btn-book" href="https://app.notion.com/p/3bd9b3015a24811b9c0bf194e729622b" target="_blank" rel="noopener noreferrer">Open Living Project Hub<span class="visually-hidden"> (opens in a new tab)</span></a></span> <a class="btn-book" href="https://luma.com/common-ground-space" target="_blank" rel="noopener noreferrer">Events on Luma</a></p>
+
   <form id="profile-form" class="dash-form">
     <div class="field-group">
       <label for="f-name">Full name</label>
