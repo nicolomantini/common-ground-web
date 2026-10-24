@@ -35,9 +35,8 @@
   status = 302
 [[redirects]]
   from = "/events"
-  to = "/event"
-  status = 302
-  force = true
+  to = "/events/index.html"
+  status = 200
 [[redirects]]
   from = "/host"
   to = "/event-tool/host.html"
@@ -53,10 +52,11 @@
 
 [[redirects]]
   from = "/event"
-  to = "/event/index.html"
-  status = 200
+  to = "/events"
+  status = 302
+  force = true
 [[redirects]]
-  from = "/events/*"
-  to = "/event"
+  from = "/event/*"
+  to = "/events"
   status = 302
   force = true

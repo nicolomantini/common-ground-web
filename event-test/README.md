@@ -114,8 +114,8 @@ preserves existing accounts/passwords, and refuses conflicting profile ownership
 
 ### Public event calendar
 
-`/event` is the public timeline with a month calendar, selectable dates and Upcoming/
-Past filters. `/events` redirects there. Cards use published public native events
+`/events` is the public timeline with a month calendar, selectable dates and Upcoming/
+Past filters. `/event` redirects there. Cards use published public native events
 from the test API; unlisted, cancelled and draft events are excluded. Host portraits
 come from the test practitioner directory. Registration still opens the event tool's
 existing booking page. Source files are `site/event.html`, `site/events.css` and
