@@ -124,3 +124,7 @@ existing booking page. Source files are `site/event.html`, `site/events.css` and
 Normal updates: commit and push to `test`. Netlify builds and publishes automatically.
 Do not include `[skip netlify]` in commits intended for deployment. Manual CLI deployment
 is reserved for troubleshooting.
+
+Automatic builds use the existing GitHub App connection. The test site's production
+branch and allowed branch list are both `test`; changes to `main` do not deploy here.
+Check build progress at https://app.netlify.com/projects/common-ground-test/deploys.
