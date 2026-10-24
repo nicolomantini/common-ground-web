@@ -1,15 +1,62 @@
+# Test branch deployment. Production keeps its own configuration on main.
 [build]
-  publish = "."
-
+  base = "event-test"
+  command = "npm run build"
+  publish = "public"
+  functions = "functions"
+[functions]
+  node_bundler = "esbuild"
+[functions."maintenance"]
+  schedule = "*/5 * * * *"
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/events/:splat"
+  status = 200
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "no-referrer"
+    X-Robots-Tag = "noindex, nofollow"
+    Cache-Control = "no-store"
 
-# Read the public calendar and event cover metadata on the server.
 [[redirects]]
-  from = "/api/luma-events"
-  to = "/.netlify/functions/luma-events"
+  from = "/host.html"
+  to = "/event-tool/host.html"
+  status = 302
+[[redirects]]
+  from = "/guest.html"
+  to = "/event-tool/guest.html"
+  status = 302
+[[redirects]]
+  from = "/hosts.html"
+  to = "/event-tool/hosts.html"
+  status = 302
+[[redirects]]
+  from = "/events"
+  to = "/event"
+  status = 302
+  force = true
+[[redirects]]
+  from = "/host"
+  to = "/event-tool/host.html"
+  status = 302
+[[redirects]]
+  from = "/guest"
+  to = "/event-tool/guest.html"
+  status = 302
+[[redirects]]
+  from = "/hosts"
+  to = "/event-tool/hosts.html"
+  status = 302
+
+[[redirects]]
+  from = "/event"
+  to = "/event/index.html"
   status = 200
+[[redirects]]
+  from = "/events/*"
+  to = "/event"
+  status = 302
   force = true

@@ -27,7 +27,7 @@ Guest links are single-use, expire after 15 minutes and set secure cookies. Host
 - Scheduled workers process bounded batches. This is a small test environment, not a production-scale launch.
 - Self-service transfer of a booking is not implemented; hosts arrange transfers.
 - The site is public, with search indexing disabled. Host and booking information require authentication.
-- This first deployment is manual. It is not connected to Git automatic deployments.
+- GitHub pushes to `test` automatically build this site; production remains on `main`.
 
 ## Environment variables
 
@@ -59,8 +59,7 @@ authentication, dashboard, reviews and feedback forms. `build.mjs` copies an exp
 allowlist of static files and replaces the browser Supabase configuration with
 `site/test-config.json`. The latter contains only the **public anonymous key** for
 the test project. Builds reject production project references and privileged keys.
-Analytics is disabled, indexing is blocked, and each website page displays a test
-banner. The event tool lives at `/event-tool/`; its API remains at `/api/`.
+Analytics is disabled and indexing is blocked. The event tool lives at `/event-tool/`; its API remains at `/api/`.
 Old host/guest links redirect to their new locations.
 
 - Full site: https://common-ground-test.netlify.app/
@@ -96,8 +95,8 @@ For local review of the **full isolated website**, build and serve `event-test/p
 (with Netlify Dev for the API), not the repository root: the shared source's browser
 configuration remains production-oriented until the test build replaces it.
 Future release work should promote reviewed code and schema migrations, not overwrite
-production data with this snapshot. This site is still manually deployed and no
-Git branch was pushed during setup.
+production data with this snapshot. The root `netlify.toml` on `test` builds from `event-test/`. Never promote that
+test-only deployment configuration to `main` without reviewing production settings.
 
 ### Practitioner test access
 
@@ -106,7 +105,7 @@ linked to their profiles, plus event-host accounts linked to the same practition
 Only Nico remains an administrator. Their initial passwords are stored privately in
 `~/.config/common-ground/test-practitioner-logins.txt` (owner-only permissions),
 not in this repository. Share each person only their own entry. No invitations were
-sent and no production credentials were changed. The test banner links to sign-in.
+sent and no production credentials were changed. Practitioner sign-in is available in the website footer.
 Profile and event-host passwords/sessions are still separate; changing the profile
 password does not change the event-host password. Guest email testing remains restricted.
 
@@ -121,3 +120,7 @@ from the test API; unlisted, cancelled and draft events are excluded. Host portr
 come from the test practitioner directory. Registration still opens the event tool's
 existing booking page. Source files are `site/event.html`, `site/events.css` and
 `site/events.js`; the test build installs them separately from production pages.
+
+Normal updates: commit and push to `test`. Netlify builds and publishes automatically.
+Do not include `[skip netlify]` in commits intended for deployment. Manual CLI deployment
+is reserved for troubleshooting.
