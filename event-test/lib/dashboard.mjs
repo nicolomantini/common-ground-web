@@ -1,11 +1,48 @@
+import {eventJSON} from './event-media.mjs';
 import {check,text,integer,uuid,now,settings,queueEmail,address,origin,eventOrigin,instant,POLICY} from './core.mjs';
 import {host,guest,manages} from './auth.mjs';
 export async function usage(db){const r=await db.one("SELECT count(*) FILTER (WHERE substr(sent_at,1,10)=? OR substr(delivery_first,1,10)=?) AS daily,count(*) FILTER (WHERE substr(sent_at,1,7)=? OR substr(delivery_first,1,7)=?) AS monthly FROM emails",[now().slice(0,10),now().slice(0,10),now().slice(0,7),now().slice(0,7)]);return {daily:Number(r.daily),monthly:Number(r.monthly)};}
-export async function state(db,req,isPublic,eventId){const a=isPublic?null:await host(db,req);check(isPublic||a,'Sign in as a host.',401);const email=isPublic?await guest(db,req,false):null;let events=await db.q('SELECT * FROM events'),bookings=await db.q('SELECT * FROM bookings');const result={events:[],bookings:[],calendar:isPublic?{refund_policy:POLICY}:await settings(db),email_usage:{daily:0,monthly:0}};
- if(isPublic){bookings=bookings.filter(b=>b.email.toLowerCase()===email);events=events.filter(e=>bookings.some(b=>b.event_id===e.id)||e.published&&!e.cancelled&&(e.visibility==='public'||e.id===eventId));for(const e of events){e.reserved_count=Number((await db.one("SELECT count(*) AS n FROM bookings WHERE event_id=? AND status IN ('pending','confirmed')",[e.id])).n);if(!bookings.some(b=>b.event_id===e.id&&b.status==='confirmed')){if(e.location_type==='online')e.location='';e.confirmation_message='';}}result.guest_email=email;}
- else{result.host={email:a.email,admin:a.admin,practitioner_id:a.practitioner_id};events=events.filter(e=>manages(a,e));bookings=bookings.filter(b=>events.some(e=>e.id===b.event_id));if(a.admin){result.host_accounts=await db.q('SELECT email,practitioner_id,admin,active FROM host_accounts ORDER BY email');result.email_usage=await usage(db);}}
- result.events=events.map(e=>({...e,has_started:instant(e.starts,e.zone)<=Date.now()}));result.bookings=bookings;for(const table of ['emails','contacts','campaigns','invitations','page_views','feedback','vouchers'])result[table]=isPublic||!a.admin&&['emails','contacts','vouchers'].includes(table)?[]:(await db.q('SELECT * FROM '+table)).filter(r=>a.admin||events.some(e=>e.id===r.event_id));return result;
+export async function state(db,req,isPublic,eventId) {
+ const a=isPublic?null:await host(db,req);
+ check(isPublic||a,'Sign in as a host.',401);
+ const email=isPublic?await guest(db,req,false):null;
+ let scope=isPublic
+   ? "((e.published=1 AND e.cancelled=0 AND (e.visibility='public' OR e.id=?)) OR EXISTS (SELECT 1 FROM bookings b WHERE b.event_id=e.id AND lower(b.email)=?))"
+   : a.admin?'TRUE':"e.host_ids::jsonb @> ?::jsonb";
+ const args=isPublic?[eventId||'',email||'']:a.admin?[]:[JSON.stringify([a.practitioner_id])];
+ if(isPublic&&eventId){scope+=' AND e.id=?';args.push(eventId);}
+ const events=(await db.q(`SELECT ${eventJSON} FROM events e WHERE ${scope}`,args)).map(r=>r.event);
+ const ids=events.map(e=>e.id);
+ const bookings=isPublic
+   ? email?await db.q('SELECT * FROM bookings WHERE lower(email)=? AND event_id=ANY(?::text[])',[email,ids]):[]
+   : await db.q('SELECT * FROM bookings WHERE event_id=ANY(?::text[])',[ids]);
+ const result={events:[],bookings,calendar:isPublic?{refund_policy:POLICY}:await settings(db),email_usage:{daily:0,monthly:0}};
+ if(isPublic) {
+   const counts=await db.q("SELECT event_id,count(*) AS n FROM bookings WHERE event_id=ANY(?::text[]) AND status IN ('pending','confirmed') GROUP BY event_id",[ids]);
+   const reserved=new Map(counts.map(r=>[r.event_id,Number(r.n)]));
+   for(const e of events) {
+     e.reserved_count=reserved.get(e.id)||0;
+     if(!bookings.some(b=>b.event_id===e.id&&b.status==='confirmed')) {
+       if(e.location_type==='online')e.location='';
+       e.confirmation_message='';
+     }
+   }
+   result.guest_email=email;
+ } else {
+   result.host={email:a.email,admin:a.admin,practitioner_id:a.practitioner_id};
+   if(a.admin) {
+     result.host_accounts=await db.q('SELECT email,practitioner_id,admin,active FROM host_accounts ORDER BY email');
+     result.email_usage=await usage(db);
+   }
+ }
+ result.events=events.map(e=>({...e,has_started:instant(e.starts,e.zone)<=Date.now()}));
+ for(const table of ['emails','contacts','campaigns','invitations','page_views','feedback','vouchers']) {
+   result[table]=isPublic||!a.admin&&['emails','contacts','vouchers'].includes(table)?[]:
+     await db.q('SELECT * FROM '+table+(a.admin?'':' WHERE event_id=ANY(?::text[])'),a.admin?[]:[ids]);
+ }
+ return result;
 }
+
 const addresses=value=>{const list=[...new Set(String(value||'').split(/[,;\s]+/).filter(Boolean).map(address))];check(list.length>0&&list.length<=200,'Enter up to 200 email addresses.');return list;};
 async function queueCampaign(db,c){const people=c.event_id?(await db.q("SELECT DISTINCT email,status FROM bookings WHERE event_id=? AND status IN ('confirmed','approval','waitlist','pending')",[c.event_id])).filter(b=>c.audience==='all'||b.status===c.audience).map(b=>b.email):(await db.q('SELECT email FROM contacts WHERE subscribed=1')).map(b=>b.email);for(const email of new Set(people))await queueEmail(db,email,c.subject,c.body);await db.exec("UPDATE campaigns SET status='queued' WHERE id=?",[c.id]);return people.length;}
 export async function schedules(db){for(const c of await db.q("SELECT * FROM campaigns WHERE status='scheduled'"))if(Date.parse(c.scheduled)<=Date.now())await queueCampaign(db,c);

@@ -3,8 +3,8 @@
  const list=document.getElementById('home-events'),message=document.getElementById('home-events-message');if(!list||!message)return;
  const node=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e;};
  try{
-  const response=await fetch('/api/public-state');if(!response.ok)throw Error();const state=await response.json();
-  const events=state.events.filter(e=>e.published&&!e.cancelled&&!e.has_started&&e.visibility==='public').sort((a,b)=>a.starts.localeCompare(b.starts)).slice(0,3);
+  const response=await fetch('/api/event-summaries?period=upcoming&limit=3');if(!response.ok)throw Error();const state=await response.json();
+  const events=state.events;
   list.replaceChildren();
   for(const e of events){const card=node('article',undefined,'luma-event-card'),cover=node('div',undefined,'luma-event-cover'),body=node('div',undefined,'luma-event-body'),content=node('div',undefined,'luma-event-content'),footer=node('div',undefined,'luma-event-footer');
    if(e.cover){const img=node('img');img.src=e.cover;img.alt='';img.loading='lazy';cover.append(img);}
