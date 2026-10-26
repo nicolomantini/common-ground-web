@@ -16,8 +16,9 @@ function placeholderAvatarSVG() {
 // Renders a real photo if the counselor has a `photo` path set in the data file,
 // otherwise falls back to the generic placeholder avatar.
 function avatarHTML(c) {
-  if (c.photo) {
-    return `<img class="avatar-photo" src="${c.photo}" alt="${c.name}" loading="lazy">`;
+  const photo = safeProfilePhoto(c.photo);
+  if (photo) {
+    return `<img class="avatar-photo" src="${escapeProfileText(photo)}" alt="${escapeProfileText(c.name)}" loading="lazy">`;
   }
   return placeholderAvatarSVG();
 }
@@ -100,7 +101,7 @@ function buildLanguageOptions() {
 function buildChips() {
   chipRow.innerHTML = allSpecialties
     .map(
-      (s) => `<button type="button" class="chip" data-specialty="${s}" aria-pressed="false">${s}</button>`
+      (s) => `<button type="button" class="chip" data-specialty="${escapeProfileText(s)}" aria-pressed="false">${escapeProfileText(s)}</button>`
     )
     .join("");
 }
@@ -201,8 +202,8 @@ function reviewsDetailHTML(c) {
     ? items.map((rv) => `
         <div class="review-item">
           <span class="review-stars">${"★".repeat(rv.rating)}${"☆".repeat(5 - rv.rating)}</span>
-          <p class="review-comment">${rv.comment ? rv.comment : ""}</p>
-          <span class="review-author">&mdash; ${rv.name}</span>
+          <p class="review-comment">${escapeProfileText(rv.comment)}</p>
+          <span class="review-author">&mdash; ${escapeProfileText(rv.name)}</span>
         </div>`).join("")
     : `<p class="field-hint">No reviews yet.</p>`;
   return `
@@ -211,6 +212,20 @@ function reviewsDetailHTML(c) {
       ${reviewsHTML}
       <a class="btn-link" href="review.html?counselor=${encodeURIComponent(c.id)}&name=${encodeURIComponent(c.name)}">Leave a review</a>
     </div>`;
+}
+
+function safeProfilePhoto(value) {
+  if (!value) return null;
+  try {
+    const url = new URL(String(value), location.href);
+    if (!["https:", "http:"].includes(url.protocol) || url.username || url.password) return null;
+    return url.href;
+  } catch { return null; }
+}
+
+function whatsappNumber(value) {
+  const number = String(value || "").replace(/[\s()+.-]/g, "");
+  return /^\d{7,15}$/.test(number) ? number : "";
 }
 
 function escapeProfileText(value) {
@@ -227,28 +242,28 @@ function bioPreview(value) {
 
 function cardHTML(c) {
   return `
-    <article class="card" data-id="${c.id}" tabindex="0" aria-haspopup="dialog" aria-label="Read the profile of ${escapeProfileText(c.name)}">
+    <article class="card" data-id="${escapeProfileText(c.id)}" tabindex="0" aria-haspopup="dialog" aria-label="Read the profile of ${escapeProfileText(c.name)}">
       <div class="mark">${avatarHTML(c)}</div>
       <div class="card-heading">
-        <h3>${c.name}</h3>
-        <p class="credentials">${c.pronouns || ""}</p>
+        <h3>${escapeProfileText(c.name)}</h3>
+        <p class="credentials">${escapeProfileText(c.pronouns)}</p>
       </div>
       <p class="tagline">${escapeProfileText(bioPreview(c.bio))}</p>
       <ul class="tag-list" aria-label="Specialties">
-        ${(c.specialties || []).map((s) => `<li class="tag">${s}</li>`).join("")}
+        ${(c.specialties || []).map((s) => `<li class="tag">${escapeProfileText(s)}</li>`).join("")}
       </ul>
       <div class="meta-row">
-        <span class="meta">${c.location || ""}</span>
-        <span class="meta dot">${(c.formats || []).join(" / ")}</span>
-        <span class="meta dot">${c.price_range || ""}</span>
-        <span class="meta availability ${availabilityClass(c.availability)}">${c.availability || ""}</span>
+        <span class="meta">${escapeProfileText(c.location)}</span>
+        <span class="meta dot">${escapeProfileText((c.formats || []).join(" / "))}</span>
+        <span class="meta dot">${escapeProfileText(c.price_range)}</span>
+        <span class="meta availability ${availabilityClass(c.availability)}">${escapeProfileText(c.availability)}</span>
         ${reviewSummaryHTML(c)}
       </div>
       <div class="detail-actions">
         ${bookingButtonHTML(c.booking_url)}
         ${
-          c.whatsapp
-            ? `<a class="btn-whatsapp" href="https://wa.me/${c.whatsapp}" target="_blank" rel="noopener noreferrer">
+          whatsappNumber(c.whatsapp)
+            ? `<a class="btn-whatsapp" href="https://wa.me/${whatsappNumber(c.whatsapp)}" target="_blank" rel="noopener noreferrer">
                  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.7 14.2c-.2.6-1.2 1.2-1.7 1.3-.4.1-1 .1-1.6-.1-.4-.1-.9-.3-1.5-.6-2.7-1.2-4.5-3.9-4.6-4.1-.1-.2-1.1-1.5-1.1-2.8 0-1.3.7-2 1-2.2.2-.2.5-.3.7-.3h.5c.2 0 .4 0 .5.4.2.5.7 1.7.7 1.9.1.1.1.3 0 .4-.1.2-.1.3-.3.5l-.4.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.4.1.6-.1.2-.2.7-.8.9-1.1.2-.3.4-.2.6-.1l1.7.8c.2.1.4.2.4.3.1.2.1.9-.1 1.5z"/></svg>
                  WhatsApp
                </a>`
@@ -258,9 +273,9 @@ function cardHTML(c) {
       <button type="button" class="card-toggle" aria-haspopup="dialog">Read more<span class="visually-hidden"> about ${escapeProfileText(c.name)}</span> <span aria-hidden="true">→</span></button>
       <div class="card-detail" hidden>
         <dl>
-          <dt>Approach</dt><dd>${(c.approach || []).join(", ")}</dd>
-          <dt>Languages</dt><dd>${(c.languages || []).join(", ")}</dd>
-          <dt>Session length</dt><dd>${c.session_length || ""}</dd>
+          <dt>Approach</dt><dd>${escapeProfileText((c.approach || []).join(", "))}</dd>
+          <dt>Languages</dt><dd>${escapeProfileText((c.languages || []).join(", "))}</dd>
+          <dt>Session length</dt><dd>${escapeProfileText(c.session_length)}</dd>
         </dl>
         ${connectLinksHTML(c)}
         ${reviewsDetailHTML(c)}
