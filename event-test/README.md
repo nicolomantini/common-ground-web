@@ -128,3 +128,21 @@ is reserved for troubleshooting.
 Automatic builds use the existing GitHub App connection. The test site's production
 branch and allowed branch list are both `test`; changes to `main` do not deploy here.
 Check build progress at https://app.netlify.com/projects/common-ground-test/deploys.
+
+## Homepage donations (test only)
+
+The test build adds a Donate header button and `/donate/`. Visitors can give a
+one-time EUR contribution without an account: €5/€10/€25/€50 presets or a custom
+amount between €1 and €1,000. The server validates the amount and creates a
+Stripe-hosted checkout using the existing `STRIPE_SECRET_KEY` and `SITE_URL`.
+Only `sk_test_` keys and non-live Checkout sessions are accepted.
+
+Donations are separate from event bookings. Stripe Checkout and PaymentIntent
+metadata use `purpose=common-ground-donation`; review them in Stripe's test
+dashboard. No booking, registration email or event cancellation/refund policy
+is created or applied. The return page checks the session with Stripe before
+showing payment success. Session creation retries use an idempotency key.
+
+Validation: build and six event-tool test files passed; a €5 Stripe test session
+was created, retried without duplication, verified as unpaid, and expired.
+No payment was made. This feature is not included in the main website build.

@@ -38,3 +38,15 @@ console.log('Full website and event tool built with isolated test configuration.
 await mkdir('public/events',{recursive:true});
 await writeFile('public/events/index.html',await readFile('site/event.html','utf8'));
 for(const f of ['events.css','events.js'])await cp('site/'+f,'public/events/'+f);
+
+// Donation checkout is available only in the test build.
+await mkdir('public/donate',{recursive:true});
+await cp('site/donate.html','public/donate/index.html');
+await cp('site/donate.js','public/donate/donate.js');
+const homePath='public/index.html';
+let donationHome=await readFile(homePath,'utf8');
+const blogNav='<a href="blog.html">Blog</a>';
+if(!donationHome.includes(blogNav))throw Error('Homepage navigation anchor not found.');
+donationHome=donationHome.replace(blogNav,blogNav+'\n      <a href="/donate/" class="donate-nav">Donate</a>');
+donationHome=donationHome.replace('</head>','<style>.header-nav .donate-nav{background:var(--terracotta);color:#fff;padding:8px 16px;border-radius:6px}.header-nav .donate-nav:hover{background:var(--moss-deep)}</style></head>');
+await writeFile(homePath,donationHome);
