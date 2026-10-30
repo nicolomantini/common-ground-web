@@ -31,3 +31,19 @@ test('test build includes donation page and header link without changing root ho
  assert.doesNotMatch(await readFile(new URL('../../index.html',import.meta.url),'utf8'),/donate-nav/);
  assert.match(await readFile(new URL('../public/donate/index.html',import.meta.url),'utf8'),/No real money will be charged/);
 });
+
+test('slider displays and submits euro amounts rather than slider positions',async()=>{
+ const {runInNewContext}=await import('node:vm');
+ const nodes=new Map();
+ const get=id=>{if(!nodes.has(id))nodes.set(id,{value:'20',listeners:{},attrs:{},addEventListener(k,fn){this.listeners[k]=fn;},setAttribute(k,v){this.attrs[k]=v;},reportValidity(){return true;}});return nodes.get(id);};
+ let sent;
+ runInNewContext(await readFile(new URL('../site/donate.js',import.meta.url),'utf8'),{document:{getElementById:get},Intl,URL,URLSearchParams,crypto:{randomUUID:()=>request_id},location:{search:'',assign(){}},fetch:async(url,options)=>{sent=JSON.parse(options.body);return {ok:true,json:async()=>({url:'https://checkout.stripe.com/c/pay/test'})};}});
+ assert.equal(get('donation-value').textContent,'€100');
+ for(const [position,display] of [['0','€1'],['1','€5'],['2','€10'],['20','€100'],['200','€1,000']]){
+  get('donation-amount').value=position;get('donation-amount').listeners.input();
+  assert.equal(get('donation-value').textContent,display);
+  assert.equal(get('donation-amount').attrs['aria-valuetext'],display);
+ }
+ await get('donation-form').listeners.submit({preventDefault(){}});
+ assert.equal(sent.amount,'1000');
+});

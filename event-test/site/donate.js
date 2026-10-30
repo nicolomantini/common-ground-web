@@ -2,12 +2,14 @@ const form=document.getElementById('donation-form'),amount=document.getElementBy
 let attempt=null;
 const valueLabel=document.getElementById('donation-value');
 const currency=new Intl.NumberFormat('en-GB',{style:'currency',currency:'EUR',maximumFractionDigits:0});
-function updateAmount(){valueLabel.textContent=currency.format(Number(amount.value));amount.setAttribute('aria-valuetext',valueLabel.textContent);}
+// Position zero preserves the €1 minimum; all other positions are €5 steps.
+function selectedAmount(){return Number(amount.value)===0?1:Number(amount.value)*5;}
+function updateAmount(){valueLabel.textContent=currency.format(selectedAmount());amount.setAttribute('aria-valuetext',valueLabel.textContent);}
 amount.addEventListener('input',updateAmount);
 updateAmount();
 form.addEventListener('submit',async event=>{
  event.preventDefault();if(!form.reportValidity()||submit.disabled)return;
- const value=amount.value;
+ const value=String(selectedAmount());
  if(!attempt||attempt.amount!==value)attempt={amount:value,request_id:crypto.randomUUID()};
  submit.disabled=true;status.textContent='Opening secure checkout…';
  try{
