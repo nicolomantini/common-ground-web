@@ -1,9 +1,10 @@
 const form=document.getElementById('donation-form'),amount=document.getElementById('donation-amount'),submit=document.getElementById('donation-submit'),status=document.getElementById('donation-status');
 let attempt=null;
-const presets=[...document.querySelectorAll('[data-amount]')];
-function update(){for(const button of presets)button.setAttribute('aria-pressed',String(Number(button.dataset.amount)===Number(amount.value)));}
-for(const button of presets)button.onclick=()=>{amount.value=button.dataset.amount;update();};
-amount.addEventListener('input',update);
+const valueLabel=document.getElementById('donation-value');
+const currency=new Intl.NumberFormat('en-GB',{style:'currency',currency:'EUR',maximumFractionDigits:0});
+function updateAmount(){valueLabel.textContent=currency.format(Number(amount.value));amount.setAttribute('aria-valuetext',valueLabel.textContent);}
+amount.addEventListener('input',updateAmount);
+updateAmount();
 form.addEventListener('submit',async event=>{
  event.preventDefault();if(!form.reportValidity()||submit.disabled)return;
  const value=amount.value;

@@ -132,8 +132,8 @@ Check build progress at https://app.netlify.com/projects/common-ground-test/depl
 ## Homepage donations (test only)
 
 The test build adds a Donate header button and `/donate/`. Visitors can give a
-one-time EUR contribution without an account: €5/€10/€25/€50 presets or a custom
-amount between €1 and €1,000. The server validates the amount and creates a
+one-time EUR contribution without an account using a €1–€1,000 slider in €1 steps, starting at €100.
+The chosen amount is displayed as the slider moves. The server validates the amount and creates a
 Stripe-hosted checkout using the existing `STRIPE_SECRET_KEY` and `SITE_URL`.
 Only `sk_test_` keys and non-live Checkout sessions are accepted.
 
