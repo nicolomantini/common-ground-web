@@ -27,3 +27,15 @@ booking refunds or fulfilment actions are attached to donations.
 
 The test branch retains its own test-only donation function and test keys.
 Do not merge the event-tool backend or database configuration into main.
+
+## Local credential file
+
+Use the repository-root `.env` file for the production `STRIPE_SECRET_KEY`.
+An empty `.env.example` documents the name. `.env` and `.env.*` are ignored by
+Git; the actual file is readable/writable only by its owner. Never force-add it.
+After filling it, the key can be copied to Netlify's production Functions
+configuration via its API. A local `.env` does not automatically configure Netlify.
+
+Production builds now run `node scripts/build-site.cjs` and publish `site-build/`.
+Only website assets are copied; `.env`, backend source, scripts and database files
+are excluded. Deploy the generated folder, not the repository root.

@@ -1,5 +1,7 @@
 [build]
-  publish = "."
+  command = "node scripts/build-site.cjs"
+  publish = "site-build"
+  functions = "netlify/functions"
 
 [[headers]]
   for = "/*"

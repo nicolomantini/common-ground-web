@@ -1,3 +1,11 @@
 .DS_Store
 node_modules/
 *.log
+
+# Local credentials (only the empty template is committed)
+.env
+.env.*
+!.env.example
+
+# Generated production website
+/site-build/
