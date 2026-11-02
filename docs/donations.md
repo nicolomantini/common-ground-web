@@ -4,7 +4,14 @@ The homepage Donate button links to `/donate/`. The slider starts at €100 and
 supports €1, then €5 increments through €1,000. No account is required.
 The Netlify function `netlify/functions/donate.cjs` creates a one-time Stripe
 Checkout session, tagged `purpose=common-ground-donation`. Payments are visible
-in the Common Ground Stripe dashboard; they do not create event bookings.
+in the shared Neman LLC Stripe account; they do not create event bookings.
+
+Checkout branding is set per session: Common Ground display name, the original
+logo from `images/brand/common-ground-luma-icon.png`, peach `#FEEADD` background
+and brown `#9E5D54` button. No account-wide Stripe settings are changed.
+This does not change receipt business details or the bank statement descriptor
+(currently `NMA CONSULTING`). Stripe accepted these settings on an unpaid test
+session using API version `2025-02-24.acacia` on 2 November 2026.
 
 ## Required production configuration
 

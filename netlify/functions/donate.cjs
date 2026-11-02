@@ -8,6 +8,11 @@ function donationPayload(input) {
   check(amount===100||amount%500===0,'Choose €1 or an amount in €5 steps.');
   check(/^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(input.request_id||''),'Please reload and try again.');
   return new URLSearchParams({mode:'payment',submit_type:'donate','payment_method_types[0]':'card',
+    'branding_settings[display_name]':'Common Ground',
+    'branding_settings[background_color]':'#FEEADD','branding_settings[button_color]':'#9E5D54',
+    'branding_settings[border_style]':'rounded',
+    'branding_settings[icon][type]':'url',
+    'branding_settings[icon][url]':SITE+'/images/brand/common-ground-luma-icon.png',
     'line_items[0][quantity]':'1','line_items[0][price_data][currency]':'eur','line_items[0][price_data][unit_amount]':String(amount),
     'line_items[0][price_data][product_data][name]':'Support Common Ground',
     'line_items[0][price_data][product_data][description]':'A one-time contribution to Common Ground.',
