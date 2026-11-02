@@ -10,13 +10,14 @@ test('production payload validates slider amounts and keeps return URLs fixed',(
  assert.throws(()=>donationPayload({...input,request_id:'bad'}));
  const payload=donationPayload(input);assert.equal(payload.get('success_url'),'https://common-ground.space/donate/?session_id={CHECKOUT_SESSION_ID}');assert.equal(payload.get('submit_type'),'donate');
 });
-test('branding applies only to this checkout without overriding payment descriptors',()=>{
+test('donation branding and descriptor suffix are scoped to Common Ground',()=>{
  const payload=donationPayload(input);
  assert.equal(payload.get('branding_settings[display_name]'),'Common Ground');
  assert.equal(payload.get('branding_settings[background_color]'),'#FEEADD');
  assert.equal(payload.get('branding_settings[button_color]'),'#9E5D54');
  assert.equal(payload.get('branding_settings[icon][url]'),'https://common-ground.space/images/brand/common-ground-luma-icon.png');
- assert.equal(payload.has('payment_intent_data[statement_descriptor_suffix]'),false);
+ assert.equal(payload.get('payment_intent_data[statement_descriptor_suffix]'),'COMMON GROUND');
+ assert.equal(payload.has('payment_intent_data[receipt_email]'),false);
 });
 test('success requires a live, paid donation session',()=>{
  const s={livemode:true,mode:'payment',payment_status:'paid',currency:'eur',amount_total:10000,metadata:{purpose:'common-ground-donation'}};

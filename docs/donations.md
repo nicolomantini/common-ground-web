@@ -9,8 +9,7 @@ in the shared Neman LLC Stripe account; they do not create event bookings.
 Checkout branding is set per session: Common Ground display name, the original
 logo from `images/brand/common-ground-luma-icon.png`, peach `#FEEADD` background
 and brown `#9E5D54` button. No account-wide Stripe settings are changed.
-This does not change receipt business details or the bank statement descriptor
-(currently `NMA CONSULTING`). Stripe accepted these settings on an unpaid test
+This does not change receipt business details. Stripe accepted these settings on an unpaid test
 session using API version `2025-02-24.acacia` on 2 November 2026.
 
 ## Required production configuration
@@ -46,3 +45,13 @@ configuration via its API. A local `.env` does not automatically configure Netli
 Production builds now run `node scripts/build-site.cjs` and publish `site-build/`.
 Only website assets are copied; `.env`, backend source, scripts and database files
 are excluded. Deploy the generated folder, not the repository root.
+
+## Bank statement labels
+
+The live account shortened card descriptor was set to `NEMAN` in Stripe on
+2 November 2026, keeping the default descriptor `NMA CONSULTING`. Donation
+Checkout sessions specify `payment_intent_data.statement_descriptor_suffix` as
+`COMMON GROUND`, producing `NEMAN* COMMON GROUND` for new donation card payments.
+Other integrations that specify a suffix also use the shared NEMAN prefix.
+Existing checkout sessions and completed payments are not rewritten.
+Automatic successful-payment and refund emails remain disabled, as requested.

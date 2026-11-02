@@ -17,6 +17,7 @@ function donationPayload(input) {
     'line_items[0][price_data][product_data][name]':'Support Common Ground',
     'line_items[0][price_data][product_data][description]':'A one-time contribution to Common Ground.',
     'metadata[purpose]':'common-ground-donation','payment_intent_data[metadata][purpose]':'common-ground-donation',
+    'payment_intent_data[statement_descriptor_suffix]':'COMMON GROUND',
     success_url:SITE+'/donate/?session_id={CHECKOUT_SESSION_ID}',cancel_url:SITE+'/donate/?cancelled=1'});
 }
 function donationStatus(s) {
