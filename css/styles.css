@@ -692,3 +692,7 @@ input, select, textarea { color: var(--ink); accent-color: var(--moss); }
 .luma-event-register { flex-shrink: 0; border-radius: 6px; }
 .luma-event-host-group { min-width: 0; }
 @media (max-width: 480px) { .luma-event-body { padding: 20px; } }
+
+/* Homepage contribution shortcut. */
+.header-nav .donate-nav { background: var(--terracotta); color: #fff; padding: 8px 16px; border-radius: 6px; }
+.header-nav .donate-nav:hover { background: var(--moss-deep); }

@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Support Common Ground with a one-time contribution."><link rel="canonical" href="https://common-ground.space/donate/"><title>Support Common Ground</title>
+<link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/styles.css">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+.donation-wrap{max-width:580px;margin:64px auto;padding:0 24px 64px}.donation-wrap h1{font-size:clamp(2.2rem,7vw,3.4rem);line-height:1.1;margin-bottom:24px}.donation-wrap p{margin:16px 0}.donation-form{margin-top:32px;padding:24px;background:var(--surface);border:1px solid var(--line);border-radius:12px}.donation-form label{display:block;margin-bottom:8px}.donation-form input{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;border-radius:6px}.donation-form .btn-primary{margin-top:20px;width:100%}.donation-form button:disabled{opacity:.6;cursor:wait}.donation-note{font-size:.85rem;color:var(--ink-soft)}#donation-status{line-height:1.6}button:focus-visible,input:focus-visible{outline:2px solid var(--terracotta);outline-offset:3px}
+.donation-form input[type="range"]{padding:0;border:0;accent-color:var(--terracotta);height:36px;cursor:pointer}.donation-form label{display:flex;align-items:center;justify-content:space-between;gap:16px}.donation-form output{font-size:1.7rem;font-weight:600;color:var(--terracotta)}.donation-limits{display:flex;justify-content:space-between;font-size:.85rem;color:var(--ink-soft)}
+</style>
+</head><body>
+<header class="site-header"><div class="wrap header-row"><a class="logo" href="/"><img class="logo-mark" src="/images/logo-mark.png" alt="">Common <span>Ground</span></a><a href="/">Back to home</a></div></header>
+<main class="donation-wrap"><p class="eyebrow">SUPPORT COMMON GROUND</p><h1>Help this space grow.</h1><p>Your contribution supports Common Ground and the work we share together. Give what feels right for you.</p>
+<p id="donation-status" role="status" aria-live="polite"></p>
+<form class="donation-form" id="donation-form">
+<label for="donation-amount">Your contribution <output id="donation-value" for="donation-amount">€100</output></label><input id="donation-amount" name="amount" type="range" min="0" max="200" step="1" value="20" aria-describedby="amount-hint"><div class="donation-limits" aria-hidden="true"><span>€1</span><span>€1,000</span></div><p id="amount-hint" class="donation-note">Move the slider to choose your contribution.</p>
+<button class="btn-primary" type="submit" id="donation-submit">Donate</button><p class="donation-note">A one-time contribution, securely processed by Stripe.</p>
+</form></main><script src="/donate/donate.js" defer></script></body></html>
