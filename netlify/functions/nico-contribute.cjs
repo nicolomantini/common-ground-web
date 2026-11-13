@@ -4,8 +4,8 @@ const check = (condition, message, status = 400) => {
   if (!condition) throw Object.assign(new Error(message), { status });
 };
 const translations = {
-  en: { name: 'Support Nicolò Mantini’s work', description: 'For writing, resources, or a gathering you have attended.' },
-  it: { name: 'Sostieni il lavoro di Nicolò Mantini', description: 'Per scritti, risorse o un incontro a cui hai partecipato.' }
+  en: { name: 'Support Nico\'s work', description: 'For writing, resources, or a gathering you have attended.' },
+  it: { name: 'Sostieni il lavoro di Nico', description: 'Per scritti, risorse o un incontro a cui hai partecipato.' }
 };
 
 function contributionPayload(input) {
